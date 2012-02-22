@@ -1,0 +1,5 @@
+#Ignore generated source files
+src/bin32
+src/lex.yy.c
+src/parser.tab.c
+src/parser.tab.h
