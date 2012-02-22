@@ -30,12 +30,28 @@
 %token NUM
 
 /* TODO: add associativity and precedence so that the 256 shift-reduce vanish */
-%token ASSIGN
+/*%token ASSIGN
 %token LOGICAL_OR LOGICAL_NOT LOGICAL_AND 
 %token EQ NE LS LSEQ GTEQ GT
 %token PLUS MINUS MUL DIV MOD
 %token NOT UNARY_MINUS UNARY_PLUS
-%token BRACKET_OPEN BRACKET_CLOSE PARA_OPEN PARA_CLOSE
+%token BRACKET_OPEN BRACKET_CLOSE PARA_OPEN PARA_CLOSE */
+
+%right ASSIGN                           /* The assign operator '='. */
+%left LOGICAL_OR                        /* The logical OR operator '||'. */
+%left LOGICAL_AND                       /* The logical AND operator '&&'. */
+%left EQ NE                                     /* Equality '==' and inequality '!=' comparison operators. */
+%left LS LSEQ GTEQ GT           /* Comparing operators for less '<', less or equal '<=', greater or equal '>=' and greater '>'. */
+%left PLUS MINUS                        /* Arithmetic operations: addition '+' and subtraction '-'. */
+%left MUL DIV MOD          /* Arithmetic operations (higher precedence than addition and subtraction): multiplication '*',
+                                                         * division '-' and remainder (modulo) '%'. */
+%right UNARY_MINUS UNARY_PLUS                     /* Arithmetic and logical operations. */ 
+       LOGICAL_NOT
+%left BRACKET_OPEN                      /* Parenthesis and brackets with highest priority due to array access und manual precedence. */
+      BRACKET_CLOSE 
+      PARA_OPEN 
+      PARA_CLOSE
+
 
 %%
 
