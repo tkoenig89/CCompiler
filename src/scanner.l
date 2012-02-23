@@ -1,10 +1,11 @@
-THIS IS A TEST FOR BREAKING THE BUILD;;;;; DONT PANIC !!!!!!
 /* 
  * scanner.l - Scanner utility for the BA compiler
  */
 
 %{
-	#include "parser.tab.h"
+	//THIS IS A TEST FOR BREAKING THE BUILD;;;;; DONT PANIC !!!!!!
+	//#include "parser.tab.h"
+	#include "break.this.build.h"
 %}
 
 /* 
