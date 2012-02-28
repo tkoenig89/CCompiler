@@ -19,7 +19,8 @@
 %option noyywrap		
 
 identifier		[_a-zA-Z][_a-zA-Z0-9]*
-number			[1-9][0-9]*|0				 	 
+number			[1-9][0-9]*|0	
+comment			\/\/.*\n	 
 %%
 
 \n	/* new line */
@@ -63,6 +64,7 @@ while { return WHILE; }
 
 {identifier} { return ID; }
 {number} { return NUM; }
+{comment} {return COM;}
 							
 <<EOF>>		{ return 0; }
 
