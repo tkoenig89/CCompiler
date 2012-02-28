@@ -7,3 +7,5 @@ git push origin master
 Get Changes from Github:
 
 git pull
+
+lol
