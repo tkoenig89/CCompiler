@@ -1,0 +1,9 @@
+Add Changes to Github:
+
+git add . -A
+git commit -m 'I just added something to github'
+git push origin master
+
+Get Changes from Github:
+
+git pull
