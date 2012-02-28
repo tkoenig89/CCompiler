@@ -8,4 +8,8 @@ Get Changes from Github:
 
 git pull
 
+<<<<<<< HEAD
 samuel
+=======
+lol
+>>>>>>> c5d77060e709df94ed3f266dc5a8010362c5af0c
