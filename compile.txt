@@ -1,0 +1,4 @@
+cd src/
+flex scanner.l
+bison -d -b parser parser.y
+gcc parser.tab.c lex.yy.c -lfl -lm -o bin32
