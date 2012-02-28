@@ -241,7 +241,7 @@ expression
      | expression LSEQ expression 
      | expression GTEQ expression 
      | expression GT expression
-     | expression PLUS expression {printf("= %d + %d",$1,$2);}
+     | expression PLUS expression
      | expression MINUS expression
      | expression MUL expression
      | expression DIV expression 
