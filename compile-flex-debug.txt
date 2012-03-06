@@ -1,0 +1,3 @@
+cd src/
+flex -d scanner.l
+gcc lex.yy.c -lfl -lm -o flex-debug-bin32
