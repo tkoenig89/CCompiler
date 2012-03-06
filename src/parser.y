@@ -280,3 +280,8 @@ function_call_parameters
 void yyerror (const char *msg)
 {
 }
+
+int main(int argc, char **argv){
+	yyparse();
+	return 0;
+}
