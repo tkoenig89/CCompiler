@@ -4,3 +4,7 @@ src/lex.yy.c
 src/parser.tab.c
 src/parser.tab.h
 src/flex-debug-bin32
+bin/
+docs/
+doxygen/
+test/
