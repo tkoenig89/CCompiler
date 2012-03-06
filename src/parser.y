@@ -285,6 +285,26 @@ function_call_parameters
      ;
 
 %%
+typedef struct function {
+    char *name;
+    char *rettype;
+    int pcount; /*parameter count for functions */
+    variable *vars;
+    char *zwischencode;
+    
+    struct symbol *prev; /* needed for a doubly-linked list only */
+    struct symbol *next; /* needed for singly- or doubly-linked lists */
+} function;
+
+typedef struct variable {
+    char *name;
+    char *type;
+    unsigned byte size; 
+    int offset;
+    
+    struct symbol *prev; /* needed for a doubly-linked list only */
+    struct symbol *next; /* needed for singly- or doubly-linked lists */
+} variable;
 
 void yyerror (const char *msg)
 {
