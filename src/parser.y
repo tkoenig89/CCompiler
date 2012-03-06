@@ -1,8 +1,9 @@
 /* 
  * parser.y - Parser utility for the DHBW compiler
  */
- 
+
 %{
+ #include "utlist.h"
 %}
  
 %debug
@@ -30,12 +31,17 @@
 %token NUM
 %token COM
 
+%token SHIFT_LEFT SHIFT_RIGHT
+
+
 /* TODO: add associativity and precedence so that the 256 shift-reduce vanish */
 /*%token ASSIGN
 %token LOGICAL_OR LOGICAL_NOT LOGICAL_AND 
 %token EQ NE LS LSEQ GTEQ GT
 %token PLUS MINUS MUL DIV MOD
 %token NOT UNARY_MINUS UNARY_PLUS
+
+
 %token BRACKET_OPEN BRACKET_CLOSE PARA_OPEN PARA_CLOSE */
 
 %right ASSIGN                           /* The assign operator '='. */
@@ -43,6 +49,7 @@
 %left LOGICAL_AND                       /* The logical AND operator '&&'. */
 %left EQ NE                                     /* Equality '==' and inequality '!=' comparison operators. */
 %left LS LSEQ GTEQ GT           /* Comparing operators for less '<', less or equal '<=', greater or equal '>=' and greater '>'. */
+%left SHIFT_LEFT SHIFT_RIGHT
 %left PLUS MINUS                        /* Arithmetic operations: addition '+' and subtraction '-'. */
 %left MUL DIV MOD          /* Arithmetic operations (higher precedence than addition and subtraction): multiplication '*',
                                                          * division '-' and remainder (modulo) '%'. */
@@ -85,6 +92,7 @@ program_element
      : declaration SEMICOLON
      | function_definition
      | SEMICOLON
+     | primary
      ;
 									
 /* 
@@ -254,8 +262,9 @@ expression
      ;
 
 primary
-     : NUM
-     | ID
+     : NUM {printf("num ");}
+     | ID {printf("id ");}
+     | COM {printf("comment ");}
      ;
 
 /*
