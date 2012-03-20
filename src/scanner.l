@@ -4,6 +4,9 @@
 
 %{
 	#include "parser.tab.h"
+	#include <stdio.h>
+	#include <string.h>
+	
 %}
 
 /* 
@@ -64,9 +67,13 @@ while { return WHILE; }
 \[ { return BRACKET_OPEN; }
 \] { return BRACKET_CLOSE; }
 
-{identifier} { return ID; }
-{number} { return NUM; }
-{comment} {return COM;}
+{identifier} { yylval.id = strdup(yytext);
+	return ID;
+	}
+{number} { yylval.num = atoi(yytext);
+	return NUM;
+	}
+{comment} 
 							
 <<EOF>>		{ return 0; }
 

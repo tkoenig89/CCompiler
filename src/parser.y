@@ -3,9 +3,13 @@
  */
 
 %{
- #include "utlist.h"
+ #include "include/utlist.h" 
 %}
  
+%union{
+	 int num;
+	 char *id;
+}
 %debug
 %locations
 %start program
@@ -21,18 +25,17 @@
 
 %token DO WHILE
 %token IF ELSE
-%token INT VOID
+%token <id>INT <id>VOID
 %token RETURN
 %token COLON COMMA SEMICOLON
 %token BRACE_OPEN BRACE_CLOSE
 %token END_OF_FILE
 
-%token ID
-%token NUM
-%token COM
+%token <id>ID
+%token <num>NUM
 
 %token SHIFT_LEFT SHIFT_RIGHT
-
+ 
 
 /* TODO: add associativity and precedence so that the 256 shift-reduce vanish */
 /*%token ASSIGN
@@ -60,7 +63,10 @@
       PARA_OPEN 
       PARA_CLOSE
 
-
+%type <id> type
+%type <id>declaration
+%type <id>declaration_element
+%type <id>identifier_declaration
 %%
 
 /* 
@@ -100,8 +106,8 @@ program_element
  * instruction.
 */
 type
-     : INT
-     | VOID
+     : INT {$$ = "int";}
+     | VOID {$$ = "void";}
      ;
 
 /* 
@@ -122,7 +128,7 @@ declaration
  * prototype or the declaration of an identifier.
  */
 declaration_element
-     : identifier_declaration
+     : identifier_declaration {$$=$1;}
      | function_header
      ;
 
@@ -131,8 +137,8 @@ declaration_element
  * the type definition like arrays, pointers and initial (default) values.
  */									
 identifier_declaration
-     : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE
-     | ID
+     : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE /*{TODO ARRAY}*/
+     | ID {$$=$1;}
      ;
 
 /*
@@ -262,9 +268,8 @@ expression
      ;
 
 primary
-     : NUM {printf("num ");}
-     | ID {printf("id ");}
-     | COM {printf("comment ");}
+     : NUM 
+     | ID
      ;
 
 /*
@@ -285,32 +290,13 @@ function_call_parameters
      ;
 
 %%
-typedef struct function {
-    char *name;
-    char *rettype;
-    int pcount; /*parameter count for functions */
-    variable *vars;
-    char *zwischencode;
-    
-    struct symbol *prev; /* needed for a doubly-linked list only */
-    struct symbol *next; /* needed for singly- or doubly-linked lists */
-} function;
 
-typedef struct variable {
-    char *name;
-    char *type;
-    unsigned byte size; 
-    int offset;
-    
-    struct symbol *prev; /* needed for a doubly-linked list only */
-    struct symbol *next; /* needed for singly- or doubly-linked lists */
-} variable;
 
 void yyerror (const char *msg)
 {
 }
 
-int main(int argc, char **argv){
+/*int main(int argc, char **argv){
 	yyparse();
 	return 0;
-}
+}*/
