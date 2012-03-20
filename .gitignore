@@ -1,5 +1,5 @@
 #Ignore generated source files
-bin/*
+
 test/
 doxygen/
 src/bin32
