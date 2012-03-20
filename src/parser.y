@@ -69,8 +69,8 @@
 
 %type <tptr> type
 %type <tptr> declaration
-%type <id> declaration_element
-%type <id> identifier_declaration
+%type <tptr> declaration_element
+%type <tptr> identifier_declaration
 %type <tptr> expression
 %%
 
@@ -93,6 +93,7 @@ program
 program_element_list
      : program_element_list program_element 
      | program_element
+     | error '\n' {printf("ERROR")} //error and yyerrok[sic] are predefined keywords. This simply means we recover from any error in the program_element (pretty basic)
      ;
 
 /*
@@ -100,11 +101,10 @@ program_element_list
  * function prototypes and type definitions for the basic version of the compiler. 
  */									
 program_element
-     : declaration SEMICOLON {printf("d;")}
-     | function_definition {printf("f_D")}
-     | SEMICOLON {printf(" ;")}
-     | primary {printf("p")}
-     | error '\n' { printf("error");yyerrok; } //error and yyerrok[sic] are predefined keywords. This simply means we recover from any error in the program_element (pretty basic)
+     : declaration SEMICOLON
+     | function_definition
+     | SEMICOLON
+     | primary    
      ;
 									
 /* 
@@ -112,8 +112,8 @@ program_element
  * instruction.
 */
 type
-     : INT {$$->type = 1}
-     | VOID {$$->type = 0}
+     : INT
+     | VOID
      ;
 
 /* 
@@ -124,8 +124,8 @@ type
  * stack-attribute to the 'identifier_declaration'.
 */						
 declaration
-     : declaration COMMA declaration_element 
-     | type declaration_element /*{$$->type = $1->type}*/
+     : declaration COMMA declaration_element //{$1 = putsym()}
+     | type declaration_element {printf("VALUE: %d",$2->type)}
      ;
 
 /*
@@ -134,7 +134,7 @@ declaration
  * prototype or the declaration of an identifier.
  */
 declaration_element
-     : identifier_declaration /*{$$=$1;}*/
+     : identifier_declaration {printf("VALUE: %d",$1->type)}
      | function_header
      ;
 
@@ -144,7 +144,7 @@ declaration_element
  */									
 identifier_declaration
      : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE /*{TODO ARRAY}*/
-     | ID /*{$$=$1;}*/
+     | ID {printf("ID_DEC: %s", $1);$$ = putsym($1, 0)}
      ;
 
 /*
@@ -213,7 +213,7 @@ stmt_list
  */									
 stmt
      : stmt_block
-     | declaration SEMICOLON		{printf("d;")}
+     | declaration SEMICOLON
      | expression SEMICOLON
      | stmt_conditional
      | stmt_loop
@@ -275,7 +275,7 @@ expression
 
 primary
      : NUM 
-     | ID
+     | ID {printf("PRIMARY: %s", $1)}
      ;
 
 /*

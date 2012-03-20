@@ -257,6 +257,7 @@ int main (int argc, char *argv[]) {
 init_table();
   /* the resource manager must be initialized before any 
    * further actions are implemented */
+
 yyparse();
 return 0;
   /*

@@ -18,6 +18,7 @@ symrec *putsym (char const *sym_name, int sym_type)
 	ptr->value.var = 0; /* Set value to 0 even if fctn. */
 	ptr->next = (struct symrec *)sym_table;
 	sym_table = ptr;
+	printf("Symbol ->%s<- was put in the table", sym_name);
 	return ptr;
 }
 
