@@ -297,6 +297,9 @@ function_call_parameters
 
 void yyerror (const char *msg)
 {
+	/* Is called every time the parser encouters an error.
+	** on a major error, yyerror will "return 0;", otherwise
+	*/ it will continue
 }
 
 /*int main(int argc, char **argv){
