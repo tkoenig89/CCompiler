@@ -63,10 +63,10 @@
       PARA_OPEN 
       PARA_CLOSE
 
-%type <id> type
+/*%type <id> type
 %type <id>declaration
 %type <id>declaration_element
-%type <id>identifier_declaration
+%type <id>identifier_declaration*/
 %%
 
 /* 
@@ -106,8 +106,8 @@ program_element
  * instruction.
 */
 type
-     : INT {$$ = "int";}
-     | VOID {$$ = "void";}
+     : INT /*{$$ = "int";}*/
+     | VOID /*{$$ = "void";}*/
      ;
 
 /* 
@@ -128,7 +128,7 @@ declaration
  * prototype or the declaration of an identifier.
  */
 declaration_element
-     : identifier_declaration {$$=$1;}
+     : identifier_declaration /*{$$=$1;}*/
      | function_header
      ;
 
@@ -138,7 +138,7 @@ declaration_element
  */									
 identifier_declaration
      : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE /*{TODO ARRAY}*/
-     | ID {$$=$1;}
+     | ID /*{$$=$1;}*/
      ;
 
 /*
