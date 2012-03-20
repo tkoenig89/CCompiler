@@ -3,6 +3,5 @@ bin/*
 test/
 doxygen/
 src/bin32
-src/src/parser.tab.c
+src/parser.tab.c
 src/parser.tab.h
-src/parser.y

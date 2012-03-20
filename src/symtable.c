@@ -3,7 +3,7 @@
 
 symrec *sym_table;
 
-void init_table (void)
+void init_table ()
 {
 	printf("Hello World from symbol table.\n");
 }
