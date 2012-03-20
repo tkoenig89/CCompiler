@@ -23,8 +23,9 @@ typedef struct symrec symrec;
 extern symrec *sym_table;
 
 //Function prototypes
-symrec *putsym (char const *, int);
+symrec *putsym (char const *sym_name, int sym_val, int sym_type);
 symrec *getsym (char const *);
+int exists_sym (char const *);
 void init_table ();
 
 #endif

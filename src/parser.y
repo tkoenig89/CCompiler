@@ -6,6 +6,8 @@
 	#include "include/utlist.h" 
 	#include "symtable.h"
 	#include <stdio.h>	
+
+	void yyerror (char const *);
 %}
  
 %union{
@@ -72,6 +74,7 @@
 %type <tptr> declaration_element
 %type <tptr> identifier_declaration
 %type <tptr> expression
+%type <tptr> primary
 %%
 
 /* 
@@ -93,7 +96,6 @@ program
 program_element_list
      : program_element_list program_element 
      | program_element
-     | error '\n' {printf("ERROR")} //error and yyerrok[sic] are predefined keywords. This simply means we recover from any error in the program_element (pretty basic)
      ;
 
 /*
@@ -102,9 +104,10 @@ program_element_list
  */									
 program_element
      : declaration SEMICOLON
+     | expression SEMICOLON
      | function_definition
      | SEMICOLON
-     | primary    
+     //| primary    
      ;
 									
 /* 
@@ -124,8 +127,8 @@ type
  * stack-attribute to the 'identifier_declaration'.
 */						
 declaration
-     : declaration COMMA declaration_element //{$1 = putsym()}
-     | type declaration_element {printf("VALUE: %d",$2->type)}
+     : declaration COMMA declaration_element
+     | type declaration_element {printf("VALUE: %d\n",$2->type)}
      ;
 
 /*
@@ -134,7 +137,7 @@ declaration
  * prototype or the declaration of an identifier.
  */
 declaration_element
-     : identifier_declaration {printf("VALUE: %d",$1->type)}
+     : identifier_declaration //{printf("VALUE: %d",$1->type)}
      | function_header
      ;
 
@@ -144,7 +147,7 @@ declaration_element
  */									
 identifier_declaration
      : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE /*{TODO ARRAY}*/
-     | ID {printf("ID_DEC: %s", $1);$$ = putsym($1, 0)}
+     | ID {printf("ID_DEC: %s", $1);$$ = putsym($1, 0, 0)}
      ;
 
 /*
@@ -251,7 +254,7 @@ stmt_loop
  * assignment operators.expression
  */									
 expression
-     : expression ASSIGN expression		/*{$1->value.var = $3->value.var}*/
+     : expression ASSIGN expression		{$1->value.var = $3->value.var;printf("THE VAR %s was assigned to %s and value %d", $1->name, $3->name, $3->value.var)}
      | expression LOGICAL_OR expression
      | expression LOGICAL_AND expression
      | LOGICAL_NOT expression
@@ -274,8 +277,18 @@ expression
      ;
 
 primary
-     : NUM 
-     | ID {printf("PRIMARY: %s", $1)}
+     : NUM {$$ = putsym("NUMBER", $1, 0)}
+     | ID {	//printf("test %s",$1);
+		if(exists_sym($1)) {
+			//printf("true");
+			$$ = getsym($1);
+			//printf("test22");	
+		} else {
+			//printf("false");
+			//$$ = putsym($1, 0);
+			//yyerror("Undeclared Variable! You suck at C! Go die.");
+		}	
+	  }
      ;
 
 /*
@@ -300,10 +313,7 @@ function_call_parameters
 
 void yyerror (const char *msg)
 {
-	/* Is called every time the parser encouters an error.
-	** on a major error, yyerror will "return 0;", otherwise
-	* it will continue
-	*/
+	printf("ERROR: %s\n", msg);
 }
 
 /*int main(int argc, char **argv){
