@@ -4,7 +4,6 @@
 
 %{
 	#include "include/utlist.h" 
-	int yylex (void);
 	void yyerror (char const *);
 %}
  
