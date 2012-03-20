@@ -1,0 +1,11 @@
+Add Changes to Github:
+
+git add . -A
+git commit -m 'I just added something to github'
+git push origin master
+// bei gleichzeitiger Bearbeitung- Fehler
+git pull und danach git merge
+
+Get Changes from Github:
+
+git pull

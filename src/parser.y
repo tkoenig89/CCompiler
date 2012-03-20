@@ -9,6 +9,8 @@
 %union{
 	 int num;
 	 char *id;
+	 
+	 /*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN...*/ %type ...
 }
 %debug
 %locations
