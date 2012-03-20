@@ -4,13 +4,14 @@
 
 %{
 	#include "include/utlist.h" 
-	void yyerror (char const *);
+	#include "symtable.h"
+	#include <stdio.h>	
 %}
  
 %union{
 	 int num;
 	 char *id;
-	 
+	 struct symrec *tptr;
 	 /*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
 }
 %debug
@@ -66,10 +67,11 @@
       PARA_OPEN 
       PARA_CLOSE
 
-/*%type <id> type
-%type <id>declaration
-%type <id>declaration_element
-%type <id>identifier_declaration*/
+%type <tptr> type
+%type <tptr> declaration
+%type <id> declaration_element
+%type <id> identifier_declaration
+%type <tptr> expression
 %%
 
 /* 
@@ -98,11 +100,11 @@ program_element_list
  * function prototypes and type definitions for the basic version of the compiler. 
  */									
 program_element
-     : declaration SEMICOLON
-     | function_definition
-     | SEMICOLON
-     | primary
-     | error { yyerrok; } //error and yyerrok[sic] are predefined keywords. This simply means we recover from any error in the program_element (pretty basic)
+     : declaration SEMICOLON {printf("d;")}
+     | function_definition {printf("f_D")}
+     | SEMICOLON {printf(" ;")}
+     | primary {printf("p")}
+     | error '\n' { printf("error");yyerrok; } //error and yyerrok[sic] are predefined keywords. This simply means we recover from any error in the program_element (pretty basic)
      ;
 									
 /* 
@@ -110,8 +112,8 @@ program_element
  * instruction.
 */
 type
-     : INT /*{$$ = "int";}*/
-     | VOID /*{$$ = "void";}*/
+     : INT {$$->type = 1}
+     | VOID {$$->type = 0}
      ;
 
 /* 
@@ -122,8 +124,8 @@ type
  * stack-attribute to the 'identifier_declaration'.
 */						
 declaration
-     : declaration COMMA declaration_element
-     | type declaration_element
+     : declaration COMMA declaration_element 
+     | type declaration_element /*{$$->type = $1->type}*/
      ;
 
 /*
@@ -211,7 +213,7 @@ stmt_list
  */									
 stmt
      : stmt_block
-     | declaration SEMICOLON
+     | declaration SEMICOLON		{printf("d;")}
      | expression SEMICOLON
      | stmt_conditional
      | stmt_loop
@@ -249,7 +251,7 @@ stmt_loop
  * assignment operators.expression
  */									
 expression
-     : expression ASSIGN expression
+     : expression ASSIGN expression		/*{$1->value.var = $3->value.var}*/
      | expression LOGICAL_OR expression
      | expression LOGICAL_AND expression
      | LOGICAL_NOT expression
@@ -259,9 +261,9 @@ expression
      | expression LSEQ expression 
      | expression GTEQ expression 
      | expression GT expression
-     | expression PLUS expression
-     | expression MINUS expression
-     | expression MUL expression
+     | expression PLUS expression		{$$ = $1->value.var + $3->value.var}
+     | expression MINUS expression		{$$ = $1->value.var - $3->value.var}
+     | expression MUL expression		{$$ = $1->value.var * $3->value.var}
      | expression DIV expression 
      | expression MOD expression 
      | MINUS expression %prec UNARY_MINUS

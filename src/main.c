@@ -6,6 +6,8 @@
 #include <unistd.h>
 
 #include "main.h"
+#include "resource_manager.h"
+#include "diag.h"
 
 /* Constants */
 static const char *C_EXT = ".c";
@@ -252,8 +254,12 @@ int process_options (int argc, char *argv[]) {
  * \param argv The input parameters.
  */
 int main (int argc, char *argv[]) {
+init_table();
   /* the resource manager must be initialized before any 
    * further actions are implemented */
+yyparse();
+return 0;
+  /*
   rm_init(&resource_mgr);
 
   if (process_options(argc, argv) == 1) {
@@ -266,6 +272,6 @@ int main (int argc, char *argv[]) {
   printf("IR: %s\n", cc_options.ir_file);
 
   rm_cleanup_resources(&resource_mgr);
-  return 0;
+  return 0;*/
 }
 
