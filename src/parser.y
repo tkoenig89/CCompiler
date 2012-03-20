@@ -3,7 +3,9 @@
  */
 
 %{
- #include "include/utlist.h" 
+	#include "include/utlist.h" 
+	int yylex (void);
+	void yyerror (char const *);
 %}
  
 %union{
