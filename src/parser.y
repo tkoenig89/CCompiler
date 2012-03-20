@@ -102,6 +102,7 @@ program_element
      | function_definition
      | SEMICOLON
      | primary
+     | error { yyerrok; } //error and yyerrok[sic] are predefined keywords. This simply means we recover from any error in the program_element (pretty basic)
      ;
 									
 /* 
@@ -299,7 +300,8 @@ void yyerror (const char *msg)
 {
 	/* Is called every time the parser encouters an error.
 	** on a major error, yyerror will "return 0;", otherwise
-	*/ it will continue
+	* it will continue
+	*/
 }
 
 /*int main(int argc, char **argv){
