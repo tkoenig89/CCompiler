@@ -153,11 +153,13 @@ typedef union YYSTYPE
 
 	 int num;
 	 char *id;
+	 
+	 /*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
 
 
 
 /* Line 214 of yacc.c  */
-#line 161 "parser.tab.c"
+#line 163 "parser.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -182,7 +184,7 @@ typedef struct YYLTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 186 "parser.tab.c"
+#line 188 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -496,13 +498,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    79,    79,    88,    89,    97,    98,    99,   100,   108,
-     109,   120,   121,   130,   131,   139,   140,   147,   157,   166,
-     167,   174,   182,   183,   191,   198,   200,   208,   209,   210,
-     211,   212,   213,   214,   215,   222,   230,   231,   238,   239,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     270,   271,   278,   279,   287,   288
+       0,    82,    82,    91,    92,   100,   101,   102,   103,   111,
+     112,   123,   124,   133,   134,   142,   143,   150,   160,   169,
+     170,   177,   185,   186,   194,   201,   203,   211,   212,   213,
+     214,   215,   216,   217,   218,   225,   233,   234,   241,   242,
+     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
+     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
+     273,   274,   281,   282,   290,   291
 };
 #endif
 
@@ -1562,7 +1564,7 @@ yyreduce:
       
 
 /* Line 1455 of yacc.c  */
-#line 1566 "parser.tab.c"
+#line 1568 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1781,7 +1783,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 291 "parser.y"
+#line 294 "parser.y"
 
 
 
@@ -1789,7 +1791,7 @@ void yyerror (const char *msg)
 {
 }
 
-int main(int argc, char **argv){
+/*int main(int argc, char **argv){
 	yyparse();
 	return 0;
-}
+}*/
