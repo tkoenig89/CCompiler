@@ -150,7 +150,13 @@ declaration_element
  */									
 identifier_declaration
      : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE /*{TODO ARRAY}*/
-     | ID {$$ = putInt ($1, 0, 0, NULL /*TODO: scope for functions*/);} //{printf("ID_DEC: %s", $1);$$ = putsym($1, 0, 0)}
+     | ID {	if(existsInt($1, NULL)) {
+			printf("ERROR! The variable %s was already declared.\n", $1);
+			$$ = getInt($1, NULL);
+		} else {
+			$$ = putInt ($1, 0, 0, NULL /*TODO: scope for functions*/);
+		}
+	     }
      ;
 
 /*
@@ -286,7 +292,7 @@ primary
 		} else {
 			printf("ERROR! The variable %s was not declared.\n", $1);
 			yyerror("syntax error");
-		}	
+		}
 	  }
      ;
 
@@ -313,6 +319,7 @@ function_call_parameters
 void yyerror (const char *msg)
 {
 	printf("ERROR: %s\n", msg);
+	return 0;
 }
 
 /*int main(int argc, char **argv){

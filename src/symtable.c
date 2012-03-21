@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//symrec *sym_table;
 struct symInt 		*symIntTable;
 struct symFunc 	*symFuncTable;
 
