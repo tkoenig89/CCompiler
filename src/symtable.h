@@ -36,6 +36,8 @@ struct symFunc *next;
 struct symInt *putInt (char const *name, int isArray, int val, void *scope);
 struct symInt *getInt (char const * name, void *scope);
 int existsInt (char const * name, void *scope);
+void deleteInt (char const * name, void *scope);
+
 void init_table ();
 
 #endif

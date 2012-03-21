@@ -83,9 +83,26 @@ int existsInt (char const * name, void *scope)
 {
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if (strcmp (ptr->name,name) == 0) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == scope)) {
 			return 1;
 		}
 	}	
 	return 0;
+}
+
+void deleteInt (char const * name, void *scope)
+{
+	struct symInt *ptr;
+	struct symInt *ptr_back;
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == scope)) {
+			if(ptr == symIntTable) {
+				symIntTable = ptr->next;
+			} else {
+				ptr_back->next = ptr->next;
+			}
+			free(ptr);
+		}
+		ptr_back = ptr;
+	};
 }

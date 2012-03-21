@@ -183,7 +183,7 @@ function_prefix
  * The non-terminal 'function_signature' initializes the function signature definition
  */ 									
 function_signature
-     : identifier_declaration PARA_OPEN
+     : identifier_declaration PARA_OPEN {printf("%s was deleted as a var, because it is a function", $1->name);deleteInt ($1->name, $1->scope);/*TODO: reserve a function*/}
      ;
 
 /*
