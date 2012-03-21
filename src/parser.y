@@ -72,11 +72,13 @@
       PARA_CLOSE
 
 //%type <tptr> type
-//%type <tptr> declaration
-//%type <tptr> declaration_element
+%type <sFunc> stmt_list
+%type <sFunc> stmt
 %type <sFunc> function_signature
 %type <sInt> identifier_declaration
 %type <sInt> expression
+%type <sInt> declaration
+%type <sInt> declaration_element
 %type <sInt> primary
 %%
 
@@ -201,7 +203,7 @@ function_signature_parameters
      : function_signature_parameters COMMA function_parameter_element
      | function_signature function_parameter_element
      ;
-	
+
 /*
  * The non-terminal 'function_parameter_element' is used within the non-terminal 'function_definition_parameters'
  * and contains the declaration for ONE parameter.
@@ -209,7 +211,7 @@ function_signature_parameters
 function_parameter_element
      : type identifier_declaration
      ;
-									
+
 /*
  * The non-terminal 'stmt_list' is list of statements containing any number (including zero) of statements represented 
  * by the non-terminal 'stmt'.

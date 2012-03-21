@@ -1,0 +1,7 @@
+c99 does not have a direct 'bool'-type. However it recognices the following:
+	0 	is false;
+	nonzero is true;
+
+when dealing with constants (numbers, booleans) use the following convention:
+	putInt ("int", 0, $1, NULL)
+	putInt ("boolean", 0, 1, NULL)
