@@ -18,7 +18,7 @@ struct symInt
 struct symFunc
 {
 	char *name;
-	int isRetInt;
+	int isVoid;
 	union
 	{
 		int paramCount;
@@ -27,16 +27,15 @@ struct symFunc
 struct symFunc *next;
 };
 
-//typedef struct symrec symrec;
-
-/* The symbol table: a chain of struct symrec. */
-//extern symInt *symIntTable;
-
 //Function prototypes
 struct symInt *putInt (char const *name, int isArray, int val, void *scope);
 struct symInt *getInt (char const * name, void *scope);
 int existsInt (char const * name, void *scope);
 void deleteInt (char const * name, void *scope);
+
+struct symFunc *putFunc (char const *name, int isVoid);
+struct symFunc *getFunc (char const *name);
+void addParam (struct symInt *sInt);
 
 void init_table ();
 
