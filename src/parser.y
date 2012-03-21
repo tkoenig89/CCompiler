@@ -74,6 +74,7 @@
 //%type <tptr> type
 //%type <tptr> declaration
 //%type <tptr> declaration_element
+%type <sFunc> function_signature
 %type <sInt> identifier_declaration
 %type <sInt> expression
 %type <sInt> primary
@@ -183,7 +184,7 @@ function_prefix
  * The non-terminal 'function_signature' initializes the function signature definition
  */ 									
 function_signature
-     : identifier_declaration PARA_OPEN {printf("%s was deleted as a var, because it is a function", $1->name);deleteInt ($1->name, $1->scope);/*TODO: reserve a function*/}
+     : identifier_declaration PARA_OPEN {$$ = putFunc ($1->name, 1);deleteInt ($1->name, $1->scope)/*TODO: reserve a function*/}
      ;
 
 /*

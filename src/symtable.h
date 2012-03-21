@@ -22,12 +22,13 @@ struct symFunc
 	union
 	{
 		int paramCount;
-		struct symInt *params;
+		struct symInt *params; //Will be a dynamic array with realloc
 	} params;
 struct symFunc *next;
 };
 
 //Function prototypes
+
 struct symInt *putInt (char const *name, int isArray, int val, void *scope);
 struct symInt *getInt (char const * name, void *scope);
 int existsInt (char const * name, void *scope);
@@ -35,7 +36,8 @@ void deleteInt (char const * name, void *scope);
 
 struct symFunc *putFunc (char const *name, int isVoid);
 struct symFunc *getFunc (char const *name);
-void addParam (struct symInt *sInt);
+int existsFunc (char const *name);
+void addParam (char const *funcname, struct symInt *sInt);
 
 void init_table ();
 
