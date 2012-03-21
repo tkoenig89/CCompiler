@@ -1,31 +1,41 @@
 #ifndef _DHBWCC_SYMTABLE_H
 #define _DHBWCC_SYMTABLE_H
 
-/* Function type. */
-typedef double (*func_t) (double);
-
 //Very simple symbol table, GET IT ? :D simple symbol ... HARHAR
-struct symrec
+struct symInt
 {
-char *name;
-int type;
-union
-{
-  int var;
-  void* func;
-} value;
-struct symrec *next;
+	char *name;
+	int isArray;
+	void* scope;
+	union
+	{
+		int var;
+		struct symInt *nextElement;
+	} value;
+	struct symInt *next;
 };
 
-typedef struct symrec symrec;
+struct symFunc
+{
+	char *name;
+	int isRetInt;
+	union
+	{
+		int paramCount;
+		struct symInt *params;
+	} params;
+struct symFunc *next;
+};
 
-/* The symbol table: a chain of ‘struct symrec’. */
-extern symrec *sym_table;
+//typedef struct symrec symrec;
+
+/* The symbol table: a chain of struct symrec. */
+//extern symInt *symIntTable;
 
 //Function prototypes
-symrec *putsym (char const *sym_name, int sym_val, int sym_type);
-symrec *getsym (char const *);
-int exists_sym (char const *);
+struct symInt *putInt (char const *name, int isArray, int val, void *scope);
+struct symInt *getInt (char const * name, void *scope);
+int existsInt (char const * name, void *scope);
 void init_table ();
 
 #endif

@@ -13,7 +13,9 @@
 %union{
 	 int num;
 	 char *id;
-	 struct symrec *tptr;
+	 //struct symrec *tptr;
+	struct symInt *sInt;
+	struct symFunc *sFunc;
 	 /*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
 }
 %debug
@@ -69,12 +71,12 @@
       PARA_OPEN 
       PARA_CLOSE
 
-%type <tptr> type
-%type <tptr> declaration
-%type <tptr> declaration_element
-%type <tptr> identifier_declaration
-%type <tptr> expression
-%type <tptr> primary
+//%type <tptr> type
+//%type <tptr> declaration
+//%type <tptr> declaration_element
+%type <sInt> identifier_declaration
+%type <sInt> expression
+%type <sInt> primary
 %%
 
 /* 
@@ -128,7 +130,7 @@ type
 */						
 declaration
      : declaration COMMA declaration_element
-     | type declaration_element {printf("VALUE: %d\n",$2->type)}
+     | type declaration_element //{printf("VALUE: %d\n",$2->type)}
      ;
 
 /*
@@ -147,7 +149,7 @@ declaration_element
  */									
 identifier_declaration
      : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE /*{TODO ARRAY}*/
-     | ID {printf("ID_DEC: %s", $1);$$ = putsym($1, 0, 0)}
+     | ID {$$ = putInt ($1, 0, 0, NULL /*TODO: scope for functions*/);} //{printf("ID_DEC: %s", $1);$$ = putsym($1, 0, 0)}
      ;
 
 /*
@@ -254,7 +256,7 @@ stmt_loop
  * assignment operators.expression
  */									
 expression
-     : expression ASSIGN expression		{$1->value.var = $3->value.var;printf("THE VAR %s was assigned to %s and value %d", $1->name, $3->name, $3->value.var)}
+     : expression ASSIGN expression				{$1->value.var = $3->value.var; printf("THE VAR %s was assigned to %s and value %d", $1->name, $3->name, $3->value.var)}
      | expression LOGICAL_OR expression
      | expression LOGICAL_AND expression
      | LOGICAL_NOT expression
@@ -264,9 +266,9 @@ expression
      | expression LSEQ expression 
      | expression GTEQ expression 
      | expression GT expression
-     | expression PLUS expression		{$$ = $1->value.var + $3->value.var}
-     | expression MINUS expression		{$$ = $1->value.var - $3->value.var}
-     | expression MUL expression		{$$ = $1->value.var * $3->value.var}
+     | expression PLUS expression				{$$ = $1->value.var + $3->value.var}
+     | expression MINUS expression				{$$ = $1->value.var - $3->value.var}
+     | expression MUL expression				{$$ = $1->value.var * $3->value.var}
      | expression DIV expression 
      | expression MOD expression 
      | MINUS expression %prec UNARY_MINUS
@@ -277,16 +279,12 @@ expression
      ;
 
 primary
-     : NUM {$$ = putsym("NUMBER", $1, 0)}
-     | ID {	//printf("test %s",$1);
-		if(exists_sym($1)) {
-			//printf("true");
-			$$ = getsym($1);
-			//printf("test22");	
+     : NUM {$$ = putInt ("int", 0, $1, NULL)}
+     | ID {	if(existsInt($1, NULL)) {
+			$$ = getInt($1, NULL);
 		} else {
-			//printf("false");
-			//$$ = putsym($1, 0);
-			//yyerror("Undeclared Variable! You suck at C! Go die.");
+			printf("ERROR! The variable %s was not declared.\n", $1);
+			yyerror("syntax error");
 		}	
 	  }
      ;
@@ -304,9 +302,9 @@ function_call
  * by the non-terminal 'function_call'.
  */ 									
 function_call_parameters
-     : function_call_parameters COMMA expression
-     | ID PARA_OPEN expression
-     ;
+	: function_call_parameters COMMA expression
+	| ID PARA_OPEN expression
+	;
 
 %%
 
