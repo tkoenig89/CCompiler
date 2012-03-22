@@ -118,5 +118,5 @@ void addParam (char const *funcname, struct symInt *sInt)
 	struct symInt *parambuffer = (struct symInt*) realloc (ptr->params.params, ptr->params.paramCount * sizeof(struct symInt));
 	
 	ptr->params.params = parambuffer;
-	ptr->params.params[ptr->params.paramCount-1] = (*sInt);
+	ptr->params.params[ptr->params.paramCount-1] = sInt;
 }

@@ -22,7 +22,7 @@ struct symFunc
 	union
 	{
 		int paramCount;
-		struct symInt *params; //Will be a dynamic array with realloc
+		struct symInt **params; //Will be a dynamic array with realloc
 	} params;
 struct symFunc *next;
 };
