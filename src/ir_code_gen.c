@@ -1,8 +1,9 @@
 #include "ir_code_gen.h"
+#include "symtable.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-struct strCode 	*code;
+struct strCode  *code;
 
 int code_offset = 0;
 
@@ -28,6 +29,8 @@ void addcodeass(struct symInt *int0, struct symInt *int1)
 {
 	//int0 = int1
 	addcode(opASSIGN, int0, int1, NULL, NULL, NULL);
+	printf("Code offset: %d\n", code_offset);
+	printf("IR: ASSIGN %s = %s\n", code[code_offset-1].int0->name, code[code_offset-1].int1->name);
 }
 
 void addcodemin(struct symInt *int0, struct symInt *int1)

@@ -266,7 +266,7 @@ stmt_loop
  * assignment operators.expression
  */									
 expression
-     : expression ASSIGN expression				{addcodeass($1, $3);printf("IR: ASSIGN %s = %s", $1->name, $3->name)}
+     : expression ASSIGN expression				{addcodeass($1, $3);}
      | expression LOGICAL_OR expression
      | expression LOGICAL_AND expression
      | LOGICAL_NOT expression

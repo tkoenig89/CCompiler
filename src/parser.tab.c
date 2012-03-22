@@ -1600,7 +1600,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 269 "parser.y"
-    {addcodeass((yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));printf("IR: ASSIGN %s = %s", (yyvsp[(1) - (3)].sInt)->name, (yyvsp[(3) - (3)].sInt)->name);}
+    {addcodeass((yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 50:
