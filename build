@@ -1,0 +1,6 @@
+rm -rf bin/*
+cd src/
+flex scanner.l
+bison -d parser.y -t
+cd ..
+make

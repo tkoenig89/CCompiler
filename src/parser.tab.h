@@ -87,17 +87,19 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 11 "parser.y"
+#line 14 "parser.y"
 
 	 int num;
 	 char *id;
-	 
+	 //struct symrec *tptr;
+	struct symInt *sInt;
+	struct symFunc *sFunc;
 	 /*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
 
 
 
 /* Line 1676 of yacc.c  */
-#line 101 "parser.tab.h"
+#line 103 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

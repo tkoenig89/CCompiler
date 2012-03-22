@@ -5,6 +5,7 @@
 %{
 	#include "include/utlist.h" 
 	#include "symtable.h"
+	#include "ir_code_gen.h"
 	#include <stdio.h>	
 
 	void yyerror (char const *);
@@ -265,7 +266,7 @@ stmt_loop
  * assignment operators.expression
  */									
 expression
-     : expression ASSIGN expression				{$1->value.var = $3->value.var; printf("THE VAR %s was assigned to %s and value %d", $1->name, $3->name, $3->value.var)}
+     : expression ASSIGN expression				{addcodeass($1, $3);printf("IR: ASSIGN %s = %s", $1->name, $3->name)}
      | expression LOGICAL_OR expression
      | expression LOGICAL_AND expression
      | LOGICAL_NOT expression
@@ -292,8 +293,10 @@ primary
      | ID {	if(existsInt($1, NULL)) {
 			$$ = getInt($1, NULL);
 		} else {
-			printf("ERROR! The variable %s was not declared.\n", $1);
-			yyerror("syntax error");
+			printf("ERROR! The variable %s was not declared. Line: %d Column: %d \n", $1, @1.first_line, @1.first_column);
+			//We assume the variable should have been declared. so we declare it for the user...
+			$$ = putInt ($1, 0, 0, NULL /*TODO: scope for functions*/);
+			//yyerror("syntax error");
 		}
 	  }
      ;
