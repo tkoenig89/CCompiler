@@ -110,10 +110,10 @@ program_element_list
  */									
 program_element
      : declaration SEMICOLON
-     | expression SEMICOLON
+     //| expression SEMICOLON
      | function_definition
      | SEMICOLON
-     //| primary    
+     | primary    
      ;
 									
 /* 
@@ -241,7 +241,7 @@ stmt
  * A statement block is just a statement list within braces.
  */									
 stmt_block
-     : BRACE_OPEN stmt_list BRACE_CLOSE
+     : BRACE_OPEN stmt_list BRACE_CLOSE			{printf("{} found.\n");}
      ;
 	
 /*
@@ -249,8 +249,8 @@ stmt_block
  * produces a SHIFT/REDUCE error which is solved by the default behavior of bison (see above).
  */									
 stmt_conditional
-     : IF PARA_OPEN expression PARA_CLOSE stmt
-     | IF PARA_OPEN expression PARA_CLOSE stmt ELSE stmt
+     : IF PARA_OPEN expression PARA_CLOSE stmt			
+     | IF PARA_OPEN expression PARA_CLOSE stmt ELSE stmt	
      ;
 									
 /*
@@ -265,27 +265,27 @@ stmt_loop
  * The non-terminal 'expression' is one of the core statements containing all arithmetic, logical, comparison and
  * assignment operators.expression
  */									
-expression
+expression								// 0 = "false", nonzero = "true"
      : expression ASSIGN expression				{addcodeass($1, $3);}
-     | expression LOGICAL_OR expression
-     | expression LOGICAL_AND expression
-     | LOGICAL_NOT expression
-     | expression EQ expression
-     | expression NE expression
-     | expression LS expression 
-     | expression LSEQ expression 
-     | expression GTEQ expression 
-     | expression GT expression
-     | expression PLUS expression				{$$ = addcodeop(opADD, $1, $3);}
-     | expression MINUS expression				{$$ = addcodeop(opSUB, $1, $3);}
-     | expression MUL expression				{$$ = addcodeop(opMUL, $1, $3);}
-     | expression DIV expression 					{$$ = addcodeop(opDIV, $1, $3);}
-     | expression MOD expression 
-     | MINUS expression %prec UNARY_MINUS		{addcodemin($$, $2);}
-     | ID BRACKET_OPEN primary BRACKET_CLOSE
+     | expression LOGICAL_OR expression			{$$ = addcodeopexp2(opLOGICAL_OR, $1, $3);}
+     | expression LOGICAL_AND expression			{$$ = addcodeopexp2(opLOGICAL_AND, $1, $3);}
+     | LOGICAL_NOT expression					{$$ = addcodeopexp1(opLOGICAL_NOT, $2);}
+     | expression EQ expression					{$$ = addcodeopexp2(opEQ, $1, $3);}
+     | expression NE expression					{$$ = addcodeopexp2(opNE, $1, $3);}
+     | expression LS expression 					{$$ = addcodeopexp2(opLS, $1, $3);}
+     | expression LSEQ expression 				{$$ = addcodeopexp2(opLSEQ, $1, $3);}
+     | expression GTEQ expression 				{$$ = addcodeopexp2(opGTEQ, $1, $3);}
+     | expression GT expression					{$$ = addcodeopexp2(opGT, $1, $3);}
+     | expression PLUS expression				{$$ = addcodeopexp2(opADD, $1, $3);}
+     | expression MINUS expression				{$$ = addcodeopexp2(opSUB, $1, $3);}
+     | expression MUL expression				{$$ = addcodeopexp2(opMUL, $1, $3);}
+     | expression DIV expression 					{$$ = addcodeopexp2(opDIV, $1, $3);}
+     | expression MOD expression 				{$$ = addcodeopexp2(opMOD, $1, $3);}
+     | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
+     | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeopexp2(opMEM_LD, $1, $3);}
      | PARA_OPEN expression PARA_CLOSE
      | function_call PARA_CLOSE
-     | primary
+     | primary								{$$ = $1}
      ;
 
 primary

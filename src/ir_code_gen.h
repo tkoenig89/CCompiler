@@ -5,10 +5,16 @@
 **/	
 
 //enum for 3-adress code representation:
-enum code_ops {
-	opASSIGN, opADD, opSUB, opMUL, opDIV, opMINUS,
-	opIFEQ, opIFNE, opIFGT, opIFGE, opIFLT, opIFLE, opGOTO,
-	opRETURN, opCALL, opMEM_LD, opMEM_ST, opADDR};
+enum code_ops 
+{
+	opASSIGN, opADD, opSUB, opMUL, opDIV, opMINUS, opMOD, opSHIFT_LEFT, opSHIFT_RIGHT,	
+	
+	opLOGICAL_AND, opLOGICAL_OR, opLOGICAL_NOT, opNE, opEQ, opGT, opGTEQ, opLS, opLSEQ,
+	
+	/*opIFEQ, opIFNE, opIFGT, opIFGE, opIFLT, opIFLE,*/opIF, opGOTO,
+	
+	opRETURN, opCALL, opMEM_LD, opMEM_ST, opADDR
+};
 
 struct strCode
 {
@@ -21,8 +27,8 @@ struct strCode
 };
 
 void addcodeass(struct symInt *int0, struct symInt *int1);
-void addcodemin(struct symInt *int0, struct symInt *int1);
-struct symInt *addcodeop(enum code_ops operation, struct symInt *int1, struct symInt *int2);
+struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1);
+struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2);
 void printcode();
 
 #endif

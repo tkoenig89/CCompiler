@@ -8,6 +8,21 @@ struct strCode  *code;
 int code_offset = 0;
 int temp_reg_count = -1;
 
+struct symInt *irtempInt() 
+{
+	temp_reg_count += 1;
+	//if temp_reg_count > 21 then ERROR, no space left for any more temp registers
+	//we have to work around and put them into memory
+	char buffer [5];
+	sprintf (buffer, ".t%d", temp_reg_count);
+	
+	struct symInt *ptr;
+	ptr = tempInt (buffer);
+	ptr->isArray = temp_reg_count;
+	
+	return ptr;
+}
+
 /* Generates code at current location */
 void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, struct symInt *int2, struct symFunc *func, const char *jmplabel)
 {
@@ -35,23 +50,31 @@ void addcodeass(struct symInt *int0, struct symInt *int1)
 	
 	temp_reg_count = 0;
 }
-
-void addcodemin(struct symInt *int0, struct symInt *int1)
+/*
+struct symInt *addcodemin(struct symInt *int1)
 {
-	//int0 = -int1
-	addcode(opMINUS, int0, int1, NULL, NULL, NULL);
+	struct symInt *ptr = irtempInt();
+	
+	addcode(opMINUS, ptr, int1, NULL, NULL, NULL);
+	printf("IR: MINUS %s = - %s\n", ptr->name, int1->name);
+	
+	return ptr;
+}*/
+
+struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
+{
+	struct symInt *ptr = irtempInt();
+
+	addcode(operation, ptr, int1, NULL, NULL, NULL);
+	printf("IR: %d %s = op %s\n", operation, ptr->name, int1->name);
+	
+	return ptr;
 }
 
-struct symInt *addcodeop(enum code_ops operation, struct symInt *int1, struct symInt *int2)
+struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2)
 {
-	temp_reg_count += 1;
-	char buffer [5];
-	sprintf (buffer, ".t%d", temp_reg_count);
-	
-	struct symInt *ptr;
-	ptr = tempInt (buffer);
-	
-	//int0 = int1 +*/- int2
+	struct symInt *ptr = irtempInt();
+
 	addcode(operation, ptr, int1, int2, NULL, NULL);
 	printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
 	

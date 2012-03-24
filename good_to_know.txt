@@ -8,3 +8,13 @@ when dealing with constants (numbers, booleans) use the following convention:
 
 execute 'build' to build the project:
 	./build
+
+when entering stuff in the compiler be sure to put everything into a function, except the declaration of global variables, e.g:
+
+int global=0;
+int main () { int i; if(i==0) {i=1;} return 0; }
+
+or
+
+int global=1337;
+int main () { int i; while(i==0) {i=1;} return 0; }
