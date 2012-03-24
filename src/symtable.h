@@ -27,10 +27,10 @@ struct symFunc
 struct symFunc *next;
 };
 
-struct symInt *putInt (char const *name, int isArray, int val, void *scope);
-struct symInt *getInt (char const * name, void *scope);
-int existsInt (char const * name, void *scope);
-void deleteInt (char const * name, void *scope);
+struct symInt *putInt (char const *name, int isArray, int val);
+struct symInt *getInt (char const * name);
+int existsInt (char const * name);
+void deleteInt (char const * name);
 struct symInt *tempInt (char const *name);
 
 struct symFunc *putFunc (char const *name, int isVoid);

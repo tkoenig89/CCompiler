@@ -1572,11 +1572,11 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 156 "parser.y"
-    {	if(existsInt((yyvsp[(1) - (1)].id), NULL)) {
+    {	if(existsInt((yyvsp[(1) - (1)].id))) {
 			printf("ERROR! The variable %s was already declared.\n", (yyvsp[(1) - (1)].id));
-			(yyval.sInt) = getInt((yyvsp[(1) - (1)].id), NULL);
+			(yyval.sInt) = getInt((yyvsp[(1) - (1)].id));
 		} else {
-			(yyval.sInt) = putInt ((yyvsp[(1) - (1)].id), 0, 0, NULL /*TODO: scope for functions*/);
+			(yyval.sInt) = putInt ((yyvsp[(1) - (1)].id), 0, 0);
 		}
 	     ;}
     break;
@@ -1585,7 +1585,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 196 "parser.y"
-    {(yyval.sFunc) = putFunc ((yyvsp[(1) - (2)].sInt)->name, 1);deleteInt ((yyvsp[(1) - (2)].sInt)->name, (yyvsp[(1) - (2)].sInt)->scope)/*TODO: reserve a function*/;}
+    {(yyval.sFunc) = putFunc ((yyvsp[(1) - (2)].sInt)->name, 1);deleteInt ((yyvsp[(1) - (2)].sInt)->name);}
     break;
 
   case 35:
@@ -1725,19 +1725,19 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 292 "parser.y"
-    {(yyval.sInt) = putInt ("int", 0, (yyvsp[(1) - (1)].num), NULL);}
+    {(yyval.sInt) = putInt ("int", 0, (yyvsp[(1) - (1)].num));}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
 #line 293 "parser.y"
-    {	if(existsInt((yyvsp[(1) - (1)].id), NULL)) {
-			(yyval.sInt) = getInt((yyvsp[(1) - (1)].id), NULL);
+    {	if(existsInt((yyvsp[(1) - (1)].id))) {
+			(yyval.sInt) = getInt((yyvsp[(1) - (1)].id));
 		} else {
 			printf("ERROR! The variable %s was not declared. Line: %d Column: %d \n", (yyvsp[(1) - (1)].id), (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column);
 			//We assume the variable should have been declared. so we declare it for the user...
-			(yyval.sInt) = putInt ((yyvsp[(1) - (1)].id), 0, 0, NULL /*TODO: scope for functions*/);
+			(yyval.sInt) = putInt ((yyvsp[(1) - (1)].id), 0, 0);
 			//yyerror("syntax error");
 		}
 	  ;}

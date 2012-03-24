@@ -153,11 +153,11 @@ declaration_element
  */									
 identifier_declaration
      : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE /*{TODO ARRAY}*/
-     | ID {	if(existsInt($1, NULL)) {
+     | ID {	if(existsInt($1)) {
 			printf("ERROR! The variable %s was already declared.\n", $1);
-			$$ = getInt($1, NULL);
+			$$ = getInt($1);
 		} else {
-			$$ = putInt ($1, 0, 0, NULL /*TODO: scope for functions*/);
+			$$ = putInt ($1, 0, 0);
 		}
 	     }
      ;
@@ -193,7 +193,7 @@ function_prefix
  * The non-terminal 'function_signature' initializes the function signature definition
  */ 									
 function_signature
-     : identifier_declaration PARA_OPEN {$$ = putFunc ($1->name, 1);deleteInt ($1->name, $1->scope)/*TODO: reserve a function*/}
+     : identifier_declaration PARA_OPEN {$$ = putFunc ($1->name, 1);deleteInt ($1->name)}
      ;
 
 /*
@@ -289,13 +289,13 @@ expression								// 0 = "false", nonzero = "true"
      ;
 
 primary
-     : NUM {$$ = putInt ("int", 0, $1, NULL)}
-     | ID {	if(existsInt($1, NULL)) {
-			$$ = getInt($1, NULL);
+     : NUM {$$ = putInt ("int", 0, $1)}
+     | ID {	if(existsInt($1)) {
+			$$ = getInt($1);
 		} else {
 			printf("ERROR! The variable %s was not declared. Line: %d Column: %d \n", $1, @1.first_line, @1.first_column);
 			//We assume the variable should have been declared. so we declare it for the user...
-			$$ = putInt ($1, 0, 0, NULL /*TODO: scope for functions*/);
+			$$ = putInt ($1, 0, 0);
 			//yyerror("syntax error");
 		}
 	  }

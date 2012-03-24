@@ -4,13 +4,15 @@
 
 struct symInt 		*symIntTable;
 struct symFunc 	*symFuncTable;
+struct symFunc 	*currFunc;
 
 void init_table ()
 {
+	currFunc=NULL;
 	printf("Hello World from symbol table.\n");
 }
 
-struct symInt *putInt (char const *name, int isArray, int val, void *scope)
+struct symInt *putInt (char const *name, int isArray, int val)
 {
 	struct symInt *ptr;
 	//set name
@@ -22,7 +24,7 @@ struct symInt *putInt (char const *name, int isArray, int val, void *scope)
 	//set isArray
 	ptr->isArray = isArray; 
 	//set scope; NULL == global
-	ptr->scope = scope; 
+	ptr->scope = currFunc; 
 	
 	ptr->next = (struct symInt *)symIntTable;
 	symIntTable = ptr;
@@ -44,34 +46,79 @@ struct symInt *tempInt (char const *name)
 	return ptr;
 }
 
-struct symInt *getInt (char const * name, void *scope)
+struct symInt *getIntG (char const * name)
 {
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if (strcmp (ptr->name,name) == 0) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == NULL)) {
 			return ptr;
 		}
-	}	
+	}
 	return 0;
 }
 
-int existsInt (char const * name, void *scope)
+struct symInt *getIntL (char const * name)
 {
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == scope)) {
-			return 1;
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == currFunc) ) {
+			return ptr;
 		}
-	}	
+	}
 	return 0;
 }
 
-void deleteInt (char const * name, void *scope)
+struct symInt *getInt (char const * name)
+{
+	if(!existsIntL(name)) {
+		if(existsIntG(name)) {
+			return getIntG(name);			
+		} else {
+			return NULL;
+		}
+	} else {
+		return getIntL(name);
+	}
+}
+
+int existsIntG (char const * name)
+{
+	struct symInt *ptr;
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == NULL)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int existsIntL (char const * name)
+{
+	struct symInt *ptr;
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == currFunc) ) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//Prioritasie Local over Global
+int existsInt (char const * name)
+{
+	if(!existsIntL(name)) {
+		return existsIntG(name);
+	} else {
+		return existsIntL(name);
+	}
+}
+
+void deleteInt (char const * name)
 {
 	struct symInt *ptr;
 	struct symInt *ptr_back;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == scope)) {
+		if ((strcmp (ptr->name,name) == 0) && ((ptr->scope == currFunc) || (ptr->scope == NULL))) {
 			if(ptr == symIntTable) {
 				symIntTable = ptr->next;
 			} else {
@@ -99,6 +146,9 @@ struct symFunc *putFunc (char const *name, int isVoid)
 	ptr->next = (struct symFunc *)symFuncTable;
 	symFuncTable = ptr;
 	printf("Function ->%s<- was put in the table\n", ptr->name);
+	
+	currFunc = ptr;
+	
 	return ptr;
 }
 
@@ -133,4 +183,9 @@ void addParam (char const *funcname, struct symInt *sInt)
 	
 	ptr->params.params = parambuffer;
 	ptr->params.params[ptr->params.paramCount-1] = sInt;
+}
+
+void funcEnd()
+{
+	currFunc = NULL;
 }
