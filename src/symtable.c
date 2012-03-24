@@ -46,6 +46,38 @@ struct symInt *tempInt (char const *name)
 	return ptr;
 }
 
+int existsIntG (char const * name)
+{
+	struct symInt *ptr;
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == NULL)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int existsIntL (char const * name)
+{
+	struct symInt *ptr;
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == currFunc) ) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//Prioritasie Local over Global
+int existsInt (char const * name)
+{
+	if(!existsIntL(name)) {
+		return existsIntG(name);
+	} else {
+		return existsIntL(name);
+	}
+}
+
 struct symInt *getIntG (char const * name)
 {
 	struct symInt *ptr;
@@ -78,38 +110,6 @@ struct symInt *getInt (char const * name)
 		}
 	} else {
 		return getIntL(name);
-	}
-}
-
-int existsIntG (char const * name)
-{
-	struct symInt *ptr;
-	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == NULL)) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
-int existsIntL (char const * name)
-{
-	struct symInt *ptr;
-	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == currFunc) ) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
-//Prioritasie Local over Global
-int existsInt (char const * name)
-{
-	if(!existsIntL(name)) {
-		return existsIntG(name);
-	} else {
-		return existsIntL(name);
 	}
 }
 
