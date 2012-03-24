@@ -6,6 +6,7 @@
 struct strCode  *code;
 
 int code_offset = 0;
+int temp_reg_count = -1;
 
 /* Generates code at current location */
 void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, struct symInt *int2, struct symFunc *func, const char *jmplabel)
@@ -31,6 +32,8 @@ void addcodeass(struct symInt *int0, struct symInt *int1)
 	addcode(opASSIGN, int0, int1, NULL, NULL, NULL);
 	printf("Code offset: %d\n", code_offset);
 	printf("IR: ASSIGN %s = %s\n", code[code_offset-1].int0->name, code[code_offset-1].int1->name);
+	
+	temp_reg_count = 0;
 }
 
 void addcodemin(struct symInt *int0, struct symInt *int1)
@@ -39,10 +42,20 @@ void addcodemin(struct symInt *int0, struct symInt *int1)
 	addcode(opMINUS, int0, int1, NULL, NULL, NULL);
 }
 
-void addcodesop(enum code_ops operation, struct symInt *int0, struct symInt *int1, struct symInt *int2)
+struct symInt *addcodeop(enum code_ops operation, struct symInt *int1, struct symInt *int2)
 {
+	temp_reg_count += 1;
+	char buffer [5];
+	sprintf (buffer, ".t%d", temp_reg_count);
+	
+	struct symInt *ptr;
+	ptr = tempInt (buffer);
+	
 	//int0 = int1 +*/- int2
-	addcode(operation, int0, int1, int2, NULL, NULL);
+	addcode(operation, ptr, int1, int2, NULL, NULL);
+	printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
+	
+	return ptr;
 }
 
 /* Generates code at a reserved location */

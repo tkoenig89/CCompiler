@@ -30,6 +30,20 @@ struct symInt *putInt (char const *name, int isArray, int val, void *scope)
 	return ptr;
 }
 
+struct symInt *tempInt (char const *name)
+{
+	struct symInt *ptr;
+	//set name
+	ptr = (struct symInt *) malloc (sizeof (struct symInt));
+	ptr->name = (char *) malloc (strlen (name) + 1);
+	strcpy (ptr->name,name);
+	
+	ptr->isArray = 0; 
+	ptr->scope = NULL; 
+	
+	return ptr;
+}
+
 struct symInt *getInt (char const * name, void *scope)
 {
 	struct symInt *ptr;

@@ -1607,21 +1607,35 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 279 "parser.y"
-    {(yyval.sInt) = (yyvsp[(1) - (3)].sInt)->value.var + (yyvsp[(3) - (3)].sInt)->value.var;}
+    {(yyval.sInt) = addcodeop(opADD, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
 #line 280 "parser.y"
-    {(yyval.sInt) = (yyvsp[(1) - (3)].sInt)->value.var - (yyvsp[(3) - (3)].sInt)->value.var;}
+    {(yyval.sInt) = addcodeop(opSUB, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
 #line 281 "parser.y"
-    {(yyval.sInt) = (yyvsp[(1) - (3)].sInt)->value.var * (yyvsp[(3) - (3)].sInt)->value.var;}
+    {(yyval.sInt) = addcodeop(opMUL, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
+    break;
+
+  case 53:
+
+/* Line 1455 of yacc.c  */
+#line 282 "parser.y"
+    {(yyval.sInt) = addcodeop(opDIV, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
+    break;
+
+  case 55:
+
+/* Line 1455 of yacc.c  */
+#line 284 "parser.y"
+    {addcodemin((yyval.sInt), (yyvsp[(2) - (2)].sInt));;}
     break;
 
   case 60:
@@ -1649,7 +1663,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 1653 "parser.tab.c"
+#line 1667 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

@@ -276,12 +276,12 @@ expression
      | expression LSEQ expression 
      | expression GTEQ expression 
      | expression GT expression
-     | expression PLUS expression				{$$ = $1->value.var + $3->value.var}
-     | expression MINUS expression				{$$ = $1->value.var - $3->value.var}
-     | expression MUL expression				{$$ = $1->value.var * $3->value.var}
-     | expression DIV expression 
+     | expression PLUS expression				{$$ = addcodeop(opADD, $1, $3);}
+     | expression MINUS expression				{$$ = addcodeop(opSUB, $1, $3);}
+     | expression MUL expression				{$$ = addcodeop(opMUL, $1, $3);}
+     | expression DIV expression 					{$$ = addcodeop(opDIV, $1, $3);}
      | expression MOD expression 
-     | MINUS expression %prec UNARY_MINUS
+     | MINUS expression %prec UNARY_MINUS		{addcodemin($$, $2);}
      | ID BRACKET_OPEN primary BRACKET_CLOSE
      | PARA_OPEN expression PARA_CLOSE
      | function_call PARA_CLOSE

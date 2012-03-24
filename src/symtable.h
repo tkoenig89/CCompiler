@@ -31,6 +31,7 @@ struct symInt *putInt (char const *name, int isArray, int val, void *scope);
 struct symInt *getInt (char const * name, void *scope);
 int existsInt (char const * name, void *scope);
 void deleteInt (char const * name, void *scope);
+struct symInt *tempInt (char const *name);
 
 struct symFunc *putFunc (char const *name, int isVoid);
 struct symFunc *getFunc (char const *name);

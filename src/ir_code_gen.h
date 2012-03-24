@@ -22,7 +22,7 @@ struct strCode
 
 void addcodeass(struct symInt *int0, struct symInt *int1);
 void addcodemin(struct symInt *int0, struct symInt *int1);
-void addcodesop(enum code_ops operation, struct symInt *int0, struct symInt *int1, struct symInt *int2);
+struct symInt *addcodeop(enum code_ops operation, struct symInt *int1, struct symInt *int2);
 void printcode();
 
 #endif
