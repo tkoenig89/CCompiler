@@ -86,7 +86,7 @@ struct symInt *getIntG (char const * name)
 			return ptr;
 		}
 	}
-	return 0;
+	return NULL;
 }
 
 struct symInt *getIntL (char const * name)
@@ -97,7 +97,7 @@ struct symInt *getIntL (char const * name)
 			return ptr;
 		}
 	}
-	return 0;
+	return NULL;
 }
 
 struct symInt *getInt (char const * name)
@@ -111,6 +111,56 @@ struct symInt *getInt (char const * name)
 	} else {
 		return getIntL(name);
 	}
+}
+/*
+struct symInt *putIntParam (char const *name, int isArray, int val)
+{
+	struct symInt *ptr;
+	//set name
+	ptr = (struct symInt *) malloc (sizeof (struct symInt));
+	ptr->name = (char *) malloc (strlen (name) + 1);
+	strcpy (ptr->name,name);
+	//set value
+	ptr->value.var = val; 
+	//set isArray
+	ptr->isArray = isArray; 
+	//set scope; NULL == global
+	ptr->scope = 1337; 
+	
+	ptr->next = (struct symInt *)symIntTable;
+	symIntTable = ptr;
+	printf("Integer ->%s<- was put in the table, value:%d\n", ptr->name, ptr->value.var);
+	return ptr;
+}
+
+struct symInt *getIntParam (char const * name)
+{
+	struct symInt *ptr;
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == 1337) ) {
+			return ptr;
+		}
+	}
+	return NULL;
+}*/
+/*
+int setScope (char const * name)
+{
+	struct symInt *ptr = getInt (name);
+	if(ptr!=NULL)
+	{
+		ptr->scope = currFunc;
+		return 1;
+	} 
+	else
+	{
+		return 0;
+	}
+}*/
+
+void setScopeP (struct symInt *sInt)
+{
+	sInt->scope = currFunc;
 }
 
 void deleteInt (char const * name)
@@ -131,17 +181,19 @@ void deleteInt (char const * name)
 	};
 }
 
-struct symFunc *putFunc (char const *name, int isVoid)
+struct symFunc *putFunc (char const *name, int retType)
 {
 	struct symFunc *ptr;
 	//set name
 	ptr = (struct symFunc *) malloc (sizeof (struct symFunc));
 	ptr->name = (char *) malloc (strlen (name) + 1);
 	strcpy (ptr->name,name);
-	//set isVoid
-	ptr->isVoid = isVoid; 
+	//set retType
+	ptr->retType = retType; 
 	//set paramcount=0
 	ptr->params.paramCount = 0; 
+	
+	ptr->params.params = NULL;
 	
 	ptr->next = (struct symFunc *)symFuncTable;
 	symFuncTable = ptr;
@@ -174,15 +226,42 @@ int existsFunc (char const *name)
 	return 0;
 }
 
-void addParam (char const *funcname, struct symInt *sInt)
+void setParamP (struct symFunc *sFunc, struct symInt *sInt)
 {
-	struct symFunc *ptr = getFunc (funcname);
-	ptr->params.paramCount += 1;
-	
-	struct symInt *parambuffer = (struct symInt*) realloc (ptr->params.params, ptr->params.paramCount * sizeof(struct symInt));
-	
-	ptr->params.params = parambuffer;
-	ptr->params.params[ptr->params.paramCount-1] = sInt;
+	sFunc->params.paramCount += 1;	
+	sFunc->params.params = sInt;
+}
+
+void incParamCountP (struct symFunc *sFunc)
+{
+	sFunc->params.paramCount += 1;	
+}
+
+
+void renameFunc (char const *funcname, char const *funcname_new)
+{
+	if(existsFunc(funcname))
+	{
+		struct symFunc *ptr = getFunc(funcname);
+		free(ptr->name);
+		
+		ptr->name = (char *) malloc (strlen (funcname_new) + 1);
+		strcpy (ptr->name,funcname_new);		
+	}
+}
+/*
+void setType (char const *name, int retType)
+{
+	if(existsFunc(name))
+	{
+		struct symFunc *ptr = getFunc(name);
+		ptr->retType = retType; 
+	}
+}*/
+
+void setTypeP (struct symFunc *sFunc, int type)
+{
+	sFunc->retType = type;
 }
 
 void funcEnd()

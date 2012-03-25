@@ -18,11 +18,11 @@ struct symInt
 struct symFunc
 {
 	char *name;
-	int isVoid;
+	int retType;
 	union
 	{
 		int paramCount;
-		struct symInt **params; //Will be a dynamic array with realloc
+		struct symInt* params; //Will point to the first parameter in the symIntTable. 
 	} params;
 struct symFunc *next;
 };
@@ -32,11 +32,18 @@ struct symInt *getInt (char const * name);
 int existsInt (char const * name);
 void deleteInt (char const * name);
 struct symInt *tempInt (char const *name);
+//struct symInt *putIntParam (char const *name, int isArray, int val);
+//int setScopeParam (char const * name);
+//int setScope (char const * name);
+void setScopeP (struct symInt *sInt);
 
 struct symFunc *putFunc (char const *name, int isVoid);
 struct symFunc *getFunc (char const *name);
 int existsFunc (char const *name);
-void addParam (char const *funcname, struct symInt *sInt);
+void setParamP (struct symFunc *sFunc, struct symInt *sInt);
+void incParamCountP (struct symFunc *sFunc);
+void renameFunc (char const *funcname, char const *funcname_new);
+void setTypeP (struct symFunc *sFunc, int type);
 
 void init_table ();
 

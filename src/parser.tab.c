@@ -155,7 +155,6 @@ typedef union YYSTYPE
 
 	int num;
 	char *id;
-	//struct symrec *tptr;
 	struct symInt *sInt;
 	struct symFunc *sFunc;
 	/*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
@@ -163,7 +162,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 167 "parser.tab.c"
+#line 166 "parser.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -188,7 +187,7 @@ typedef struct YYLTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 192 "parser.tab.c"
+#line 191 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -502,13 +501,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    65,    65,    69,    70,    74,    75,    76,    77,    81,
-      82,    86,    87,    91,    92,   107,   108,   112,   113,   117,
-     118,   122,   125,   127,   131,   132,   133,   134,   135,   136,
-     137,   138,   142,   146,   147,   151,   152,   160,   161,   162,
-     163,   164,   165,   166,   167,   168,   169,   170,   171,   172,
-     173,   174,   175,   176,   177,   181,   182,   194,   195,   199,
-     200
+       0,    68,    68,    72,    73,    77,    78,    79,    80,    84,
+      85,    89,    90,    94,    95,   110,   111,   115,   116,   120,
+     121,   135,   138,   140,   144,   145,   146,   147,   148,   149,
+     150,   151,   155,   159,   160,   164,   165,   173,   174,   175,
+     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
+     186,   187,   188,   189,   190,   194,   195,   207,   208,   212,
+     213
 };
 #endif
 
@@ -1555,10 +1554,24 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 14:
+        case 9:
 
 /* Line 1455 of yacc.c  */
-#line 92 "parser.y"
+#line 84 "parser.y"
+    {(yyval.num) = 1;}
+    break;
+
+  case 10:
+
+/* Line 1455 of yacc.c  */
+#line 85 "parser.y"
+    {(yyval.num) = 0;}
+    break;
+
+  case 14:
+
+/* Line 1455 of yacc.c  */
+#line 95 "parser.y"
     {	if(existsInt((yyvsp[(1) - (1)].id))) {
 			printf("ERROR! The variable %s was already declared.\n", (yyvsp[(1) - (1)].id));
 			(yyval.sInt) = getInt((yyvsp[(1) - (1)].id));
@@ -1568,136 +1581,181 @@ yyreduce:
 	     ;}
     break;
 
+  case 17:
+
+/* Line 1455 of yacc.c  */
+#line 115 "parser.y"
+    {(yyval.sFunc) = putFunc ((yyvsp[(2) - (4)].id), (yyvsp[(1) - (4)].num));;}
+    break;
+
+  case 18:
+
+/* Line 1455 of yacc.c  */
+#line 116 "parser.y"
+    {renameFunc ("-1temp", (yyvsp[(2) - (5)].id));setTypeP ((yyvsp[(4) - (5)].sFunc), (yyvsp[(1) - (5)].num));;}
+    break;
+
+  case 19:
+
+/* Line 1455 of yacc.c  */
+#line 120 "parser.y"
+    {printf("choice1\n");(yyval.sFunc) = putFunc ("-1temp", -1);setParamP ((yyval.sFunc), (yyvsp[(1) - (1)].sInt));setScopeP ((yyvsp[(1) - (1)].sInt));;}
+    break;
+
+  case 20:
+
+/* Line 1455 of yacc.c  */
+#line 121 "parser.y"
+    {
+													printf("choice2\n");
+													if(!existsFunc("-1temp"))
+													{
+														(yyval.sFunc) = putFunc ("-1temp", -1);
+														setParamP ((yyval.sFunc), (yyvsp[(3) - (3)].sInt));
+													} else {
+														incParamCountP ((yyvsp[(3) - (3)].sInt));
+													}
+													setScopeP ((yyvsp[(3) - (3)].sInt));
+												;}
+    break;
+
+  case 21:
+
+/* Line 1455 of yacc.c  */
+#line 135 "parser.y"
+    {(yyval.sInt) = (yyvsp[(2) - (2)].sInt); /*TODO: Error if void*/;}
+    break;
+
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 160 "parser.y"
+#line 173 "parser.y"
     {addcodeass((yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 161 "parser.y"
+#line 174 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opLOGICAL_OR, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 162 "parser.y"
+#line 175 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opLOGICAL_AND, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 163 "parser.y"
+#line 176 "parser.y"
     {(yyval.sInt) = addcodeopexp1(opLOGICAL_NOT, (yyvsp[(2) - (2)].sInt));;}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 164 "parser.y"
+#line 177 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opEQ, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 165 "parser.y"
+#line 178 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opNE, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 166 "parser.y"
+#line 179 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opLS, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 167 "parser.y"
+#line 180 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opLSEQ, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 168 "parser.y"
+#line 181 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opGTEQ, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 169 "parser.y"
+#line 182 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opGT, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 170 "parser.y"
+#line 183 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opADD, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 171 "parser.y"
+#line 184 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opSUB, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 172 "parser.y"
+#line 185 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opMUL, (yyvsp[(1) - (3)].sInt), (yyvsp[(3) - (3)].sInt));;}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 173 "parser.y"
+#line 186 "parser.y"
     {(yyval.sInt) = addcodeopexp1(opMINUS, (yyvsp[(2) - (2)].sInt));;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 174 "parser.y"
+#line 187 "parser.y"
     {(yyval.sInt) = addcodeopexp2(opMEM_LD, (yyvsp[(1) - (4)].id), (yyvsp[(3) - (4)].sInt));;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 175 "parser.y"
+#line 188 "parser.y"
     {(yyval.sInt) = (yyvsp[(2) - (3)].sInt);}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 177 "parser.y"
+#line 190 "parser.y"
     {(yyval.sInt) = (yyvsp[(1) - (1)].sInt);}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 181 "parser.y"
+#line 194 "parser.y"
     {(yyval.sInt) = putInt ("int", 0, (yyvsp[(1) - (1)].num));}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 182 "parser.y"
+#line 195 "parser.y"
     {	if(existsInt((yyvsp[(1) - (1)].id))) {
 			(yyval.sInt) = getInt((yyvsp[(1) - (1)].id));
 		} else {
@@ -1712,7 +1770,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 1716 "parser.tab.c"
+#line 1774 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1931,7 +1989,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 203 "parser.y"
+#line 216 "parser.y"
 
 
 void yyerror (const char *msg)

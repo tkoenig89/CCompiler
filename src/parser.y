@@ -14,7 +14,6 @@
 %union{
 	int num;
 	char *id;
-	//struct symrec *tptr;
 	struct symInt *sInt;
 	struct symFunc *sFunc;
 	/*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
@@ -56,6 +55,10 @@
 
 //%type <sFunc> stmt_list
 //%type <sFunc> stmt
+%type <sFunc> function_parameter_list
+%type <sFunc> function_declaration
+%type <num> type
+%type <sInt> function_parameter
 %type <sInt> identifier_declaration
 %type <sInt> expression
 %type <sInt> primary
@@ -78,8 +81,8 @@ program_element
      ;
      
 type
-     : INT
-     | VOID
+     : INT		{$$ = 1}
+     | VOID		{$$ = 0}
      ;
 
 variable_declaration
@@ -109,17 +112,27 @@ function_definition
      ;
 
 function_declaration
-     : type ID PARA_OPEN PARA_CLOSE
-     | type ID PARA_OPEN function_parameter_list PARA_CLOSE
+     : type ID PARA_OPEN PARA_CLOSE						{$$ = putFunc ($2, $1);}
+     | type ID PARA_OPEN function_parameter_list PARA_CLOSE		{renameFunc ("-1temp", $2);setTypeP ($4, $1);}
      ;
 
 function_parameter_list
-     : function_parameter
-     | function_parameter_list COMMA function_parameter
+     : function_parameter								{printf("choice1\n");$$ = putFunc ("-1temp", -1);setParamP ($$, $1);setScopeP ($1);}
+     | function_parameter_list COMMA function_parameter		{
+													printf("choice2\n");
+													if(!existsFunc("-1temp"))
+													{
+														$$ = putFunc ("-1temp", -1);
+														setParamP ($$, $3);
+													} else {
+														incParamCountP ($3);
+													}
+													setScopeP ($3);
+												}
      ;
 	
 function_parameter
-     : type identifier_declaration
+     : type identifier_declaration	 {$$ = $2; /*TODO: Error if void*/}
      ;
 
 stmt_list
