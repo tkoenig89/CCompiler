@@ -12,7 +12,7 @@ struct symInt *irtempInt()
 {
 	temp_reg_count += 1;
 	//if temp_reg_count > 21 then ERROR, no space left for any more temp registers
-	//we have to work around and put them into memory
+	//we have to work around and put them into memory	
 	char buffer [5];
 	sprintf (buffer, ".t%d", temp_reg_count);
 	
@@ -63,6 +63,7 @@ struct symInt *addcodemin(struct symInt *int1)
 
 struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 {
+	//TODO: If we regocnise that int1 is already a temp var, use int1 as the result instead of creating a new temp var to save register space
 	struct symInt *ptr = irtempInt();
 
 	addcode(operation, ptr, int1, NULL, NULL, NULL);
@@ -73,6 +74,7 @@ struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 
 struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2)
 {
+	//TODO: If we regocnise that int1 and int2 are already a temp vars, we use either int1 or int2 as the result instead of creating a new temp var to save register space
 	struct symInt *ptr = irtempInt();
 
 	addcode(operation, ptr, int1, int2, NULL, NULL);

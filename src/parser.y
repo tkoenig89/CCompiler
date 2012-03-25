@@ -12,13 +12,14 @@
 %}
  
 %union{
-	 int num;
-	 char *id;
-	 //struct symrec *tptr;
+	int num;
+	char *id;
+	//struct symrec *tptr;
 	struct symInt *sInt;
 	struct symFunc *sFunc;
-	 /*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
+	/*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
 }
+
 %debug
 %locations
 %start program
@@ -38,121 +39,56 @@
 %token RETURN
 %token COLON COMMA SEMICOLON
 %token BRACE_OPEN BRACE_CLOSE
-%token END_OF_FILE
 
 %token <id>ID
 %token <num>NUM
 
-%token SHIFT_LEFT SHIFT_RIGHT
- 
+%right ASSIGN 
+%left  LOGICAL_OR
+%left  LOGICAL_AND
+%left  EQ NE     
+%left  LS LSEQ GTEQ GT 
+%left  SHIFT_LEFT SHIFT_RIGHT
+%left  PLUS MINUS     
+%left  MUL
+%right LOGICAL_NOT UNARY_MINUS UNARY_PLUS
+%left  BRACKET_OPEN BRACKET_CLOSE PARA_OPEN PARA_CLOSE
 
-/* TODO: add associativity and precedence so that the 256 shift-reduce vanish */
-/*%token ASSIGN
-%token LOGICAL_OR LOGICAL_NOT LOGICAL_AND 
-%token EQ NE LS LSEQ GTEQ GT
-%token PLUS MINUS MUL DIV MOD
-%token NOT UNARY_MINUS UNARY_PLUS
-
-
-%token BRACKET_OPEN BRACKET_CLOSE PARA_OPEN PARA_CLOSE */
-
-%right ASSIGN                           /* The assign operator '='. */
-%left LOGICAL_OR                        /* The logical OR operator '||'. */
-%left LOGICAL_AND                       /* The logical AND operator '&&'. */
-%left EQ NE                                     /* Equality '==' and inequality '!=' comparison operators. */
-%left LS LSEQ GTEQ GT           /* Comparing operators for less '<', less or equal '<=', greater or equal '>=' and greater '>'. */
-%left SHIFT_LEFT SHIFT_RIGHT
-%left PLUS MINUS                        /* Arithmetic operations: addition '+' and subtraction '-'. */
-%left MUL DIV MOD          /* Arithmetic operations (higher precedence than addition and subtraction): multiplication '*',
-                                                         * division '-' and remainder (modulo) '%'. */
-%right UNARY_MINUS UNARY_PLUS                     /* Arithmetic and logical operations. */ 
-       LOGICAL_NOT
-%left BRACKET_OPEN                      /* Parenthesis and brackets with highest priority due to array access und manual precedence. */
-      BRACKET_CLOSE 
-      PARA_OPEN 
-      PARA_CLOSE
-
-//%type <tptr> type
-%type <sFunc> stmt_list
-%type <sFunc> stmt
-%type <sFunc> function_signature
+//%type <sFunc> stmt_list
+//%type <sFunc> stmt
 %type <sInt> identifier_declaration
 %type <sInt> expression
-%type <sInt> declaration
-%type <sInt> declaration_element
 %type <sInt> primary
 %%
 
-/* 
- * The start symbol of the programming language. According to the
- * original GNU C compiler (GCC), there has to be at least one
- * program_element. The End-of-File token is necessary for completing
- * the parsing process successfully by reducing to the start symbol
- * of grammar 'program'. 
- */
 program
      : program_element_list
      ;
 
-/*
- * The list of program elements which are considered as high-level elements like function
- * definitions, global (constant) variables. The non-terminal 'program_element_list' consists at 
- * least of one program element. Though, empty source files will not succeed.
- */									
 program_element_list
      : program_element_list program_element 
-     | program_element
+     | program_element 
      ;
 
-/*
- * The different program elements which are variable declarations, function definitions and
- * function prototypes and type definitions for the basic version of the compiler. 
- */									
 program_element
-     : declaration SEMICOLON
-     //| expression SEMICOLON
+     : variable_declaration SEMICOLON
+     | function_declaration SEMICOLON
      | function_definition
      | SEMICOLON
-     | primary    
      ;
-									
-/* 
- * The different types of the subset including self-defined data types by using the typedef
- * instruction.
-*/
+     
 type
      : INT
      | VOID
      ;
 
-/* 
- * The non-terminal 'declaration' is used for declarations like
- * 'int a, b, *c[]' as well as function prototypes. 									
-/* Each 'declaration' consists of at least one 'declaration_element'. The
- * left-recursion of this rule is positive for the synthesizing the type as 
- * stack-attribute to the 'identifier_declaration'.
-*/						
-declaration
-     : declaration COMMA declaration_element
-     | type declaration_element //{printf("VALUE: %d\n",$2->type)}
+variable_declaration
+     : variable_declaration COMMA identifier_declaration
+     | type identifier_declaration
      ;
-
-/*
- * The non-terminal 'declaration_element' contains the different possible elements for 
- * an elementary declaration which could be either a 'function_header' acting as the definition of a function
- * prototype or the declaration of an identifier.
- */
-declaration_element
-     : identifier_declaration //{printf("VALUE: %d",$1->type)}
-     | function_header
-     ;
-
-/*
- * The non-terminal 'identifier_declaration' contains the specifics of the variable beside
- * the type definition like arrays, pointers and initial (default) values.
- */									
+	
 identifier_declaration
-     : identifier_declaration BRACKET_OPEN expression BRACKET_CLOSE /*{TODO ARRAY}*/
+     : identifier_declaration BRACKET_OPEN NUM BRACKET_CLOSE /*{TODO ARRAY}*/
      | ID {	if(existsInt($1)) {
 			printf("ERROR! The variable %s was already declared.\n", $1);
 			$$ = getInt($1);
@@ -161,74 +97,39 @@ identifier_declaration
 		}
 	     }
      ;
-
-/*
- * The non-terminal 'function_definition' is the beginning of the function definition.
- */									
-function_definition
-     : type function_header BRACE_OPEN stmt_list BRACE_CLOSE
-     ;
-
-/*
- * The non-terminal 'function_header' is used within the non-terminals 'function' and
- * 'function_prototype'. The grammar for the function definition and the function prototype
- * is split up this way to facilitate the parsing process and to use synthesized attributes
- * during the parsing process.
- */									
-function_header
-     : function_prefix PARA_CLOSE
-     ;
-	
-/*
- * The non-terminal 'function_prefix' is used within the non-terminal 'function_header'. The
- * 'function_prefix' distinguishes between functions with parameters by the non-terminal 
- * 'function_signature_parameters' and functions without by the non-terminal 'function_signature'.
- */									
-function_prefix
-     : function_signature
-     | function_signature_parameters
-     ;
-
-/*
- * The non-terminal 'function_signature' initializes the function signature definition
- */ 									
+     
+/*	Because of the new Grammar we don't have do delete the variable because functions are imediadly recongnised. Will stay here, if needed, for a few revesions..
 function_signature
      : identifier_declaration PARA_OPEN {$$ = putFunc ($1->name, 1);deleteInt ($1->name)}
+     ;*/
+
+function_definition
+     : type ID PARA_OPEN PARA_CLOSE BRACE_OPEN stmt_list BRACE_CLOSE
+     | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN stmt_list BRACE_CLOSE
      ;
 
-/*
- * The non-terminal 'function_signature_parameters' declares the function of the function prototype with
- * (input) parameters.
- */									
-function_signature_parameters
-     : function_signature_parameters COMMA function_parameter_element
-     | function_signature function_parameter_element
+function_declaration
+     : type ID PARA_OPEN PARA_CLOSE
+     | type ID PARA_OPEN function_parameter_list PARA_CLOSE
      ;
 
-/*
- * The non-terminal 'function_parameter_element' is used within the non-terminal 'function_definition_parameters'
- * and contains the declaration for ONE parameter.
- */									
-function_parameter_element
+function_parameter_list
+     : function_parameter
+     | function_parameter_list COMMA function_parameter
+     ;
+	
+function_parameter
      : type identifier_declaration
      ;
 
-/*
- * The non-terminal 'stmt_list' is list of statements containing any number (including zero) of statements represented 
- * by the non-terminal 'stmt'.
- */									
 stmt_list
      : /* empty: epsilon */
      | stmt_list stmt
      ;
 
-/*
- * The non-terminal 'stmt' is used for the statements of the programming language whereas the non-terminal
- * 'expression' is one of the core statements.
- */									
 stmt
      : stmt_block
-     | declaration SEMICOLON
+     | variable_declaration SEMICOLON
      | expression SEMICOLON
      | stmt_conditional
      | stmt_loop
@@ -237,30 +138,20 @@ stmt
      | SEMICOLON /* empty statement */
      ;
 
-/*
- * A statement block is just a statement list within braces.
- */									
 stmt_block
-     : BRACE_OPEN stmt_list BRACE_CLOSE			{printf("{} found.\n");}
+     : BRACE_OPEN stmt_list BRACE_CLOSE
      ;
 	
-/*
- * The non-terminal 'stmt_conditional' contains the conditional statements of the language. The second rule
- * produces a SHIFT/REDUCE error which is solved by the default behavior of bison (see above).
- */									
 stmt_conditional
-     : IF PARA_OPEN expression PARA_CLOSE stmt			
-     | IF PARA_OPEN expression PARA_CLOSE stmt ELSE stmt	
+     : IF PARA_OPEN expression PARA_CLOSE stmt
+     | IF PARA_OPEN expression PARA_CLOSE stmt ELSE stmt
      ;
-									
-/*
- * The non-terminal 'stmt_loop' contains the loop statements of the language.
- */									
+     
 stmt_loop
      : WHILE PARA_OPEN expression PARA_CLOSE stmt
      | DO stmt WHILE PARA_OPEN expression PARA_CLOSE SEMICOLON
      ;
-									
+     
 /*
  * The non-terminal 'expression' is one of the core statements containing all arithmetic, logical, comparison and
  * assignment operators.expression
@@ -279,12 +170,10 @@ expression								// 0 = "false", nonzero = "true"
      | expression PLUS expression				{$$ = addcodeopexp2(opADD, $1, $3);}
      | expression MINUS expression				{$$ = addcodeopexp2(opSUB, $1, $3);}
      | expression MUL expression				{$$ = addcodeopexp2(opMUL, $1, $3);}
-     | expression DIV expression 					{$$ = addcodeopexp2(opDIV, $1, $3);}
-     | expression MOD expression 				{$$ = addcodeopexp2(opMOD, $1, $3);}
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
      | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeopexp2(opMEM_LD, $1, $3);}
-     | PARA_OPEN expression PARA_CLOSE
-     | function_call PARA_CLOSE
+     | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
+     | function_call
      | primary								{$$ = $1}
      ;
 
@@ -301,33 +190,20 @@ primary
 	  }
      ;
 
-/*
- * The non-terminal 'function_call' is used by the non-terminal 'expression' for calling functions.
- */									
 function_call
-      : ID PARA_OPEN
-      | function_call_parameters
+      : ID PARA_OPEN PARA_CLOSE
+      | ID PARA_OPEN function_call_parameters PARA_CLOSE
       ;
 
-/*
- * The non-terminal 'function_call_parameters' is used for the parameters of a function call 
- * by the non-terminal 'function_call'.
- */ 									
 function_call_parameters
-	: function_call_parameters COMMA expression
-	| ID PARA_OPEN expression
-	;
+     : function_call_parameters COMMA expression
+     | expression
+     ;
 
 %%
-
 
 void yyerror (const char *msg)
 {
 	printf("ERROR: %s\n", msg);
-	return 0;
+	//return 0;
 }
-
-/*int main(int argc, char **argv){
-	yyparse();
-	return 0;
-}*/

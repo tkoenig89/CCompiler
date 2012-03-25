@@ -7,7 +7,7 @@
 //enum for 3-adress code representation:
 enum code_ops 
 {
-	opASSIGN, opADD, opSUB, opMUL, opDIV, opMINUS, opMOD, opSHIFT_LEFT, opSHIFT_RIGHT,	
+	opASSIGN, opADD, opSUB, opMUL, opMINUS, opSHIFT_LEFT, opSHIFT_RIGHT,	
 	
 	opLOGICAL_AND, opLOGICAL_OR, opLOGICAL_NOT, opNE, opEQ, opGT, opGTEQ, opLS, opLSEQ,
 	

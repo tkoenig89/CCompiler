@@ -51,32 +51,29 @@
      SEMICOLON = 267,
      BRACE_OPEN = 268,
      BRACE_CLOSE = 269,
-     END_OF_FILE = 270,
-     ID = 271,
-     NUM = 272,
-     SHIFT_LEFT = 273,
-     SHIFT_RIGHT = 274,
-     ASSIGN = 275,
-     LOGICAL_OR = 276,
-     LOGICAL_AND = 277,
-     NE = 278,
-     EQ = 279,
-     GT = 280,
-     GTEQ = 281,
-     LSEQ = 282,
-     LS = 283,
-     MINUS = 284,
-     PLUS = 285,
-     MOD = 286,
-     DIV = 287,
-     MUL = 288,
-     LOGICAL_NOT = 289,
-     UNARY_PLUS = 290,
-     UNARY_MINUS = 291,
-     PARA_CLOSE = 292,
-     PARA_OPEN = 293,
-     BRACKET_CLOSE = 294,
-     BRACKET_OPEN = 295
+     ID = 270,
+     NUM = 271,
+     ASSIGN = 272,
+     LOGICAL_OR = 273,
+     LOGICAL_AND = 274,
+     NE = 275,
+     EQ = 276,
+     GT = 277,
+     GTEQ = 278,
+     LSEQ = 279,
+     LS = 280,
+     SHIFT_RIGHT = 281,
+     SHIFT_LEFT = 282,
+     MINUS = 283,
+     PLUS = 284,
+     MUL = 285,
+     UNARY_PLUS = 286,
+     UNARY_MINUS = 287,
+     LOGICAL_NOT = 288,
+     PARA_CLOSE = 289,
+     PARA_OPEN = 290,
+     BRACKET_CLOSE = 291,
+     BRACKET_OPEN = 292
    };
 #endif
 
@@ -89,17 +86,17 @@ typedef union YYSTYPE
 /* Line 1676 of yacc.c  */
 #line 14 "parser.y"
 
-	 int num;
-	 char *id;
-	 //struct symrec *tptr;
+	int num;
+	char *id;
+	//struct symrec *tptr;
 	struct symInt *sInt;
 	struct symFunc *sFunc;
-	 /*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
+	/*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
 
 
 
 /* Line 1676 of yacc.c  */
-#line 103 "parser.tab.h"
+#line 100 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
