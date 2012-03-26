@@ -55,6 +55,7 @@
 
 //%type <sFunc> stmt_list
 //%type <sFunc> stmt
+%type <sFunc> function_definition
 %type <sFunc> function_parameter_list
 %type <sFunc> function_declaration
 %type <num> type
@@ -69,14 +70,14 @@ program
      ;
 
 program_element_list
-     : program_element_list program_element 
-     | program_element 
+     : program_element_list program_element 	{printf("----------DEBUG printing all functions and variables:\n");debugPrintAllsFunc();debugPrintAllsint();}
+     | program_element 					//{printf("test2");}
      ;
 
 program_element
      : variable_declaration SEMICOLON
      | function_declaration SEMICOLON
-     | function_definition stmt_list BRACE_CLOSE
+     | function_definition
      | SEMICOLON
      ;
      
@@ -107,13 +108,119 @@ function_signature
      ;*/
 
 function_definition
-     : type ID PARA_OPEN PARA_CLOSE BRACE_OPEN //stmt_list BRACE_CLOSE
-     | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN //stmt_list BRACE_CLOSE
+     : type ID PARA_OPEN PARA_CLOSE BRACE_OPEN 	{
+											printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
+											if(existsFunc ($2))
+											{
+												if(isFuncProto ($2))
+												{
+													printf("Declaration found.\n");
+													setFuncIsDeclared ($2);
+												}
+												else
+												{
+													printf("ERROR a function definition with the same name already exists.\n");
+													/*TODO: ERROR a function with the same name already exists*/
+													//Error correction: Ignore stuff
+												}
+											}
+											else
+											{
+												printf("No declaration entry found. Create new function %s with type %d\n", $2, $1);
+												$<sFunc>$ = putFunc ($2, $1);
+											}
+											
+										}
+	stmt_list BRACE_CLOSE
+     | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN 	{
+																printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
+																if(existsFunc ($2))
+																{
+																	if(isFuncProto ($2))
+																	{
+																		printf("Declaration found. Checking if parameters match from the declaration.\n");
+																		printf("%s, %s.\n", $2, $4->name);
+																		if(paramFuncCheckP (getFunc($2), $4))
+																		{
+																			if(strcmp ($4->name,"-1temp") == 0)
+																			{
+																				deleteFunc ("-1temp");
+																				setFuncIsDeclared ($2);
+																			}
+																			else
+																			{
+																				printf("INTERNAL ERROR: Function has not the expected TEMP_NAME!\n");
+																			}
+																			
+																		}
+																		else
+																		{
+																			printf("ERROR: Function definition does not match function declaration.\n");
+																			if(strcmp ($4->name,"-1temp") == 0)
+																			{
+																				deleteFunc ("-1temp");
+																				setFuncIsDeclared ($2);
+																			}
+																			else
+																			{
+																				printf("INTERNAL ERROR: Function has not the expected TEMP_NAME!\n");
+																			}
+																		}
+																		
+																	}
+																	else
+																	{
+																		printf("ERROR a function definition with the same name already exists.\n");
+																		/*TODO: ERROR a function with the same name already exists*/
+																		//Error correction: Ignore stuff
+																	}
+																}
+																else
+																{
+																	printf("Function definition %s not found. Checking for temp definition from param list.\n", $2);
+																	if(strcmp ($4->name,"-1temp") == 0)
+																	{
+																		printf("Temp Func found. will be renamed to %s to make it the definition.\n", $2);
+																		renameFunc ("-1temp", $2);setTypeP ($4, $1);
+																	}
+																	else
+																	{
+																		printf("INTERNAL ERROR: Function has not the expected TEMP_NAME!\n");
+																	}
+																}
+															}
+	stmt_list BRACE_CLOSE
      ;
 
 function_declaration
-     : type ID PARA_OPEN PARA_CLOSE						{$$ = putFunc ($2, $1);}
-     | type ID PARA_OPEN function_parameter_list PARA_CLOSE		{renameFunc ("-1temp", $2);setTypeP ($4, $1);}
+     : type ID PARA_OPEN PARA_CLOSE						{
+														printf("Function Declaration %s found.\n", $2);
+														if(existsFunc ($2)) {
+															printf("ERROR a function declaration with the same name already exists.\n");
+															setFuncProtoP (getFunc($2));
+														}
+														else
+														{
+															printf("Putting func into table and mark it as a prototype.\n");
+															$$ = putFunc ($2, $1);
+															setFuncProtoP ($$);
+														}
+													}
+     | type ID PARA_OPEN function_parameter_list PARA_CLOSE		{
+														printf("Function Declaration %s found.\n", $2);
+														if(existsFunc ($2)) {
+															printf("ERROR a function declaration with the same name already exists.\n");
+															deleteFunc ("-1temp");
+															setFuncProtoP (getFunc($2));
+														}
+														else
+														{
+															printf("Putting func into table and mark it as a prototype.\n");
+															renameFunc ("-1temp", $2);
+															setTypeP ($4, $1);
+															setFuncProtoP (getFunc($2));
+														}
+													}
      ;
 
 function_parameter_list
@@ -122,7 +229,7 @@ function_parameter_list
 													printf("choice2\n");
 													if(!existsFunc("-1temp"))
 													{
-														$$ = putFunc ("-1temp", -1);
+														$$ = putFunc ("-1temp", -1);														
 														setParamP ($$, $3);
 													} else {
 														incParamCountP ($3);
