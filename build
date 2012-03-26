@@ -5,3 +5,6 @@ flex scanner.l
 bison -d parser.y -t
 cd ..
 make
+rm -rf src/bin32
+rm -rf src/parser.tab.c
+rm -rf src/parser.tab.h
