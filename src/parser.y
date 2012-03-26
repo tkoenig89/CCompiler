@@ -93,12 +93,12 @@ variable_declaration
 	
 identifier_declaration
      : identifier_declaration BRACKET_OPEN NUM BRACKET_CLOSE /*{TODO ARRAY}*/
-     | ID {	if(existsInt($1)) {
+     | ID {	/*if(existsInt($1)) {
 			printf("ERROR! The variable %s was already declared.\n", $1);
 			$$ = getInt($1);
-		} else {
+		} else {*/
 			$$ = putInt ($1, 0, 0);
-		}
+		//}
 	     }
      ;
      
@@ -116,6 +116,7 @@ function_definition
 												{
 													printf("Declaration found.\n");
 													setFuncIsDeclared ($2);
+													setFuncScopeP (getFunc($2));
 												}
 												else
 												{
@@ -128,10 +129,11 @@ function_definition
 											{
 												printf("No declaration entry found. Create new function %s with type %d\n", $2, $1);
 												$<sFunc>$ = putFunc ($2, $1);
+												setFuncScopeP (getFunc($2));
 											}
 											
 										}
-	stmt_list BRACE_CLOSE
+	stmt_list BRACE_CLOSE {setFuncScopeP (NULL);}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN 	{
 																printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
 																if(existsFunc ($2))
@@ -146,6 +148,7 @@ function_definition
 																			{
 																				deleteFunc ("-1temp");
 																				setFuncIsDeclared ($2);
+																				setFuncScopeP (getFunc($2));
 																			}
 																			else
 																			{
@@ -160,6 +163,7 @@ function_definition
 																			{
 																				deleteFunc ("-1temp");
 																				setFuncIsDeclared ($2);
+																				setFuncScopeP (getFunc($2));
 																			}
 																			else
 																			{
@@ -181,7 +185,9 @@ function_definition
 																	if(strcmp ($4->name,"-1temp") == 0)
 																	{
 																		printf("Temp Func found. will be renamed to %s to make it the definition.\n", $2);
-																		renameFunc ("-1temp", $2);setTypeP ($4, $1);
+																		renameFunc ("-1temp", $2);
+																		setTypeP ($4, $1);
+																		setFuncScopeP ($4);
 																	}
 																	else
 																	{
@@ -189,7 +195,7 @@ function_definition
 																	}
 																}
 															}
-	stmt_list BRACE_CLOSE
+	stmt_list BRACE_CLOSE {setFuncScopeP (NULL);}
      ;
 
 function_declaration
@@ -224,7 +230,7 @@ function_declaration
      ;
 
 function_parameter_list
-     : function_parameter								{printf("choice1\n");$$ = putFunc ("-1temp", -1);setParamP ($$, $1);setScopeP ($1);}
+     : function_parameter								{printf("choice1\n");$$ = putFunc ("-1temp", -1);setParamP ($$, $1);}
      | function_parameter_list COMMA function_parameter		{
 													printf("choice2\n");
 													if(!existsFunc("-1temp"))
@@ -234,7 +240,6 @@ function_parameter_list
 													} else {
 														incParamCountP ($3);
 													}
-													setScopeP ($3);
 												}
      ;
 	

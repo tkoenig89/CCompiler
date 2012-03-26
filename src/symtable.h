@@ -36,7 +36,7 @@ struct symInt *tempInt (char const *name);
 //struct symInt *putIntParam (char const *name, int isArray, int val);
 //int setScopeParam (char const * name);
 //int setScope (char const * name);
-void setScopeP (struct symInt *sInt);
+void setIntScopeP (struct symInt *sInt);
 
 struct symFunc *putFunc (char const *name, int isVoid);
 struct symFunc *getFunc (char const *name);
@@ -51,6 +51,7 @@ void deleteFunc (char const * name);
 int paramFuncCheckP (struct symFunc *sFunc0, struct symFunc *sFunc1);
 struct symFunc *getFunc (char const *name);
 void setFuncProtoP (struct symFunc *sFunc);
+void setFuncScopeP (struct symFunc *sFunc);
 
 void debugPrintAllsFunc();
 void debugPrintAllsint();

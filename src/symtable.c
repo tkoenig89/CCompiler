@@ -158,7 +158,7 @@ int setScope (char const * name)
 	}
 }*/
 
-void setScopeP (struct symInt *sInt)
+void setIntScopeP (struct symInt *sInt)
 {
 	sInt->scope = currFunc;
 }
@@ -376,7 +376,7 @@ void debugPrintAllsFunc()
 	int count = 0;
 	for (ptr = symFuncTable; ptr != (struct symFunc *) 0;ptr = (struct symFunc *)ptr->next) {
 		count++;
-		if(ptr!=NULL) printf("%d Function %d: %s.\n", ptr->retType, count, ptr->name);
+		if(ptr!=NULL) printf("Function #%d name:%s,type:%d.\n", count, ptr->name, ptr->retType);
 	}
 }
 
@@ -396,7 +396,14 @@ void debugPrintAllsint()
 		}
 		else
 		{
-			printf(" scope: %s.\n", ((struct symFunc *)(ptr->scope))->name);
+			struct symFunc *ptr_ = ptr->scope;
+			printf(" scope: %s.\n", ptr_->name);
 		}
 	}
  }
+ 
+void setFuncScopeP (struct symFunc *sFunc)
+{
+	printf("setting current scope to:%s.\n", sFunc->name);
+	currFunc = sFunc;
+}
