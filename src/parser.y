@@ -71,7 +71,7 @@ program
 
 program_element_list
      : program_element_list program_element 	{printf("----------DEBUG printing all functions and variables:\n");debugPrintAllsFunc();debugPrintAllsint();}
-     | program_element 					//{printf("test2");}
+     | program_element 					{printf("----------DEBUG printing all functions and variables:\n");debugPrintAllsFunc();debugPrintAllsint();}
      ;
 
 program_element
@@ -88,7 +88,7 @@ type
 
 variable_declaration
      : variable_declaration COMMA identifier_declaration
-     | type identifier_declaration
+     | type identifier_declaration { if($1==0) { printf("ERROR You can not declare a variable as void.\n"); } }
      ;
 	
 identifier_declaration
@@ -247,7 +247,7 @@ function_parameter_list
      ;
 	
 function_parameter
-     : type identifier_declaration	 {$$ = $2; /*TODO: Error if void*/}
+     : type identifier_declaration	 {$$ = $2; if($1==0) { printf("ERROR You can not declare a variable as void.\n"); }}
      ;
 
 stmt_list
@@ -299,7 +299,7 @@ expression								// 0 = "false", nonzero = "true"
      | expression MINUS expression				{$$ = addcodeopexp2(opSUB, $1, $3);}
      | expression MUL expression				{$$ = addcodeopexp2(opMUL, $1, $3);}
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
-     | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeopexp2(opMEM_LD, $1, $3);}
+     | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeopexp2(opMEM_LD, $1, $3);} /*In c there is no check whether the array acces in the valid bounds*/
      | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
      | function_call
      | primary								{$$ = $1}

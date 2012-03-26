@@ -506,15 +506,18 @@ void debugPrintAllsint()
 	}
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		printf("Int: %s", ptr->name);
-		if(ptr->scope==NULL)
+		if(strcmp (ptr->name,"int") != 0)
 		{
-			printf(" scope: global.\n");
-		}
-		else
-		{
-			struct symFunc *ptr_ = ptr->scope;
-			printf(" scope: %s.\n", ptr_->name);
+			printf("Int: %s:=%d isArray:=%d", ptr->name, ptr->var, ptr->isArray);
+			if(ptr->scope==NULL)
+			{
+				printf(" scope: global.\n");
+			}
+			else
+			{
+				struct symFunc *ptr_ = ptr->scope;
+				printf(" scope: %s.\n", ptr_->name);
+			}
 		}
 	}
  }
