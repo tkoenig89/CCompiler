@@ -141,9 +141,9 @@ function_definition
 																	if(isFuncProto ($2))
 																	{
 																		printf("Declaration found. Checking if parameters match from the declaration.\n");
-																		printf("%s, %s.\n", $2, $4->name);
 																		if(paramFuncCheckP (getFunc($2), $4))
 																		{
+																			printf("Declaration and definition match!\n");
 																			if(strcmp ($4->name,"-1temp") == 0)
 																			{
 																				deleteFunc ("-1temp");
@@ -181,7 +181,7 @@ function_definition
 																}
 																else
 																{
-																	printf("Function definition %s not found. Checking for temp definition from param list.\n", $2);
+																	printf("No declaration entry. Checking for temp definition from param list.\n", $2);
 																	if(strcmp ($4->name,"-1temp") == 0)
 																	{
 																		printf("Temp Func found. will be renamed to %s to make it the definition.\n", $2);
@@ -234,9 +234,8 @@ function_declaration
      ;
 
 function_parameter_list
-     : function_parameter								{printf("choice1\n");$$ = putFunc ("-1temp", -1);setParamP ($$, $1);}
+     : function_parameter								{$$ = putFunc ("-1temp", -1);setParamP ($$, $1);$1->scope=$$;}
      | function_parameter_list COMMA function_parameter		{
-													printf("choice2\n");
 													if(!existsFunc("-1temp"))
 													{
 														$$ = putFunc ("-1temp", -1);														

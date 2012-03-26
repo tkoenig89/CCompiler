@@ -8,8 +8,10 @@ struct symFunc 	*currFunc;
 
 void init_table ()
 {
+	symIntTable=NULL;
+	symFuncTable=NULL;
 	currFunc=NULL;
-	printf("Hello World from symbol table.\n");
+	printf("Symbol Table was initialised.\n");
 }
 
 void putIntIntoTable (struct symInt *sInt)
@@ -232,13 +234,9 @@ struct symFunc *putFunc (char const *name, int retType)
 
 struct symFunc *getFunc (char const *name)
 {
-	printf("gf.\n");
 	struct symFunc *ptr;
-	printf("getFunc %s.\n", name);
 	for (ptr = symFuncTable; ptr != (struct symFunc *) 0;ptr = (struct symFunc *)ptr->next) {
-		printf("checking func %s.\n", ptr->name);
 		if (strcmp (ptr->name,name) == 0) {
-			printf("match!\n");
 			return ptr;
 		}
 	}	
@@ -322,16 +320,15 @@ void deleteParamInt (struct symInt *sInt)
 	struct symInt *ptr;
 	struct symInt *ptr_back;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		printf("checking var:%s.\n", ptr->name);
-		if (ptr==sInt) {
+		if (ptr==sInt) {			
 			if(ptr == symIntTable) {
 				symIntTable = ptr->next;
 			} else {
 				ptr_back->next = ptr->next;
 			}
-			printf("%s was deleted as a var\n", ptr->name);
-			free(ptr);
-			free(ptr->name);
+			free(sInt->name);
+			free(sInt);			
+			break;
 		}
 		ptr_back = ptr;
 	};
@@ -340,27 +337,27 @@ void deleteParamInt (struct symInt *sInt)
 void deleteParams (struct symFunc *sFunc0)
 {
 	struct symInt *param0 = sFunc0->params;
+	struct symInt *temp;
 	
 	if(param0==NULL)
 	{
 		return;
 	}
-	
-	printf("param count:%d.\n", sFunc0->paramCount);
 
 	for(int i=0;i<sFunc0->paramCount;i++)
-	{
-		printf("deleting param:%s.\n", param0->name);
-		deleteParamInt (param0);
-		//free(param0->name);
-		//free(param0);
-		
-		if(param0->next!=NULL) 
+	{	
+		printf("param:%s.\n", param0->name);
+		temp = param0->next;
+		if(temp!=NULL) 
 		{
-			param0 = param0->next;
+			temp = param0->next;
+			if(param0!=NULL) deleteParamInt (param0);
+			param0 = temp;
 		}
 		else
 		{
+			printf("temp==NULL\n");
+			if(param0!=NULL) deleteParamInt (param0);
 			break;
 		}
 
@@ -431,9 +428,22 @@ int paramFuncCheckP (struct symFunc *sFunc0, struct symFunc *sFunc1)
 
 	for(int i=0;i<sFunc0->paramCount;i++)
 	{
-		if(param0 != param1) 
+		if(strcmp (param0->name, param1->name) != 0)
 		{
 			return 0;
+		}
+		
+		if(param0->isArray != param1->isArray)
+		{
+			return 0;
+		}
+		
+		if(param0->isArray)
+		{
+			if(param0->var != param1->var)
+			{
+			return 0;
+			}
 		}
 		
 		if(param0->next!=NULL) 
