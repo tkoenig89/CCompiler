@@ -75,7 +75,7 @@ program_element_list
      ;
 
 program_element
-     : variable_declaration SEMICOLON
+     : variable_declaration SEMICOLON /*TODO: check if variable didn't already exist.*/
      | function_declaration SEMICOLON
      | function_definition
      | SEMICOLON
@@ -92,7 +92,7 @@ variable_declaration
      ;
 	
 identifier_declaration
-     : identifier_declaration BRACKET_OPEN NUM BRACKET_CLOSE /*{TODO ARRAY}*/
+     : identifier_declaration BRACKET_OPEN NUM BRACKET_CLOSE {$1->isArray = 1;$1->var = $3;}/*{TODO ARRAY}*/
      | ID {	/*if(existsInt($1)) {
 			printf("ERROR! The variable %s was already declared.\n", $1);
 			$$ = getInt($1);
@@ -204,12 +204,14 @@ function_declaration
 														if(existsFunc ($2)) {
 															printf("ERROR a function declaration with the same name already exists.\n");
 															setFuncProtoP (getFunc($2));
+															setScopeForParams (getFunc($2));
 														}
 														else
 														{
 															printf("Putting func into table and mark it as a prototype.\n");
 															$$ = putFunc ($2, $1);
 															setFuncProtoP ($$);
+															setScopeForParams ($$);
 														}
 													}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE		{
@@ -218,6 +220,7 @@ function_declaration
 															printf("ERROR a function declaration with the same name already exists.\n");
 															deleteFunc ("-1temp");
 															setFuncProtoP (getFunc($2));
+															setScopeForParams (getFunc($2));
 														}
 														else
 														{
@@ -225,6 +228,7 @@ function_declaration
 															renameFunc ("-1temp", $2);
 															setTypeP ($4, $1);
 															setFuncProtoP (getFunc($2));
+															setScopeForParams (getFunc($2));
 														}
 													}
      ;
@@ -238,7 +242,7 @@ function_parameter_list
 														$$ = putFunc ("-1temp", -1);														
 														setParamP ($$, $3);
 													} else {
-														incParamCountP ($3);
+														incParamCountP (getFunc("-1temp"));
 													}
 												}
      ;

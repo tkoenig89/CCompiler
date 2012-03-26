@@ -7,12 +7,11 @@ struct symInt
 	char *name;
 	int isArray;
 	void* scope;
-	union
-	{
-		int var;
-		struct symInt *nextElement;
-	} value;
-	struct symInt *next;
+
+	int var; //is used for number of elements when the var is an array
+	struct symInt *nextElement;
+	
+struct symInt *next;
 };
 
 struct symFunc
@@ -20,11 +19,10 @@ struct symFunc
 	char *name;
 	int retType;
 	int isPrototype;
-	union
-	{
-		int paramCount;
-		struct symInt* params; //Will point to the first parameter in the symIntTable. 
-	} params;
+
+	int paramCount;
+	struct symInt* params; //Will point to the first parameter in the symIntTable. 
+
 struct symFunc *next;
 };
 
@@ -52,6 +50,7 @@ int paramFuncCheckP (struct symFunc *sFunc0, struct symFunc *sFunc1);
 struct symFunc *getFunc (char const *name);
 void setFuncProtoP (struct symFunc *sFunc);
 void setFuncScopeP (struct symFunc *sFunc);
+void setScopeForParams (struct symFunc *sFunc0);
 
 void debugPrintAllsFunc();
 void debugPrintAllsint();
