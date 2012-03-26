@@ -26,8 +26,11 @@ when entering stuff in the compiler be sure to put everything into a function, e
 c - mini test code:
 
 int g; int f(){int a,b,c;}
-int g; int f(){int a,b,c;} int g2; int ff(){int a,b,c;} void pr0n(){int c,u,m;}
+int g; int f(){int a,b,c;} int g2; int ff(){int a,b,c;} void porn(){int c,u,m;}
 int a(int b); int a(int b) {}
 int g; int f(int a, int b, int c) {}
 
 int g; int f(int d, int e, int f){int a,b,c;} int g2; int ff(int a1337){int a,b,c;} void pr0n(int crazy){int c,u,m;}
+int a(int b); int a(int b) {}
+int f(int a, int c[1337]); int f(int a, int c[1337]) {}
+int g;int f(int a, int c);
