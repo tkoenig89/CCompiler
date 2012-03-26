@@ -76,7 +76,7 @@ program_element_list
 program_element
      : variable_declaration SEMICOLON
      | function_declaration SEMICOLON
-     | function_definition
+     | function_definition stmt_list BRACE_CLOSE
      | SEMICOLON
      ;
      
@@ -107,8 +107,8 @@ function_signature
      ;*/
 
 function_definition
-     : type ID PARA_OPEN PARA_CLOSE BRACE_OPEN stmt_list BRACE_CLOSE
-     | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN stmt_list BRACE_CLOSE
+     : type ID PARA_OPEN PARA_CLOSE BRACE_OPEN //stmt_list BRACE_CLOSE
+     | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN //stmt_list BRACE_CLOSE
      ;
 
 function_declaration
