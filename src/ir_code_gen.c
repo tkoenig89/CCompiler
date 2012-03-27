@@ -5,7 +5,7 @@
 
 struct strCode  *code;
 
-int code_offset = 0;
+int code_count = 0;
 int temp_reg_count = -1;
 
 struct symInt *irtempInt() 
@@ -26,28 +26,28 @@ struct symInt *irtempInt()
 /* Generates code at current location */
 void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, struct symInt *int2, struct symFunc *func, const char *jmplabel, struct strCode *jmpTo)
 {
-	code_offset += 1;
+	code_count += 1;
 	//TODO: Check whether realloc does really work. if it doesnt make it a linked list
-	struct strCode *codebuffer = (struct strCode*) realloc (code, code_offset * sizeof(struct strCode));
+	struct strCode *codebuffer = (struct strCode*) realloc (code, code_count * sizeof(struct strCode));
 	
 	code = codebuffer;
 	
-	code[code_offset-1].op = operation;
+	code[code_count-1].op = operation;
 	
-	code[code_offset-1].int0 = int0;
-	code[code_offset-1].int1 = int1;
-	code[code_offset-1].int2 = int2;
-	code[code_offset-1].func = func;
-	code[code_offset-1].jmplabel = jmplabel;
-	code[code_offset-1].jmpTo = jmpTo;
+	code[code_count-1].int0 = int0;
+	code[code_count-1].int1 = int1;
+	code[code_count-1].int2 = int2;
+	code[code_count-1].func = func;
+	code[code_count-1].jmplabel = jmplabel;
+	code[code_count-1].jmpTo = jmpTo;
 }
 
 void addcodeass(struct symInt *int0, struct symInt *int1)
 {
 	//int0 = int1
 	addcode(opASSIGN, int0, int1, NULL, NULL, NULL, NULL);
-	printf("Code offset: %d\n", code_offset);
-	printf("IR: ASSIGN %s = %s\n", code[code_offset-1].int0->name, code[code_offset-1].int1->name);
+	printf("Code offset: %d\n", code_count);
+	printf("IR: ASSIGN %s = %s\n", code[code_count-1].int0->name, code[code_count-1].int1->name);
 	
 	temp_reg_count = 0;
 }
@@ -95,7 +95,7 @@ void backpatch(int addr, enum code_ops operation, int arg )
 void printcode()
 {
 	int i = 0;
-	while (i < code_offset) {
+	while (i < code_count) {
 		//printf("%3ld: %-10s%4ld\n",i,op_name[(int) code[i].op], code[i].arg );
 		//printf("%s "
 		i++;
@@ -109,14 +109,8 @@ void debugPrintAllopcodes()
 	struct symInt *func_;
 	struct strCode  *c_;
 	
-	for(int i=0;i<code_offset;i++)
-	{
-		/*code[code_offset-1].int0 = int0;
-		code[code_offset-1].int1 = int1;
-		code[code_offset-1].int2 = int2;
-		code[code_offset-1].func = func;
-		code[code_offset-1].jmplabel = jmplabel; jmpTo*/
-		
+	for(int i=0;i<code_count;i++)
+	{		
 		c = &code[i];
 		printf("OP: %s", enumStrings[c->op]);
 		
@@ -131,4 +125,14 @@ void debugPrintAllopcodes()
 		
 		printf("\n");
 	}
+}
+
+struct strCode  *getopcodeArray()
+{
+	return code;
+}
+
+int getopcodeCount()
+{
+	return code_count;
 }

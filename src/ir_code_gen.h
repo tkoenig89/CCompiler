@@ -44,4 +44,7 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 void printcode();
 void debugPrintAllopcodes();
 
+struct strCode  *getopcodeArray();
+int getopcodeCount();
+
 #endif
