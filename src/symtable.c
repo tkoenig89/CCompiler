@@ -519,14 +519,11 @@ void debugPrintAllsFunc()
 			printf("Function #%d name:%s,type:%d.\n", count, ptr->name, ptr->retType);
 			printAllParams (ptr);
 		}
-		printf("end.\n");
 	}
-	printf("end2.\n");
 }
 
 void debugPrintAllsint()
  {
-	printf("test\n");
 	int count = 0;
 	if(symIntTable==NULL)
 	{

@@ -13,7 +13,7 @@ enum code_ops
 	
 	opIF, opGOTO,
 	
-	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF
+	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END
 };
 
 static char* enumStrings[] = {
@@ -23,7 +23,7 @@ static char* enumStrings[] = {
 	
 							"IF", "GOTO",
 
-							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF"
+							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF", "FUNC_DEF_END"
 						
 						};
 

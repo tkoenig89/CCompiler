@@ -141,11 +141,15 @@ void debugPrintAllopcodes()
 	struct symInt *int_;
 	struct symInt *func_;
 	int count=0;
+	char tab = '\0';
 	
 	for(int i=0;i<code_count;i++)
 	{
 		c = &code[i];
-		printf("OP #%d: %s", count, enumStrings[c->op]);
+		
+		if(c->op==opFUNC_DEF_END) tab = '\0';
+		
+		printf("%cOP #%d: %s", tab, count, enumStrings[c->op]);
 		if(c->int0!=NULL) {int_=c->int0;printf(", INT0: %s", int_->name);}
 		if(c->int1!=NULL) {int_=c->int1;printf(", INT1 %s", int_->name);}
 		if(c->int2!=NULL) {int_=c->int2;printf(", INT2: %s", int_->name);}
@@ -156,6 +160,8 @@ void debugPrintAllopcodes()
 		
 		printf("\n");
 		count++;
+		
+		if(c->op==opFUNC_DEF) tab = '\t';		
 	}
 }
 

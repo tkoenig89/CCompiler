@@ -145,7 +145,7 @@ function_definition
 											}
 											addcodeopfunc(opFUNC_DEF, NULL, getFunc($2), -1);
 										}
-	stmt_list BRACE_CLOSE {setFuncScopeP (NULL);}
+	stmt_list BRACE_CLOSE {addcodeopfunc(opFUNC_DEF_END, NULL, getFunc($2), -1);setFuncScopeP (NULL);}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN 	{
 																printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
 																if(existsFunc ($2))
@@ -210,7 +210,7 @@ function_definition
 																	}
 																}
 															}
-	stmt_list BRACE_CLOSE {setFuncScopeP (NULL);}
+	stmt_list BRACE_CLOSE {addcodeopfunc(opFUNC_DEF_END, NULL, getFunc($2), -1);setFuncScopeP (NULL);}
      ;
 
 function_declaration
