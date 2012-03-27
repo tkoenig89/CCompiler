@@ -97,7 +97,17 @@ identifier_declaration
 			printf("ERROR! The variable %s was already declared.\n", $1);
 			$$ = getInt($1);
 		} else {*/
-			$$ = putInt ($1, 0, 0);
+			if(checkIntDec ($1))
+			{
+				//error wurde schon einmal deklariert
+				$$ = getIntCurrScope ($1);
+				printf("ERROR: possible 2nd declaration found!!\n");
+			}
+			else
+			{
+				$$ = putInt ($1, 0, 0);
+			}
+			
 		//}
 	     }
      ;

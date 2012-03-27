@@ -136,6 +136,31 @@ struct symInt *getInt (char const * name)
 		return getIntL(name);
 	}
 }
+
+
+int checkIntDec (char const * name)
+{
+	struct symInt *ptr;
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == currFunc)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+struct symInt *getIntCurrScope (char const * name)
+{
+	struct symInt *ptr;
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == currFunc)) {
+			return ptr;
+		}
+	}
+	return NULL;
+}
+
+
 /*
 struct symInt *putIntParam (char const *name, int isArray, int val)
 {

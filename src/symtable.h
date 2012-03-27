@@ -37,6 +37,8 @@ struct symInt *tempInt (char const *name);
 //int setScopeParam (char const * name);
 //int setScope (char const * name);
 void setIntScopeP (struct symInt *sInt);
+int checkIntDec (char const * name);
+struct symInt *getIntCurrScope (char const * name);
 
 struct symFunc *putFunc (char const *name, int isVoid);
 struct symFunc *getFunc (char const *name);
