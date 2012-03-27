@@ -303,7 +303,7 @@ expression								// 0 = "false", nonzero = "true"
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
      | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeopexp2(opMEM_LD, $1, $3);} /*In c there is no check whether the array acces in the valid bounds*/
      | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
-     | function_call
+     | function_call							/*TODO: check if parameters are valid*/
      | primary								{$$ = $1}
      ;
 
