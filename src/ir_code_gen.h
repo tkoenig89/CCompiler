@@ -11,7 +11,7 @@ enum code_ops
 	
 	opLOGICAL_AND, opLOGICAL_OR, opLOGICAL_NOT, opNE, opEQ, opGT, opGTEQ, opLS, opLSEQ,
 	
-	opIF, opGOTO,
+	opIF, opGOTO, opWHILE, opWHILE_BEGIN, opDO_WHILE_BEGIN,
 	
 	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END
 };
@@ -21,7 +21,7 @@ static char* enumStrings[] = {
 	
 							"LOGICAL_AND", "LOGICAL_OR", "LOGICAL_NOT", "NE", "EQ", "GT", "GTEQ", "LS", "LSEQ",
 	
-							"IF", "GOTO",
+							"IF", "GOTO", "WHILE", "WHILE_BEGIN", "DO_WHILE_BEGIN",
 
 							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF", "FUNC_DEF_END"
 						
@@ -46,7 +46,13 @@ void addcodeop2(enum code_ops operation, struct symInt *int0, struct symInt *int
 int opcodeFindFunctionDef(struct symFunc *func);
 void addif(struct symInt *int0);
 void addifgoto();
-void backpatchfirstmarkedgoto();
+void backpatchif();
+void addwhile(struct symInt *int0);
+void addwhilebegin();
+void addwhilegotobegin();
+void backpatchwhile();
+void adddowhile();
+void adddowhileend(struct symInt *int0);
 
 void printcode();
 void debugPrintAllopcodes();

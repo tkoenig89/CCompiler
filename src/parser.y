@@ -270,8 +270,8 @@ stmt
      : stmt_block
      | variable_declaration SEMICOLON	/*Nothing to be done here*/
      | expression SEMICOLON			/*Nothing to be done here*/
-     | stmt_conditional
-     | stmt_loop
+     | stmt_conditional				/*Nothing to be done here*/
+     | stmt_loop						/*Nothing to be done here*/
      | RETURN expression SEMICOLON		{
 									if($2->scope!=NULL)
 									{
@@ -297,13 +297,13 @@ stmt_conditional
      ;
      
 stmt_conditional_r
-     : stmt {backpatchfirstmarkedgoto();}
-     | stmt ELSE {addifgoto();backpatchfirstmarkedgoto();} stmt {backpatchfirstmarkedgoto();}
+     : stmt {backpatchif();}
+     | stmt ELSE {addifgoto();backpatchif();} stmt {backpatchif();}
      ;
      
 stmt_loop
-     : WHILE PARA_OPEN expression PARA_CLOSE stmt
-     | DO stmt WHILE PARA_OPEN expression PARA_CLOSE SEMICOLON
+     : WHILE {addwhilebegin();} PARA_OPEN expression PARA_CLOSE {addwhile($4);addwhilegotobegin();} stmt {backpatchwhile();}
+     | DO {adddowhile();} stmt WHILE PARA_OPEN expression PARA_CLOSE SEMICOLON {adddowhileend($6);}
      ;
      
 /*

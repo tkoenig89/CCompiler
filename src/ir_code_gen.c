@@ -101,9 +101,8 @@ void addifgoto()
 	addcode(opGOTO, NULL, NULL, NULL, NULL, -137);
 }
 
-void backpatchfirstmarkedgoto()
+void backpatchif()
 {	
-	printf("backpatch now!\n");
 	struct strCode  *c;	
 	
 	for(int i=0;i<code_count;i++)
@@ -119,6 +118,75 @@ void backpatchfirstmarkedgoto()
 			}
 		}	
 	}
+}
+
+void addwhile(struct symInt *int0)
+{
+	addcode(opIF, int0, NULL, NULL, NULL, getopcodeCount()+2);
+}
+
+void addwhilebegin()
+{
+	addcode(opWHILE_BEGIN, NULL, NULL, NULL, NULL, -137);
+}
+
+void addwhilegotobegin()
+{
+	addcode(opGOTO, NULL, NULL, NULL, NULL, -137);
+}
+
+void backpatchwhile()
+{	
+	struct strCode  *c;	
+	
+	for(int i=0;i<code_count;i++)
+	{
+		c = &code[i];
+		
+		if(c->op==opWHILE_BEGIN)
+		{
+			if(c->jmpTo==-137)
+			{
+				addcode(opGOTO, NULL, NULL, NULL, NULL, i);
+				c->jmpTo=-1;
+			}
+		}
+		
+		if(c->op==opGOTO)
+		{
+			if(c->jmpTo==-137)
+			{
+				c->jmpTo = getopcodeCount();
+				break;
+			}
+		}	
+	}
+}
+
+void adddowhile()
+{
+	addcode(opDO_WHILE_BEGIN, NULL, NULL, NULL, NULL, -137);
+}
+
+void adddowhileend(struct symInt *int0)
+{
+	struct strCode  *c;	
+	int i;
+	for(i=0;i<code_count;i++)
+	{
+		c = &code[i];
+		
+		if(c->op==opDO_WHILE_BEGIN)
+		{
+			if(c->jmpTo==-137)
+			{
+				c->jmpTo=-1;
+				break;
+			}
+		}
+	}
+	
+	addcode(opIF, int0, NULL, NULL, NULL, i);
 }
 
 struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2)
