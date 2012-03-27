@@ -70,7 +70,7 @@ struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 {
 	//TODO: If we regocnise that int1 is already a temp var, use int1 as the result instead of creating a new temp var to save register space
 	struct symInt *ptr;
-	if(int1->scope!=137)
+	if(int1->next!=137)
 	{
 		ptr = irtempInt();
 	}
@@ -95,7 +95,7 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 {
 	//TODO: If we regocnise that int1 and int2 are already a temp vars, we use either int1 or int2 as the result instead of creating a new temp var to save register space
 	struct symInt *ptr;
-	if((int1->scope!=137) && (int2->scope!=137))
+	if((int1->next!=137) && (int2->next!=137))
 	{
 		ptr = irtempInt();
 	}

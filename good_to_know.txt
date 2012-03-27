@@ -43,3 +43,9 @@ int main(){int a,b,c,d; a = c * d + b * d + c * c + d * d  * d + 42;}
 int f(int a); int f(int a) {a=0;} int main() {int i;i=33;int arr[10];f(i);f(33);f(arr);g();}
 
 int f(int a, int b, int c, int d); int f(int a, int b, int c, int d) {int e; e= a +b;} int main(){int i;i=2;f(42,1337,i,i);main();}
+
+int f(int a); int f(int a) {int i;i=1337; a = i * 2; return a*2;} int main(){f(42);}
+
+int f(int a); int f(int a) {int i;i=1337; a = i * 2;} int main(){f(42);}
+
+int f(int a) {return a*2;}

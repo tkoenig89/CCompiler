@@ -273,12 +273,16 @@ stmt
      | stmt_conditional
      | stmt_loop
      | RETURN expression SEMICOLON		{
-									if($2->scope->retType==0)
+									if($2->scope!=NULL)
 									{
-										printf("ERROR: Function was declarad as VOID.\n");
+										if($2->scope->retType==0)
+										{
+											printf("ERROR: Function was declarad as VOID. It can not return a value. Either use \"RETURN;\" or use type int for the func.\n");
+										}
 									}
+									addcodeop1(opRETURN, $2);
 								}
-     | RETURN SEMICOLON				
+     | RETURN SEMICOLON				{addcodeop1(opRETURN, NULL);}
      | SEMICOLON /* empty statement */
      ;
 

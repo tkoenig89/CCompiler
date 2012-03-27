@@ -65,7 +65,9 @@ struct symInt *tempInt (char const *name)
 	strcpy (ptr->name,name);
 	
 	ptr->isArray = 0; 
-	ptr->scope = 137; //Temp Var Marker... 
+	ptr->scope = NULL;
+	
+	ptr->next = 137; //Temp Var Marker... 
 	
 	return ptr;
 }
