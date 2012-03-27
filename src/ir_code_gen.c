@@ -106,7 +106,7 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 		//printf("temp_reg_count:%d.\n", temp_reg_count);
 	}
 
-	addcode(operation, ptr, int1, int2, NULL, NULL);
+	addcode(operation, ptr, int1, int2, NULL, -1);
 	printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
 	
 	return ptr;
