@@ -6,7 +6,7 @@ struct symInt
 {
 	char *name;
 	int isArray;
-	void* scope;
+	struct symFunc *scope;
 
 	int var; //is used for number of elements when the var is an array
 	struct symInt *nextElement;

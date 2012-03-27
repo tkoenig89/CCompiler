@@ -126,6 +126,10 @@ function_definition
 											{
 												if(isFuncProto ($2))
 												{
+													if($1!=getFunc($2)->retType)
+													{
+														printf("ERROR: Type mismatch from Function declaration.\n");
+													}
 													printf("Declaration found.\n");
 													setFuncIsDeclared ($2);
 													setFuncScopeP (getFunc($2));
@@ -152,39 +156,29 @@ function_definition
 																{
 																	if(isFuncProto ($2))
 																	{
-																		printf("Declaration found. Checking if parameters match from the declaration.\n");
-																		if(paramFuncCheckP (getFunc($2), $4))
+																		//printf("Declaration found. Checking if parameters match from the declaration.\n");
+																		if(!paramFuncCheckP (getFunc($2), $4))
 																		{
-																			printf("Declaration and definition match!\n");
-																			if(strcmp ($4->name,"-1temp") == 0)
-																			{
-																				deleteFunc ("-1temp");
-																				setFuncIsDeclared ($2);
-																				setFuncScopeP (getFunc($2));
-																				addcodeopfunc(opFUNC_DEF, NULL, getFunc($2), -1);
-																			}
-																			else
-																			{
-																				printf("INTERNAL ERROR: Function has not the expected TEMP_NAME!\n");
-																			}
-																			
+																			printf("ERROR: Function-Parameter definition does not match function declaration.\n");
+																		}
+																		if($1!=getFunc($2)->retType)
+																		{
+																			printf("ERROR: Type mismatch from Function declaration.\n");
+																		}
+																		
+																		//printf("Declaration and definition match!\n");
+																		
+																		if(strcmp ($4->name,"-1temp") == 0)
+																		{
+																			deleteFunc ("-1temp");
+																			setFuncIsDeclared ($2);
+																			setFuncScopeP (getFunc($2));
+																			addcodeopfunc(opFUNC_DEF, NULL, getFunc($2), -1);
 																		}
 																		else
 																		{
-																			printf("ERROR: Function definition does not match function declaration.\n");
-																			if(strcmp ($4->name,"-1temp") == 0)
-																			{
-																				deleteFunc ("-1temp");
-																				setFuncIsDeclared ($2);
-																				setFuncScopeP (getFunc($2));
-																				addcodeopfunc(opFUNC_DEF, NULL, getFunc($2), -1);
-																			}
-																			else
-																			{
-																				printf("INTERNAL ERROR: Function has not the expected TEMP_NAME!\n");
-																			}
+																			printf("INTERNAL ERROR: Function has not the expected TEMP_NAME!\n");
 																		}
-																		
 																	}
 																	else
 																	{
@@ -278,8 +272,13 @@ stmt
      | expression SEMICOLON
      | stmt_conditional
      | stmt_loop
-     | RETURN expression SEMICOLON
-     | RETURN SEMICOLON
+     | RETURN expression SEMICOLON		{
+									if($2->scope->retType==0)
+									{
+										printf("ERROR: Function was declarad as VOID.\n");
+									}
+								}
+     | RETURN SEMICOLON				
      | SEMICOLON /* empty statement */
      ;
 
