@@ -8,7 +8,6 @@
 #include "main.h"
 #include "resource_manager.h"
 #include "diag.h"
-#include "final_code_gen.h"
 
 /* Constants */
 static const char *C_EXT = ".c";
@@ -258,7 +257,6 @@ int main (int argc, char *argv[]) {
 init_table();
   /* the resource manager must be initialized before any 
    * further actions are implemented */
-test();
 yyparse();
 return 0;
   /*
