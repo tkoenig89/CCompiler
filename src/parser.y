@@ -143,7 +143,7 @@ function_definition
 												$<sFunc>$ = putFunc ($2, $1);
 												setFuncScopeP (getFunc($2));
 											}
-											
+											addcodeopfunc(opFUNC_DEF, NULL, getFunc($2), -1);
 										}
 	stmt_list BRACE_CLOSE {setFuncScopeP (NULL);}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN 	{
@@ -161,6 +161,7 @@ function_definition
 																				deleteFunc ("-1temp");
 																				setFuncIsDeclared ($2);
 																				setFuncScopeP (getFunc($2));
+																				addcodeopfunc(opFUNC_DEF, NULL, getFunc($2), -1);
 																			}
 																			else
 																			{
@@ -176,6 +177,7 @@ function_definition
 																				deleteFunc ("-1temp");
 																				setFuncIsDeclared ($2);
 																				setFuncScopeP (getFunc($2));
+																				addcodeopfunc(opFUNC_DEF, NULL, getFunc($2), -1);
 																			}
 																			else
 																			{
@@ -200,6 +202,7 @@ function_definition
 																		renameFunc ("-1temp", $2);
 																		setTypeP ($4, $1);
 																		setFuncScopeP ($4);
+																		addcodeopfunc(opFUNC_DEF, NULL, $4, -1);
 																	}
 																	else
 																	{
@@ -299,7 +302,7 @@ stmt_loop
  * assignment operators.expression
  */									
 expression								// 0 = "false", nonzero = "true"
-     : expression ASSIGN expression				{addcodeass($1, $3);}
+     : expression ASSIGN expression				{addcodeass($1, $3);}							//WARNING: Ambigious! You dont know if you have to assign to/load from an array or if it is an normal int at this point. check this when generating final code
      | expression LOGICAL_OR expression			{$$ = addcodeopexp2(opLOGICAL_OR, $1, $3);}
      | expression LOGICAL_AND expression			{$$ = addcodeopexp2(opLOGICAL_AND, $1, $3);}
      | LOGICAL_NOT expression					{$$ = addcodeopexp1(opLOGICAL_NOT, $2);}
@@ -344,6 +347,7 @@ function_call
 														printf("ERROR! Function was not declared before the call!\n");
 														$$ = putFunc ("-1undeclared", -1);
 													}
+													addcodeopfunc(opCALL, putInt ("int", 0, 0), $$, opcodeFindFunctionDef($$));
 												}
       | ID PARA_OPEN function_call_parameters PARA_CLOSE	{
 													printf("Parameterised Function call regocnised.\n");
@@ -365,12 +369,14 @@ function_call
 														printf("ERROR! Function was not declared before the call!\n");
 														$$ = putFunc ("-1undeclared", -1);
 													}
+													
+													addcodeopfunc(opCALL, putInt ("int", 0, $3->count), $$, opcodeFindFunctionDef($$));
 												}
       ;
 
 function_call_parameters
-     : function_call_parameters COMMA expression			{$$->count += 1;}
-     | expression										{$$ = createParamList($1);}
+     : function_call_parameters COMMA expression			{$$->count += 1;addcodeop1(opPARAM, $3);}
+     | expression										{$$ = createParamList($1);addcodeop1(opPARAM, $1);}
      ;
 
 %%

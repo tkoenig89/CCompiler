@@ -13,7 +13,7 @@ enum code_ops
 	
 	opIF, opGOTO,
 	
-	opRETURN, opCALL, opMEM_LD, opMEM_ST, opADDR
+	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF
 };
 
 static char* enumStrings[] = {
@@ -23,7 +23,7 @@ static char* enumStrings[] = {
 	
 							"IF", "GOTO",
 
-							"RETURN", "CALL", "MEM_LD", "MEM_ST", "ADDR"
+							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF"
 						
 						};
 
@@ -34,13 +34,17 @@ struct strCode
 	struct symInt *int1;		
 	struct symInt *int2;		
 	struct symFunc *func;		
-	const char *jmplabel;
-	struct strCode *jmpTo; 		//Not used for a linked list. have a look at "debugPrintAllopcodes", the code array will be a dynamic array!
+	int jmpTo;
 };
 
 void addcodeass(struct symInt *int0, struct symInt *int1);
 struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1);
 struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2);
+void addcodeopfunc(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo);
+void addcodeop1(enum code_ops operation, struct symInt *int0);
+void addcodeop2(enum code_ops operation, struct symInt *int0, struct symInt *int1);
+int opcodeFindFunctionDef(struct symFunc *func);
+
 void printcode();
 void debugPrintAllopcodes();
 

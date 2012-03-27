@@ -245,7 +245,7 @@ struct symFunc *putFunc (char const *name, int retType)
 	ptr->params = NULL;
 	ptr->isPrototype = 0;
 	
-	//ptr->next = (struct symFunc *)symFuncTable;
+	ptr->next = NULL;
 	//symFuncTable = ptr;
 	
 	putFuncIntoTable(ptr);
@@ -519,11 +519,14 @@ void debugPrintAllsFunc()
 			printf("Function #%d name:%s,type:%d.\n", count, ptr->name, ptr->retType);
 			printAllParams (ptr);
 		}
+		printf("end.\n");
 	}
+	printf("end2.\n");
 }
 
 void debugPrintAllsint()
  {
+	printf("test\n");
 	int count = 0;
 	if(symIntTable==NULL)
 	{
