@@ -65,7 +65,16 @@ struct symInt *addcodemin(struct symInt *int1)
 struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 {
 	//TODO: If we regocnise that int1 is already a temp var, use int1 as the result instead of creating a new temp var to save register space
-	struct symInt *ptr = irtempInt();
+	struct symInt *ptr;
+	if(int1->scope!=137)
+	{
+		ptr = irtempInt();
+	}
+	else
+	{
+		ptr=int1;		
+	}
+	
 
 	addcode(operation, ptr, int1, NULL, NULL, NULL, NULL);
 	printf("IR: %d %s = op %s\n", operation, ptr->name, int1->name);
@@ -76,7 +85,17 @@ struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2)
 {
 	//TODO: If we regocnise that int1 and int2 are already a temp vars, we use either int1 or int2 as the result instead of creating a new temp var to save register space
-	struct symInt *ptr = irtempInt();
+	struct symInt *ptr;
+	if((int1->scope!=137) && (int2->scope!=137))
+	{
+		ptr = irtempInt();
+	}
+	else
+	{
+		ptr = int1;
+		temp_reg_count -= 1;
+		//printf("temp_reg_count:%d.\n", temp_reg_count);
+	}
 
 	addcode(operation, ptr, int1, int2, NULL, NULL, NULL);
 	printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);

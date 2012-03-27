@@ -47,7 +47,7 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	//set scope; NULL == global
 	ptr->scope = currFunc; 
 	
-	//ptr->next = (struct symInt *)symIntTable;
+	ptr->next = NULL;
 	//symIntTable = ptr;
 
 	putIntIntoTable(ptr);
@@ -65,7 +65,7 @@ struct symInt *tempInt (char const *name)
 	strcpy (ptr->name,name);
 	
 	ptr->isArray = 0; 
-	ptr->scope = NULL; 
+	ptr->scope = 137; //Temp Var Marker... 
 	
 	return ptr;
 }
@@ -524,15 +524,17 @@ void debugPrintAllsFunc()
 
 void debugPrintAllsint()
  {
-	 if(symIntTable==NULL)
+	int count = 0;
+	if(symIntTable==NULL)
 	{
 		printf("no variables in table.\n");
 		return;
 	}
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if(strcmp (ptr->name,"int") != 0)
-		{
+		if(count>100) break; else count++;
+		//if(strcmp (ptr->name,"int") != 0)
+		//{
 			printf("Int: %s:=%d isArray:=%d", ptr->name, ptr->var, ptr->isArray);
 			if(ptr->scope==NULL)
 			{
@@ -543,7 +545,7 @@ void debugPrintAllsint()
 				struct symFunc *ptr_ = ptr->scope;
 				printf(" scope: %s.\n", ptr_->name);
 			}
-		}
+		//}
 	}
  }
  
