@@ -34,3 +34,4 @@ int g; int f(int d, int e, int f){int a,b,c;} int g2; int ff(int a1337){int a,b,
 int a(int b); int a(int b) {}
 int f(int a, int c[1337]); int f(int a, int c[1337]) {}
 int g;int f(int a, int c);
+int main(){int a,b,c,d; a = b * c + c * d;}

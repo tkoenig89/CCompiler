@@ -70,8 +70,8 @@ program
      ;
 
 program_element_list
-     : program_element_list program_element 	{printf("----------DEBUG printing all functions and variables:\n");debugPrintAllsFunc();debugPrintAllsint();}
-     | program_element 					{printf("----------DEBUG printing all functions and variables:\n");debugPrintAllsFunc();debugPrintAllsint();}
+     : program_element_list program_element 	{printf("----------DEBUG printing all functions and variables:\n\n");printf("----------DEBUG Functions:\n");debugPrintAllsFunc();printf("----------DEBUG Functions:\n");debugPrintAllsint();printf("----------DEBUG opCodes:\n");debugPrintAllopcodes();}
+     | program_element 					{printf("----------DEBUG printing all functions and variables:\n\n");printf("----------DEBUG Functions:\n");debugPrintAllsFunc();printf("----------DEBUG Functions:\n");debugPrintAllsint();printf("----------DEBUG opCodes:\n");debugPrintAllopcodes();}
      ;
 
 program_element
@@ -101,7 +101,7 @@ identifier_declaration
 			{
 				//error wurde schon einmal deklariert
 				$$ = getIntCurrScope ($1);
-				printf("ERROR: possible 2nd declaration found!!\n");
+				printf("ERROR: This Variable was already defined.\n");
 			}
 			else
 			{
