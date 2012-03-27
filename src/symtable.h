@@ -13,7 +13,8 @@ struct symInt
 	
 struct symInt *next;
 };
-
+//TODO: make a third 'list' struct which contains a list of parameters for a function-CALL
+//will also be used as the list for the ir code...
 struct symFunc
 {
 	char *name;
@@ -22,6 +23,7 @@ struct symFunc
 
 	int paramCount;
 	struct symInt* params; //Will point to the first parameter in the symIntTable. 
+	/*Maybe we need the same count and first pointer for the variables cotained in the function?*/
 
 struct symFunc *next;
 };

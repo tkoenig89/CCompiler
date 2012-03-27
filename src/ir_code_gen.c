@@ -27,7 +27,7 @@ struct symInt *irtempInt()
 void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, struct symInt *int2, struct symFunc *func, const char *jmplabel)
 {
 	code_offset += 1;
-	
+	//TODO: Check whether realloc does really work. if it doesnt make it a linked list
 	struct strCode *codebuffer = (struct strCode*) realloc (code, code_offset * sizeof(struct strCode));
 	
 	code = codebuffer;

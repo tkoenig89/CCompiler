@@ -213,6 +213,7 @@ function_declaration
 															setFuncProtoP ($$);
 															setScopeForParams ($$);
 														}
+														setFuncScopeP (NULL);
 													}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE		{
 														printf("Function Declaration %s found.\n", $2);
@@ -228,8 +229,9 @@ function_declaration
 															renameFunc ("-1temp", $2);
 															setTypeP ($4, $1);
 															setFuncProtoP (getFunc($2));
-															setScopeForParams (getFunc($2));
+															setScopeForParams (getFunc($2));															
 														}
+														setFuncScopeP (NULL);
 													}
      ;
 
