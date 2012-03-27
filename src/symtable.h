@@ -28,6 +28,12 @@ struct symFunc
 struct symFunc *next;
 };
 
+struct symFuncCallParamList
+{
+	struct symInt *sInt;
+	int count;
+};
+
 struct symInt *putInt (char const *name, int isArray, int val);
 struct symInt *getInt (char const * name);
 int existsInt (char const * name);
@@ -55,6 +61,8 @@ struct symFunc *getFunc (char const *name);
 void setFuncProtoP (struct symFunc *sFunc);
 void setFuncScopeP (struct symFunc *sFunc);
 void setScopeForParams (struct symFunc *sFunc0);
+struct symFuncCallParamList *createParamList(struct symInt *sInt);
+int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *params);
 
 void debugPrintAllsFunc();
 void debugPrintAllsint();

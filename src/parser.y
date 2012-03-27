@@ -16,7 +16,7 @@
 	char *id;
 	struct symInt *sInt;
 	struct symFunc *sFunc;
-	/*STRUCT ZUR WEITERGABE VON INFOS NACH OBEN... %type ...*/
+	struct symFuncCallParamList *sPList;
 }
 
 %debug
@@ -55,9 +55,11 @@
 
 //%type <sFunc> stmt_list
 //%type <sFunc> stmt
+%type <sPList> function_call_parameters
 %type <sFunc> function_definition
 %type <sFunc> function_parameter_list
 %type <sFunc> function_declaration
+%type <sFunc> function_call
 %type <num> type
 %type <sInt> function_parameter
 %type <sInt> identifier_declaration
@@ -331,13 +333,44 @@ primary
      ;
 
 function_call
-      : ID PARA_OPEN PARA_CLOSE
-      | ID PARA_OPEN function_call_parameters PARA_CLOSE
+      : ID PARA_OPEN PARA_CLOSE						{
+													printf("Function call regocnised.\n");
+													if(existsFunc($1))
+													{
+														$$ = getFunc($1);
+													}
+													else
+													{
+														printf("ERROR! Function was not declared before the call!\n");
+														$$ = putFunc ("-1undeclared", -1);
+													}
+												}
+      | ID PARA_OPEN function_call_parameters PARA_CLOSE	{
+													printf("Parameterised Function call regocnised.\n");
+													if(existsFunc($1))
+													{
+														$$ = getFunc($1);
+														if(paramFuncCallCheckP ($$, $3))
+														{
+															printf("Functional Call Param Check OK!\n");
+														}
+														else
+														{
+															printf("ERROR: Functional Call Param Check FAILED!\n");
+														}
+														
+													}
+													else
+													{
+														printf("ERROR! Function was not declared before the call!\n");
+														$$ = putFunc ("-1undeclared", -1);
+													}
+												}
       ;
 
 function_call_parameters
-     : function_call_parameters COMMA expression
-     | expression
+     : function_call_parameters COMMA expression			{$$->count += 1;}
+     | expression										{$$ = createParamList($1);}
      ;
 
 %%

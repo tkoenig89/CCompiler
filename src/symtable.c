@@ -48,7 +48,7 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	ptr->scope = currFunc; 
 	
 	ptr->next = NULL;
-	//symIntTable = ptr;
+	ptr->nextElement = NULL;
 
 	putIntIntoTable(ptr);
 	
@@ -448,8 +448,8 @@ int paramFuncCheckP (struct symFunc *sFunc0, struct symFunc *sFunc1)
 		return 0;
 	}
 
-	struct symInt *param0 = sFunc0->params;;
-	struct symInt *param1 = sFunc1->params;;
+	struct symInt *param0 = sFunc0->params;
+	struct symInt *param1 = sFunc1->params;
 
 	for(int i=0;i<sFunc0->paramCount;i++)
 	{
@@ -578,4 +578,74 @@ void setScopeForParams (struct symFunc *sFunc0)
 		}
 
 	}
+}
+
+struct symFuncCallParamList *createParamList(struct symInt *sInt)
+{
+	struct symFuncCallParamList *ptr;
+	ptr = (struct symFuncCallParamList *) malloc (sizeof (struct symFuncCallParamList));
+	
+	ptr->count = 1;
+	ptr->sInt = sInt;
+	
+	return ptr;
+}
+
+int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *params)
+{
+	/*
+	if(sFunc0 == sFunc1) 
+	{
+		return 1;
+	}*/
+
+	if(sFunc0->paramCount != params->count)
+	{
+		return 0;
+	}
+
+	struct symInt *param0 = sFunc0->params;
+	struct symInt *param1 = params->sInt;
+
+	for(int i=0;i<sFunc0->paramCount;i++)
+	{
+		/*
+		if(strcmp (param0->name, param1->name) != 0)
+		{
+			return 0;
+		}*/
+		
+		if(param0->isArray != param1->isArray)
+		{
+			return 0;
+		}
+		
+		if(param0->isArray)
+		{
+			if(param0->var != param1->var)
+			{
+				return 0;
+			}
+		}
+		
+		if(param0->next!=NULL) 
+		{
+			param0 = param0->next;
+		}
+		else
+		{
+			break;
+		}
+		
+		if(param1->next!=NULL) 
+		{
+			param1 = param1->next;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	return 1;
 }
