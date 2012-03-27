@@ -44,6 +44,9 @@ void addcodeopfunc(enum code_ops operation, struct symInt *int0, struct symFunc 
 void addcodeop1(enum code_ops operation, struct symInt *int0);
 void addcodeop2(enum code_ops operation, struct symInt *int0, struct symInt *int1);
 int opcodeFindFunctionDef(struct symFunc *func);
+void addif(struct symInt *int0);
+void addifgoto();
+void backpatchfirstmarkedgoto();
 
 void printcode();
 void debugPrintAllopcodes();

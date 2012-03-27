@@ -68,7 +68,7 @@
 %%
 
 program
-     : program_element_list
+     : program_element_list				/*Nothing to be done here*/
      ;
 
 program_element_list
@@ -77,10 +77,10 @@ program_element_list
      ;
 
 program_element
-     : variable_declaration SEMICOLON /*TODO: check if variable didn't already exist.*/
-     | function_declaration SEMICOLON
-     | function_definition
-     | SEMICOLON
+     : variable_declaration SEMICOLON		/*Nothing to be done here*/
+     | function_declaration SEMICOLON		/*Nothing to be done here*/
+     | function_definition					/*Nothing to be done here*/
+     | SEMICOLON						/*Nothing to be done here*/
      ;
      
 type
@@ -89,7 +89,7 @@ type
      ;
 
 variable_declaration
-     : variable_declaration COMMA identifier_declaration
+     : variable_declaration COMMA identifier_declaration	/*Nothing to be done here*/
      | type identifier_declaration { if($1==0) { printf("ERROR You can not declare a variable as void.\n"); } }
      ;
 	
@@ -263,13 +263,13 @@ function_parameter
 
 stmt_list
      : /* empty: epsilon */
-     | stmt_list stmt
+     | stmt_list stmt					/*Nothing to be done here*/
      ;
 
 stmt
      : stmt_block
-     | variable_declaration SEMICOLON
-     | expression SEMICOLON
+     | variable_declaration SEMICOLON	/*Nothing to be done here*/
+     | expression SEMICOLON			/*Nothing to be done here*/
      | stmt_conditional
      | stmt_loop
      | RETURN expression SEMICOLON		{
@@ -289,10 +289,16 @@ stmt
 stmt_block
      : BRACE_OPEN stmt_list BRACE_CLOSE
      ;
-	
+//the shift/reduce error which occurs here is expected. nothing to see here move along
+//changed the grammar slightly to handle the goto statements easier.
 stmt_conditional
-     : IF PARA_OPEN expression PARA_CLOSE stmt
-     | IF PARA_OPEN expression PARA_CLOSE stmt ELSE stmt
+     : IF PARA_OPEN expression {addif($3);addifgoto();} PARA_CLOSE stmt_conditional_r //stmt
+     //| IF PARA_OPEN expression {addif($3);addifgoto();} PARA_CLOSE stmt ELSE stmt	//{addif($3);addifgoto();}
+     ;
+     
+stmt_conditional_r
+     : stmt {backpatchfirstmarkedgoto();}
+     | stmt ELSE {addifgoto();backpatchfirstmarkedgoto();} stmt {backpatchfirstmarkedgoto();}
      ;
      
 stmt_loop
@@ -321,7 +327,7 @@ expression								// 0 = "false", nonzero = "true"
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
      | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeopexp2(opMEM_LD, $1, $3);} /*In c there is no check whether the array acces in the valid bounds*/
      | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
-     | function_call							/*TODO: check if parameters are valid*/
+     | function_call							{$$ = putInt (".v0", 0, 0);}//Registers v0 and v1 are reserved for function return values, set them accordingly in the final_gen_code stuff 
      | primary								{$$ = $1}
      ;
 

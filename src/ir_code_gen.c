@@ -91,6 +91,36 @@ void addcodeop2(enum code_ops operation, struct symInt *int0, struct symInt *int
 	addcode(operation, int0, int1, NULL, NULL, -1);
 }
 
+void addif(struct symInt *int0)
+{
+	addcode(opIF, int0, NULL, NULL, NULL, getopcodeCount()+2);
+}
+
+void addifgoto()
+{
+	addcode(opGOTO, NULL, NULL, NULL, NULL, -137);
+}
+
+void backpatchfirstmarkedgoto()
+{	
+	printf("backpatch now!\n");
+	struct strCode  *c;	
+	
+	for(int i=0;i<code_count;i++)
+	{
+		c = &code[i];
+		
+		if(c->op==opGOTO)
+		{
+			if(c->jmpTo==-137)
+			{
+				c->jmpTo = getopcodeCount();
+				break;
+			}
+		}	
+	}
+}
+
 struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2)
 {
 	//TODO: If we regocnise that int1 and int2 are already a temp vars, we use either int1 or int2 as the result instead of creating a new temp var to save register space
