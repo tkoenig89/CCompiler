@@ -11,7 +11,7 @@ void init_table ()
 	symIntTable=NULL;
 	symFuncTable=NULL;
 	currFunc=NULL;
-	printf("Symbol Table was initialised.\n");
+	//printf("Symbol Table was initialised.\n");
 }
 
 void putIntIntoTable (struct symInt *sInt)

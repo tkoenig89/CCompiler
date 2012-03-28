@@ -7,11 +7,8 @@
 	#include "symtable.h"
 	#include "ir_code_gen.h"
 	#include <stdio.h>
-
-	//extern FILE *yyin;
 	
 	void yyerror (char const *);
-	//void parseFile (const char *filename);
 %}
  
 %union{
@@ -398,21 +395,3 @@ void yyerror (const char *msg)
 	printf("ERROR: %s\n", msg);
 	//return 0;
 }
-/*
-void parseFile (const char *filename)
-{
-  	// open a file handle to a particular file:
-	FILE *myfile = fopen(filename, "r");
-	// make sure it is valid:
-	if (!myfile) {
-		printf("ERROR! Could not open input file.\n");
-		return -1;
-	}
-	// set flex to read from it instead of defaulting to STDIN:
-	yyin = myfile;
-	
-	// parse through the input until there is no more:
-	do {
-		yyparse();
-	} while (!feof(yyin));
-}*/
