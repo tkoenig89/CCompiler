@@ -9,6 +9,8 @@
 #include "resource_manager.h"
 #include "diag.h"
 
+extern FILE *yyin;
+
 /* Constants */
 static const char *C_EXT = ".c";
 static const char *IR_EXT = ".ir";
@@ -254,24 +256,39 @@ int process_options (int argc, char *argv[]) {
  * \param argv The input parameters.
  */
 int main (int argc, char *argv[]) {
-init_table();
-  /* the resource manager must be initialized before any 
-   * further actions are implemented */
-yyparse();
-return 0;
-  /*
-  rm_init(&resource_mgr);
+	init_table();
+	/* the resource manager must be initialized before any 
+	 * further actions are implemented */
+	//yyparse();
+	//return 0;
 
-  if (process_options(argc, argv) == 1) {
-    rm_cleanup_resources(&resource_mgr);
-    exit(EXIT_FAILURE);
-  }
+	rm_init(&resource_mgr);
 
-  printf("Input: %s\n", cc_options.input_file);
-  printf("Output: %s\n", cc_options.output_file);
-  printf("IR: %s\n", cc_options.ir_file);
+	if (process_options(argc, argv) == 1) {
+		rm_cleanup_resources(&resource_mgr);
+		exit(EXIT_FAILURE);
+	}
 
-  rm_cleanup_resources(&resource_mgr);
-  return 0;*/
+	printf("Input: %s\n", cc_options.input_file);
+	printf("Output: %s\n", cc_options.output_file);
+	printf("IR: %s\n", cc_options.ir_file);
+  
+  	// open a file handle to a particular file:
+	FILE *myfile = fopen(cc_options.input_file, "r");
+	// make sure it is valid:
+	if (!myfile) {
+		printf("ERROR! Could not open input file.\n");
+		return -1;
+	}
+	// set flex to read from it instead of defaulting to STDIN:
+	yyin = myfile;
+	
+	// parse through the input until there is no more:
+	do {
+		yyparse();
+	} while (!feof(yyin));
+
+	rm_cleanup_resources(&resource_mgr);
+	return 0;
 }
 

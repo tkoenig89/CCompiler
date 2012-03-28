@@ -1,5 +1,6 @@
 #include "ir_code_gen.h"
 #include "symtable.h"
+#include "parser.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
 
