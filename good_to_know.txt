@@ -1,3 +1,9 @@
+How to call our compiler:
+
+./bin/dhbwcc -o test-files/test01.asm test-files/test01.c -p
+
+(to be able to use the print, exit and scan function we have to use 'make' in test, which is explained on page 13 in the task description)
+
 c99 does not have a direct 'bool'-type. However it recognices the following:
 	0 	is false;		
 	nonzero is true;	//use 1 as true for best practice; also note the section about weird c-code for that one

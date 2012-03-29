@@ -8,6 +8,8 @@
 #include "main.h"
 #include "resource_manager.h"
 #include "diag.h"
+#include "ir_code_gen.h"
+#include "final_code_gen.h"
 
 extern FILE *yyin;
 
@@ -287,6 +289,14 @@ int main (int argc, char *argv[]) {
 	do {
 		yyparse();
 	} while (!feof(yyin));
+	
+	FILE *finalfile = fopen(cc_options.output_file, "w");
+	
+	initFinalCodeGen(finalfile);
+	generateFinalCode();
+	
+	fclose (myfile);
+	fclose (finalfile);
 
 	rm_cleanup_resources(&resource_mgr);
 	return 0;

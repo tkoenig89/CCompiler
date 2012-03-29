@@ -17,6 +17,7 @@ int func (int arr[10], int len, int threshold) {
 }
 
 int main () {
+  b[8];
   global = 1;
   return func(a,5+5,5);
 

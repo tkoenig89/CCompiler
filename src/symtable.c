@@ -162,53 +162,6 @@ struct symInt *getIntCurrScope (char const * name)
 	return NULL;
 }
 
-
-/*
-struct symInt *putIntParam (char const *name, int isArray, int val)
-{
-	struct symInt *ptr;
-	//set name
-	ptr = (struct symInt *) malloc (sizeof (struct symInt));
-	ptr->name = (char *) malloc (strlen (name) + 1);
-	strcpy (ptr->name,name);
-	//set value
-	ptr->var = val; 
-	//set isArray
-	ptr->isArray = isArray; 
-	//set scope; NULL == global
-	ptr->scope = 1337; 
-	
-	ptr->next = (struct symInt *)symIntTable;
-	symIntTable = ptr;
-	printf("Integer ->%s<- was put in the table, value:%d\n", ptr->name, ptr->var);
-	return ptr;
-}
-
-struct symInt *getIntParam (char const * name)
-{
-	struct symInt *ptr;
-	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if ((strcmp (ptr->name,name) == 0) && (ptr->scope == 1337) ) {
-			return ptr;
-		}
-	}
-	return NULL;
-}*/
-/*
-int setScope (char const * name)
-{
-	struct symInt *ptr = getInt (name);
-	if(ptr!=NULL)
-	{
-		ptr->scope = currFunc;
-		return 1;
-	} 
-	else
-	{
-		return 0;
-	}
-}*/
-
 void setIntScopeP (struct symInt *sInt)
 {
 	sInt->scope = currFunc;
@@ -650,4 +603,14 @@ int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *pa
 	}
 
 	return 1;
+}
+
+struct symInt *getsymIntTable()
+{
+	return symIntTable;
+}
+
+struct symFunc *getsymFuncTable()
+{
+	return symFuncTable;
 }

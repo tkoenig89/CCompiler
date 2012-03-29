@@ -7,8 +7,8 @@ struct symInt
 	char *name;
 	int isArray;
 	struct symFunc *scope;
-
 	int var; //is used for number of elements when the var is an array
+	int stackpos; //used by final_code for reference 
 	struct symInt *nextElement;
 	
 struct symInt *next;
@@ -20,7 +20,6 @@ struct symFunc
 	char *name;
 	int retType;
 	int isPrototype;
-
 	int paramCount;
 	struct symInt* params; //Will point to the first parameter in the symIntTable. 
 	/*Maybe we need the same count and first pointer for the variables cotained in the function?*/
@@ -63,6 +62,9 @@ void setFuncScopeP (struct symFunc *sFunc);
 void setScopeForParams (struct symFunc *sFunc0);
 struct symFuncCallParamList *createParamList(struct symInt *sInt);
 int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *params);
+
+struct symInt *getsymIntTable();
+struct symFunc *getsymFuncTable();
 
 void debugPrintAllsFunc();
 void debugPrintAllsint();
