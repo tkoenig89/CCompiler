@@ -151,6 +151,14 @@ void transOpCode(struct strCode  c)
 			{r=i1;}
 			i0 = loadvar(c.int0, r);
 			
+			if(c.int0->isParam)
+			{
+				//Target is a Parameter:
+				sprintf (buffer, "\tSW $%d, %d($fp)\t#Assign one register to another\n", i1, c.int0->stackpos);
+				addLine(buffer);
+				break;
+			}
+			
 			if((c.int0->scope==NULL) || (c.int0->isTemp))
 			{
 				//If the Variable is global or a temp register to a pointer, store the value it in the appropriate place
@@ -158,10 +166,9 @@ void transOpCode(struct strCode  c)
 			}
 			else
 			{
+				//A Local Variable is stored in the normal stack counter:
 				sprintf (buffer, "\tSW $%d, %d($sp)\t#Assign one register to another\n", i1, c.int0->stackpos);
 			}
-			
-			
 			addLine(buffer);
 		break;
 		
