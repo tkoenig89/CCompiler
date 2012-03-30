@@ -13,6 +13,8 @@ int main()
 	i = c * d + i * g;
 	i = !i;
 	i = -i;
+	c = 1 && 0;
+	h = 0 || 1;
 	do 
 	{
 		print(i);

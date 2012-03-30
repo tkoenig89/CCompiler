@@ -87,9 +87,6 @@ void generateLocalVars(struct symFunc *sFunc)
 					sprintf (buffer, "\t#int %s: %d($sp)\n", ptr->name, ptr->stackpos);
 					addLine(buffer);
 				}
-				
-				
-				
 			}
 		}
 	}
@@ -150,8 +147,21 @@ void transOpCode(struct strCode  c)
 	{
 		case opASSIGN:			
 			i1 = loadvar(c.int1, 4);
-		
-			sprintf (buffer, "\tSW $%d, %d($sp)\t#Assign one register to another\n", i1, c.int0->stackpos);
+			if(i1<=14)
+			{r=i1;}
+			i0 = loadvar(c.int0, r);
+			
+			if((c.int0->scope==NULL) || (c.int0->isTemp))
+			{
+				//If the Variable is global or a temp register to a pointer, store the value it in the appropriate place
+				sprintf (buffer, "\tSW $%d, 0($%d)\t#Assign one register to another\n", i1, i0);
+			}
+			else
+			{
+				sprintf (buffer, "\tSW $%d, %d($sp)\t#Assign one register to another\n", i1, c.int0->stackpos);
+			}
+			
+			
 			addLine(buffer);
 		break;
 		
@@ -194,6 +204,32 @@ void transOpCode(struct strCode  c)
 			addLine(buffer);
 		break;
 			
+		case opLOGICAL_AND:
+			//i0 = i1 && i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			sprintf (buffer, "\tAND $%d, $%d, $%d\t#Locigal And, is here equal to bit AND\n", i0, i1, i2);
+			addLine(buffer);
+		break;
+			
+		case opLOGICAL_OR:
+			//i0 = i1 && i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			sprintf (buffer, "\tOR $%d, $%d, $%d\t#Locigal Or, is here equal to bit OR\n", i0, i1, i2);
+			addLine(buffer);
+		break;
+			
 		case opLOGICAL_NOT:
 			//i0 = !i1; i0 is always temp
 			i1 = loadvar(c.int1, 4);
@@ -212,7 +248,7 @@ void transOpCode(struct strCode  c)
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tNEGU $%d, $%d\t#(pseudo):x = -y\n", i0, i1);
 			addLine(buffer);
-		break;
+		break;			
 		
 		case opMEM_LD:
 			//i0 = i1[i2]; i0 is always a temp
@@ -231,7 +267,7 @@ void transOpCode(struct strCode  c)
 		
 			i0 = loadvar(c.int0, i1);
 		
-			sprintf (buffer, "\tLW $%d, 0($%d)\t#Load the Array poistion from the stack\n", i0, i2 + 1);
+			sprintf (buffer, "\tLW $%d, 0($%d)\t#Load the Array position from the stack\n", i0, i2 + 1);
 			addLine(buffer);
 		break;
 		
