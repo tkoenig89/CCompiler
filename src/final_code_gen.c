@@ -193,6 +193,26 @@ void transOpCode(struct strCode  c)
 			sprintf (buffer, "\tMUL $%d, $%d, $%d\t#Multiply 2 Variables and store result int temp register\n", i0, i1, i2);
 			addLine(buffer);
 		break;
+			
+		case opLOGICAL_NOT:
+			//i0 = !i1; i0 is always temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i0 = loadvar(c.int0, r);
+			sprintf (buffer, "\tNOT $%d, $%d\t#(pseudo):x = !y\n", i0, i1);
+			addLine(buffer);
+		break;
+			
+		case opMINUS:
+			//i0 = -i1; i0 is always temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i0 = loadvar(c.int0, r);
+			sprintf (buffer, "\tNEGU $%d, $%d\t#(pseudo):x = -y\n", i0, i1);
+			addLine(buffer);
+		break;
 		
 		case opMEM_LD:
 			//i0 = i1[i2]; i0 is always a temp

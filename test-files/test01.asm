@@ -60,6 +60,12 @@ _start:
 	MUL $16, $5, $6	#Multiply 2 Variables and store result int temp register
 	ADD $15, $15, $16	#Add 2 Variables and store result int temp register
 	SW $15, 40($sp)	#Assign one register to another
+	LW $5, 40($sp)	#Local Variable recognised:i
+	NOT $15, $5	#(pseudo):x = !y
+	SW $15, 40($sp)	#Assign one register to another
+	LW $5, 40($sp)	#Local Variable recognised:i
+	NEGU $15, $5	#(pseudo):x = -y
+	SW $15, 40($sp)	#Assign one register to another
 #Error: Unrecognised command 20.
 #Error: Unrecognised command 22.
 #Error: Unrecognised command 23.

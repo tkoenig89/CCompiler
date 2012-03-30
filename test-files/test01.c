@@ -11,6 +11,8 @@ int main()
 	i=2;
 	k[2] = 1;
 	i = c * d + i * g;
+	i = !i;
+	i = -i;
 	do 
 	{
 		print(i);
