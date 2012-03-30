@@ -36,28 +36,37 @@ _start:
 	SW $fp, 0($sp)
 	MOVE $fp, $sp
 
-	ADDI $sp, $sp, -40	#Allocate Memory on stackpointer for local Variables
-	#int i: 36($sp)
+	ADDI $sp, $sp, -44	#Allocate Memory on stackpointer for local Variables
+	#int i: 40($sp)
+	#int c: 36($sp)
 	#int j[5]: 16($sp)
 	#int k[3]: 4($sp)
 	#int .v0: 0($sp)
 	LI $5, 2	#Number recognised:2
-	SW $5, 36($sp)	#Assign one register to another
+	SW $5, 40($sp)	#Assign one register to another
 	LI $5, 2	#Number recognised:2
 	LI $6, 4	#Load array position into a register
 	MUL $7, $5, $6	#Multiplying array position by 4 (each entry has the size of 4 bytes)
 	LW $8, 4($sp)	#Local Variable recognised:k
 	ADD $6, $7, $8	#Add the starting position of the array to the position
-	#temp variable recognised:$15
 	LW $15, 0($6)	#Load the Array poistion from the stack
 	LI $5, 1	#Number recognised:1
 	SW $5, 0($sp)	#Assign one register to another
+	LW $5, 36($sp)	#Local Variable recognised:c
+	LA $6, d	#Global Variable recognised:d
+	MUL $15, $5, $6	#Multiply 2 Variables and store result int temp register
+	LW $5, 40($sp)	#Local Variable recognised:i
+	LA $6, g	#Global Variable recognised:g
+	MUL $16, $5, $6	#Multiply 2 Variables and store result int temp register
+	ADD $15, $15, $16	#Add 2 Variables and store result int temp register
+	SW $15, 40($sp)	#Assign one register to another
 #Error: Unrecognised command 20.
 #Error: Unrecognised command 22.
 #Error: Unrecognised command 23.
-#Error: Unrecognised command 1.
-	#temp variable recognised:$15
-	SW $15, 36($sp)	#Assign one register to another
+	LW $5, 40($sp)	#Local Variable recognised:i
+	LI $6, 1	#Number recognised:1
+	ADD $15, $5, $6	#Add 2 Variables and store result int temp register
+	SW $15, 40($sp)	#Assign one register to another
 #Error: Unrecognised command 15.
 #Error: Unrecognised command 16.
 	#End of function main. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.

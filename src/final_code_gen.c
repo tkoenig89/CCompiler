@@ -110,8 +110,8 @@ int loadvar(struct symInt *sInt, int last_reg)
 	if(sInt->isTemp)
 	{
 		//$15 - $25 can be used...
-		sprintf (buffer, "\t#temp variable recognised:$%d\n", sInt->isArray + 14);
-		addLine(buffer);
+		//sprintf (buffer, "\t#temp variable recognised:$%d\n", sInt->isArray + 14);
+		//addLine(buffer);
 		return sInt->isArray + 14;
 	}
 	
@@ -143,7 +143,7 @@ int loadvar(struct symInt *sInt, int last_reg)
 
 void transOpCode(struct strCode  c)
 {
-	int i0,i1,i2;
+	int i0,i1,i2, r;
 	i0=4;i1=4;i2=4;
 	
 	switch(c.op)
@@ -152,6 +152,45 @@ void transOpCode(struct strCode  c)
 			i1 = loadvar(c.int1, 4);
 		
 			sprintf (buffer, "\tSW $%d, %d($sp)\t#Assign one register to another\n", i1, c.int0->stackpos);
+			addLine(buffer);
+		break;
+		
+		case opADD:
+			//i0 = i1 OP i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			sprintf (buffer, "\tADD $%d, $%d, $%d\t#Add 2 Variables and store result int temp register\n", i0, i1, i2);
+			addLine(buffer);
+		break;
+			
+		case opSUB:
+			//i0 = i1 OP i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			sprintf (buffer, "\tSUB $%d, $%d, $%d\t#Subtract 2 Variables and store result int temp register\n", i0, i1, i2);
+			addLine(buffer);
+		break;
+			
+		case opMUL:
+			//i0 = i1 OP i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			sprintf (buffer, "\tMUL $%d, $%d, $%d\t#Multiply 2 Variables and store result int temp register\n", i0, i1, i2);
 			addLine(buffer);
 		break;
 		
