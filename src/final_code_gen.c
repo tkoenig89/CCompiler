@@ -22,32 +22,158 @@ void addLine(const char *str)
 void generateLocalVars(struct symFunc *sFunc)
 {
 	struct symInt *ptr;
-	int stackcount = 0;	
+	int pstackcount = 8;	//gets loaded via fp
+	int lstackcount = 0;		//gets loaded via sp
 	
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
-		if (ptr->scope == sFunc) {/* TODO: stuf....
-			sprintf (buffer, ".%s:\n", ptr->name);
-			addLine(buffer);
-			if(ptr->isArray)
+		if ((ptr->scope == sFunc) && (!ptr->isTemp)) {			
+			if(!ptr->isParam)
 			{
-				sprintf (buffer, "\t.word 0 : %d\n", ptr->var);
-				addLine(buffer);	
+				ptr->stackpos = lstackcount;
+				if(ptr->isArray)
+				{
+					lstackcount = lstackcount + ptr->var * 4;
+				}
+				else
+				{
+					lstackcount = lstackcount + 4;
+				}
+			}
+		}
+	}
+	
+	if(lstackcount>0)
+	{
+		sprintf (buffer, "\tADDI $sp, $sp, -%d\t#Allocate Memory on stackpointer for local Variables\n", lstackcount);
+		addLine(buffer);
+	}
+	
+	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
+		if ((ptr->scope == sFunc) && (!ptr->isTemp)) {
+			
+			//Parameters are already allocated from the function call. we only have to calculate the fp position
+			if(ptr->isParam)
+			{
+				ptr->stackpos = pstackcount;
+				if(ptr->isArray)
+				{
+					pstackcount = pstackcount + ptr->var * 4;
+				}
+				else
+				{
+					pstackcount = pstackcount + 4;
+				}
 			}
 			else
 			{
-				addLine("\t.word n");				
-			}			
-			sprintf (buffer, ".%s:", ptr->name);
-			addLine("\talign 4\n");*/
+				//Allocating memory for all local variables				
+				if(ptr->isArray)
+				{
+					lstackcount = lstackcount - ptr->var * 4;
+					ptr->stackpos = lstackcount;
+
+					//addLine("\tLI $5, 0\n");
+					//sprintf (buffer, "\tSW $5, %d($sp)\t#int %s[%d]\n", ptr->stackpos, ptr->name, ptr->var);
+					sprintf (buffer, "\t#int %s[%d]: %d($sp)\n", ptr->name, ptr->var, ptr->stackpos);
+					addLine(buffer);
+				}
+				else
+				{
+					lstackcount = lstackcount - 4;
+					ptr->stackpos = lstackcount;
+
+					//addLine("\tLI $5, 0\n");
+					//sprintf (buffer, "\tSW $5, %d($sp)\t#int %s\n", ptr->stackpos, ptr->name);
+					sprintf (buffer, "\t#int %s: %d($sp)\n", ptr->name, ptr->stackpos);
+					addLine(buffer);
+				}
+				
+				
+				
+			}
 		}
 	}
 }
 
+int loadvar(struct symInt *sInt, int last_reg)
+{
+	//primary number (e.g.: 0)
+	if(strcmp (sInt->name,"int") == 0)
+	{
+		//LI $5, 0
+		sprintf (buffer, "\tLI $%d, %d\t#Number recognised:%d\n", last_reg + 1, sInt->var, sInt->var);
+		addLine(buffer);
+		return last_reg + 1;
+	}	
+	
+	//temp variable:
+	if(sInt->isTemp)
+	{
+		//$15 - $25 can be used...
+		sprintf (buffer, "\t#temp variable recognised:$%d\n", sInt->isArray + 14);
+		addLine(buffer);
+		return sInt->isArray + 14;
+	}
+	
+	if(sInt->isParam)
+	{
+		//LW $5, 8($fp) 
+		sprintf (buffer, "\tLW $%d, %d($fp)\t#Parameter recognised:%s\n", last_reg + 1, sInt->stackpos, sInt->name);
+		addLine(buffer);
+		return last_reg + 1;
+	}
+	
+	//Global Variable:
+	if(sInt->scope==NULL)
+	{
+		//LA $5, global
+		sprintf (buffer, "\tLA $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
+		addLine(buffer);
+		return last_reg + 1;
+	
+	}
+	else //Local Variable
+	{
+		//LW $5, 4($sp) 
+		sprintf (buffer, "\tLW $%d, %d($sp)\t#Local Variable recognised:%s\n", last_reg + 1, sInt->stackpos, sInt->name);
+		addLine(buffer);
+		return last_reg + 1;
+	}
+}
+
 void transOpCode(struct strCode  c)
-{	
+{
+	int i0,i1,i2;
+	i0=4;i1=4;i2=4;
+	
 	switch(c.op)
 	{
-		case opASSIGN:
+		case opASSIGN:			
+			i1 = loadvar(c.int1, 4);
+		
+			sprintf (buffer, "\tSW $%d, %d($sp)\t#Assign one register to another\n", i1, c.int0->stackpos);
+			addLine(buffer);
+		break;
+		
+		case opMEM_LD:
+			//i0 = i1[i2]; i0 is always a temp
+			i2 = loadvar(c.int2, 4);
+			sprintf (buffer, "\tLI $%d, 4\t#Load array position into a register\n", i2 + 1);
+			addLine(buffer);
+			//i1 = loadvar(c.int1, i2 + 1);
+			//i0 = loadvar(c.int0, i1);
+			sprintf (buffer, "\tMUL $%d, $5, $6\t#Multiplying array position by 4 (each entry has the size of 4 bytes)\n", i2 + 2, i2 + 1, i2);
+			addLine(buffer);
+			i1 = loadvar(c.int1, i2 + 2);
+			//sprintf (buffer, "\tLW $%d, %d($fp)\n", i2 + 2, c.int1->stackpos);
+			//addLine(buffer);
+			sprintf (buffer, "\tADD $%d, $%d, $%d\t#Add the starting position of the array to the position\n", i2 + 1, i2 + 2, i1);
+			addLine(buffer);
+		
+			i0 = loadvar(c.int0, i1);
+		
+			sprintf (buffer, "\tLW $%d, 0($%d)\t#Load the Array poistion from the stack\n", i0, i2 + 1);
+			addLine(buffer);
 		break;
 		
 		case opFUNC_DEF:

@@ -5,7 +5,10 @@ void print (int i);
 int main()
 {
 	int i;
-	i=0; 
+	int j[5];
+	int k[3];
+	i=2;
+	k[2] = 1;
 	do 
 	{
 		print(i);

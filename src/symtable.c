@@ -47,6 +47,12 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	//set scope; NULL == global
 	ptr->scope = currFunc; 
 	
+	ptr->isParam = 0;
+	ptr->stackpos = 0;	
+	
+	if(strcmp (ptr->name,"int") == 0)
+	{ptr->isTemp = 1;} else {ptr->isTemp = 0;}
+	
 	ptr->next = NULL;
 	ptr->nextElement = NULL;
 
@@ -66,6 +72,10 @@ struct symInt *tempInt (char const *name)
 	
 	ptr->isArray = 0; 
 	ptr->scope = NULL;
+	
+	ptr->isParam = 0;
+	ptr->stackpos = 0;	
+	ptr->isTemp = 1;
 	
 	ptr->next = 137; //Temp Var Marker... 
 	
@@ -238,6 +248,7 @@ void setParamP (struct symFunc *sFunc, struct symInt *sInt)
 {	
 	sFunc->paramCount = sFunc->paramCount + 1;	
 	sFunc->params = sInt;
+	sInt->isParam = 1;
 	printf("added var %s for func %s, parcount:%d.\n", sInt->name, sFunc->name, sFunc->paramCount);
 }
 

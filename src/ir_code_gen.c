@@ -203,10 +203,19 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 		ptr = int1;
 		temp_reg_count -= 1;
 		//printf("temp_reg_count:%d.\n", temp_reg_count);
-	}
+	}	
 
 	addcode(operation, ptr, int1, int2, NULL, -1);
 	printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
+	return ptr;
+}
+
+struct symInt * addcodeloadarr(struct symInt *int1, struct symInt *int2)
+{
+	struct symInt *ptr;
+	ptr = irtempInt();
+	
+	addcode(opMEM_LD, ptr, int1, int2, NULL, -1);
 	
 	return ptr;
 }

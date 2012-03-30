@@ -40,6 +40,7 @@ struct strCode
 void addcodeass(struct symInt *int0, struct symInt *int1);
 struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1);
 struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2);
+struct symInt * addcodeloadarr(struct symInt *int1, struct symInt *int2);
 void addcodeopfunc(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo);
 void addcodeop1(enum code_ops operation, struct symInt *int0);
 void addcodeop2(enum code_ops operation, struct symInt *int0, struct symInt *int1);
