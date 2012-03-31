@@ -30,7 +30,7 @@ void generateLocalVars(struct symFunc *sFunc)
 		if ((ptr->scope == sFunc) && (!ptr->isTemp)) {			
 			if(!ptr->isParam)
 			{
-				ptr->stackpos = lstackcount;
+				ptr->stackpos = lstackcount;				
 				if(ptr->isArray)
 				{
 					lstackcount = lstackcount + ptr->var * 4;
@@ -39,6 +39,10 @@ void generateLocalVars(struct symFunc *sFunc)
 				{
 					lstackcount = lstackcount + 4;
 				}
+			}
+			else
+			{
+				pstackcount = pstackcount + 4;
 			}
 		}
 	}
@@ -55,7 +59,9 @@ void generateLocalVars(struct symFunc *sFunc)
 			//Parameters are already allocated from the function call. we only have to calculate the fp position
 			if(ptr->isParam)
 			{
-				ptr->stackpos = pstackcount;
+				//ptr->stackpos = pstackcount;
+				pstackcount = pstackcount - 4;
+				/*
 				if(ptr->isArray)
 				{
 					pstackcount = pstackcount + ptr->var * 4;
@@ -63,7 +69,8 @@ void generateLocalVars(struct symFunc *sFunc)
 				else
 				{
 					pstackcount = pstackcount + 4;
-				}
+				}*/
+				ptr->stackpos = pstackcount;
 			}
 			else
 			{
@@ -125,7 +132,7 @@ int loadvar(struct symInt *sInt, int last_reg)
 	
 	//Global Variable:
 	if(sInt->scope==NULL)
-	{
+	{		
 		//LA $5, global
 		sprintf (buffer, "\tLA $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
 		addLine(buffer);
@@ -134,10 +141,20 @@ int loadvar(struct symInt *sInt, int last_reg)
 	}
 	else //Local Variable
 	{
-		//LW $5, 4($sp) 
-		sprintf (buffer, "\tLW $%d, %d($sp)\t#Local Variable recognised:%s\n", last_reg + 1, sInt->stackpos, sInt->name);
-		addLine(buffer);
-		return last_reg + 1;
+		if(sInt->isArray)
+		{
+			//LA $5, 4($sp) 
+			sprintf (buffer, "\tLA $%d, %d($sp)\t#Local Variable recognised:%s\n", last_reg + 1, sInt->stackpos, sInt->name);
+			addLine(buffer);
+			return last_reg + 1;
+		}
+		else
+		{
+			//LW $5, 4($sp) 
+			sprintf (buffer, "\tLW $%d, %d($sp)\t#Local Variable recognised:%s\n", last_reg + 1, sInt->stackpos, sInt->name);
+			addLine(buffer);
+			return last_reg + 1;
+		}
 	}
 }
 
@@ -381,14 +398,27 @@ void transOpCode(struct strCode  c)
 			sprintf (buffer, "\tADD $%d, $%d, $%d\t#Add the starting position of the array to the position\n", i2 + 1, i2 + 2, i1);
 			addLine(buffer);
 		
+			//c.int0->stackpos = i2 + 1;
 			i0 = loadvar(c.int0, i1);
 		
 			sprintf (buffer, "\tLW $%d, 0($%d)\t#Load the Array position from the stack\n", i0, i2 + 1);
 			addLine(buffer);
 		break;
 		
+		case opPARAM:
+			i0 = loadvar(c.int0, 4);
+			addLine("\tADDI $sp, $sp, -4\t#Reserve 4 Bytes on the Stack for a parameter and the func call\n");
+			sprintf (buffer, "\tSW $%d, 0($sp)\t#Copy Value/Adress of var to stack var\n");
+			addLine(buffer);
+		break;
+		
+		case opCALL:
+			sprintf (buffer, "\tJAL %s\t#Call function\n", c.func->name);
+			addLine(buffer);			
+		break;
+		
 		case opFUNC_DEF:
-			sprintf (buffer, "\t%s:\t# Beggining of a function. We will save the return adress $31 and the $fp.\n", c.func->name);
+			sprintf (buffer, "%s:\t# Beginning of a function. We will save the return adress $31 and the $fp.\n", c.func->name);
 			addLine(buffer);
 			addLine("\tADDI $sp, $sp, -8\n");
 			addLine("\tSW $31, 4($sp)\n");
@@ -403,7 +433,7 @@ void transOpCode(struct strCode  c)
 			addLine("\tLW $fp, 0($sp)\n");
 			addLine("\tLW $31, 4($sp)\n");
 			addLine("\tADDI $sp, $sp, 8\n");
-			addLine("\tJR $31\n");
+			addLine("\tJR $31\n\n");
 		break;
 		
 		default:
@@ -468,6 +498,10 @@ void generateFinalCode()
 				if(!setJmpLabel(code[i].jmpTo, jmpLableCount))
 					{jmpLableCount = jmpLableCount - 1;}
 				code[i].jmpTo = jmpLableCount;
+			break;
+					
+			default:
+				/*Do Nothing.*/
 			break;
 		}
 	}

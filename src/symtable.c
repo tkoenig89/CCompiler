@@ -279,6 +279,7 @@ int isFuncProto (char const *funcname)
 		struct symFunc *ptr = getFunc(funcname);
 		return ptr->isPrototype;
 	}
+	return NULL;
 }
 
 void setFuncProtoP (struct symFunc *sFunc)
