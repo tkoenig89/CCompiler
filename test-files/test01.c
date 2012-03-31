@@ -15,6 +15,9 @@ int main()
 	i = -i;
 	c = 1 && 0;
 	h = 0 || 1;
+	f = i == h;
+	a = b != c;
+	e = i <= g;
 	do 
 	{
 		print(i);

@@ -140,7 +140,8 @@ int loadvar(struct symInt *sInt, int last_reg)
 
 void transOpCode(struct strCode  c)
 {
-	int i0,i1,i2, r;
+	int i0,i1,i2, r, t0;
+	struct symInt *tInt;
 	i0=4;i1=4;i2=4;
 	
 	switch(c.op)
@@ -173,7 +174,7 @@ void transOpCode(struct strCode  c)
 		break;
 		
 		case opADD:
-			//i0 = i1 OP i2; i0 is always a temp
+			//i0 = i1 + i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
 			{r=i1;}
@@ -186,7 +187,7 @@ void transOpCode(struct strCode  c)
 		break;
 			
 		case opSUB:
-			//i0 = i1 OP i2; i0 is always a temp
+			//i0 = i1 - i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
 			{r=i1;}
@@ -199,7 +200,7 @@ void transOpCode(struct strCode  c)
 		break;
 			
 		case opMUL:
-			//i0 = i1 OP i2; i0 is always a temp
+			//i0 = i1 * i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
 			{r=i1;}
@@ -208,6 +209,80 @@ void transOpCode(struct strCode  c)
 			{r=i2;}
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tMUL $%d, $%d, $%d\t#Multiply 2 Variables and store result int temp register\n", i0, i1, i2);
+			addLine(buffer);
+		break;
+			
+		case opEQ:
+			//i0 = i1 == i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			
+			tInt = tempInt ("int");
+			tInt->var = 1;
+			if(i0<=14)
+			{r=i0;}
+			t0 = loadvar(tInt, r);
+
+			sprintf (buffer, "\tSUB $%d, $%d, $%d\t#If i1 == i2, i0 = 0, else i0 != 0\n", i0, i1, i2);
+			addLine(buffer);			
+			sprintf (buffer, "\tMOVN $%d, $%d, $%d\t#if i0 != 0, i0 = 1\n", i0, t0, i0);
+			addLine(buffer);
+			sprintf (buffer, "\tNOT $%d, $%d\t#i0 = !i0\n", i0, i0);
+			addLine(buffer);
+		break;
+			
+		case opNE:
+			//i0 = i1 != i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			
+			tInt = tempInt ("int");
+			tInt->var = 1;
+			if(i0<=14)
+			{r=i0;}
+			t0 = loadvar(tInt, r);
+
+			sprintf (buffer, "\tSUB $%d, $%d, $%d\t#If i1 != i2, i0 != 0, else i0 = 0\n", i0, i1, i2);
+			addLine(buffer);			
+			sprintf (buffer, "\tMOVN $%d, $%d, $%d\t#if i0 != 0, i0 = 1\n", i0, t0, i0);
+			addLine(buffer);
+		break;
+			
+		case opLS:
+			//i0 = i1 < i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			
+			sprintf (buffer, "\tSLT $%d, $%d, $%d\t#if i1 < i2 i0 = 1 else i0 = 0\n", i0, i1, i2);
+			addLine(buffer);
+		break;
+			
+		case opGT:
+			//i0 = i1 > i2; i0 is always a temp
+			i1 = loadvar(c.int1, 4);
+			if(i1<=14)
+			{r=i1;}
+			i2 = loadvar(c.int2, r);
+			if(i2<=14)
+			{r=i2;}
+			i0 = loadvar(c.int0, r);
+			
+			sprintf (buffer, "\tSLT $%d, $%d, $%d\t#if i1 > i2 i0 = 1 else i0 = 0\n", i0, i2, i1);
 			addLine(buffer);
 		break;
 			

@@ -319,8 +319,20 @@ expression								// 0 = "false", nonzero = "true"
      | expression EQ expression					{$$ = addcodeopexp2(opEQ, $1, $3);}
      | expression NE expression					{$$ = addcodeopexp2(opNE, $1, $3);}
      | expression LS expression 					{$$ = addcodeopexp2(opLS, $1, $3);}
-     | expression LSEQ expression 				{$$ = addcodeopexp2(opLSEQ, $1, $3);}
-     | expression GTEQ expression 				{$$ = addcodeopexp2(opGTEQ, $1, $3);}
+     | expression LSEQ expression 				{	//$$ = $1 <= $2 -> $$ = $1 < $2 || $1 == $2;
+											struct symInt *t0;struct symInt *t1;
+											t0 = addcodeopexp2(opLS, $1, $3);
+											t1 = addcodeopexp2(opEQ, $1, $3);
+											$$ = addcodeopexp2(opLOGICAL_OR, t0, t1);
+											//$$ = addcodeopexp2(opLSEQ, $1, $3);
+										}
+     | expression GTEQ expression 				{	//$$ = $1 >= $2 -> $$ = $1 > $2 || $1 == $2;
+											struct symInt *t0;struct symInt *t1;
+											t0 = addcodeopexp2(opGT, $1, $3);
+											t1 = addcodeopexp2(opEQ, $1, $3);
+											$$ = addcodeopexp2(opLOGICAL_OR, t0, t1);
+											//$$ = addcodeopexp2(opGTEQ, $1, $3);
+										}
      | expression GT expression					{$$ = addcodeopexp2(opGT, $1, $3);}
      | expression PLUS expression				{$$ = addcodeopexp2(opADD, $1, $3);}
      | expression MINUS expression				{$$ = addcodeopexp2(opSUB, $1, $3);}
