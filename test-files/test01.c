@@ -18,9 +18,28 @@ int main()
 	f = i == h;
 	a = b != c;
 	e = i <= g;
+	if( i > g && g < 2 )
+	{
+		i = i + 1;
+	} 
+	else
+	{
+		i = i -1;
+	}
+	
+	if( 2 < 3)
+	{
+		h = h + 1337;
+	}
+
 	do 
 	{
-		print(i);
+		//print(i);
 		i=i+1;
-	} while(i<=10); 
+	} while(i<=10);
+
+	while(1)
+	{
+		g = g + 1;
+	}
 }

@@ -11,7 +11,7 @@ enum code_ops
 	
 	opLOGICAL_AND, opLOGICAL_OR, opLOGICAL_NOT, opNE, opEQ, opGT, opGTEQ, opLS, opLSEQ,
 	
-	opIF, opGOTO, opWHILE, opWHILE_BEGIN, opDO_WHILE_BEGIN,
+	opIF, opGOTO, opWHILE_BEGIN, opDO_WHILE_BEGIN,
 	
 	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END
 };
@@ -21,7 +21,7 @@ static char* enumStrings[] = {
 	
 							"LOGICAL_AND", "LOGICAL_OR", "LOGICAL_NOT", "NE", "EQ", "GT", "GTEQ", "LS", "LSEQ",
 	
-							"IF", "GOTO", "WHILE", "WHILE_BEGIN", "DO_WHILE_BEGIN",
+							"IF", "GOTO", "WHILE_BEGIN", "DO_WHILE_BEGIN",
 
 							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF", "FUNC_DEF_END"
 						
@@ -34,6 +34,7 @@ struct strCode
 	struct symInt *int1;		
 	struct symInt *int2;		
 	struct symFunc *func;		
+	int jmpLabel;
 	int jmpTo;
 };
 
@@ -54,6 +55,7 @@ void addwhilegotobegin();
 void backpatchwhile();
 void adddowhile();
 void adddowhileend(struct symInt *int0);
+int setJmpLabel(int cpos, int jmpLabel);
 
 void printcode();
 void debugPrintAllopcodes();

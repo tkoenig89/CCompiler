@@ -8,6 +8,7 @@ FILE *gfile;
 struct symInt *symIntTable;
 struct symFunc *symFuncTable;
 char buffer [200];
+int jmpLableCount = -1;
 
 void initFinalCodeGen(FILE *file)
 {
@@ -94,6 +95,8 @@ void generateLocalVars(struct symFunc *sFunc)
 
 int loadvar(struct symInt *sInt, int last_reg)
 {
+	//TODO: Look for Return Value "v0" = $2 or "v1" = $3
+	
 	//primary number (e.g.: 0)
 	if(strcmp (sInt->name,"int") == 0)
 	{
@@ -143,6 +146,12 @@ void transOpCode(struct strCode  c)
 	int i0,i1,i2, r, t0;
 	struct symInt *tInt;
 	i0=4;i1=4;i2=4;
+	
+	if(c.jmpLabel > -1)
+	{
+		sprintf (buffer, "l%d:\n", c.jmpLabel);
+		addLine(buffer);
+	}
 	
 	switch(c.op)
 	{
@@ -330,7 +339,32 @@ void transOpCode(struct strCode  c)
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tNEGU $%d, $%d\t#(pseudo):x = -y\n", i0, i1);
 			addLine(buffer);
-		break;			
+		break;	
+
+		case opIF:
+			//IF i0 GOTO jmpTo
+			//jmpLableCount = jmpLableCount + 1;
+			i0 = loadvar(c.int0, 4);		
+			//setJmpLabel(c.jmpTo, jmpLableCount);
+			sprintf (buffer, "\tBGTZ $%d, l%d\n", i0, c.jmpTo);
+			addLine(buffer);
+		break;
+		
+		case opGOTO:
+			//GOTO jmpTo
+			//jmpLableCount = jmpLableCount + 1;
+			//setJmpLabel(c.jmpTo, jmpLableCount);
+			sprintf (buffer, "\tJ l%d\n", c.jmpTo);
+			addLine(buffer);
+		break;
+		
+		case opWHILE_BEGIN:
+			/*Do Nothing.*/
+		break;
+		
+		case opDO_WHILE_BEGIN:
+			/*Do Nothing.*/
+		break;
 		
 		case opMEM_LD:
 			//i0 = i1[i2]; i0 is always a temp
@@ -410,9 +444,33 @@ void generateFinalCode()
 	}
 	
 	//Jump to the main function as the entry point to the application
+	//TODO: Look if the "make" file from Andy automatically pastes this into the code. If so, delete the lines.
 	addLine("\n\n.text\n\n");
 	addLine("_start:\n");
 	addLine("\tJAL main\n\n");
+	
+	//Calculate all Jump Labels:
+	for(int i=0;i<code_count;i++)
+	{		
+		switch(code[i].op)
+		{
+			case opIF:
+				//IF i0 GOTO jmpTo
+				jmpLableCount = jmpLableCount + 1;
+				if(!setJmpLabel(code[i].jmpTo, jmpLableCount))
+					{jmpLableCount = jmpLableCount - 1;}
+				code[i].jmpTo = jmpLableCount;
+			break;
+			
+			case opGOTO:
+				//GOTO jmpTo
+				jmpLableCount = jmpLableCount + 1;
+				if(!setJmpLabel(code[i].jmpTo, jmpLableCount))
+					{jmpLableCount = jmpLableCount - 1;}
+				code[i].jmpTo = jmpLableCount;
+			break;
+		}
+	}
 	
 	for(int i=0;i<code_count;i++)
 	{		

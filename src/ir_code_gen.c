@@ -40,6 +40,7 @@ void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, 
 	code[code_count-1].int2 = int2;
 	code[code_count-1].func = func;
 	code[code_count-1].jmpTo = jmpTo;
+	code[code_count-1].jmpLabel = -1;
 }
 
 void addcodeass(struct symInt *int0, struct symInt *int1)
@@ -295,4 +296,17 @@ int opcodeFindFunctionDef(struct symFunc *func)
 		}
 	}
 	return NULL;
+}
+
+int setJmpLabel(int cpos, int jmpLabel)
+{
+	if(code[cpos].jmpLabel<0)
+	{
+		if((cpos>0) && (cpos<code_count))
+		{
+			code[cpos].jmpLabel = jmpLabel;
+			return 1;
+		}
+	}
+	return 0;
 }
