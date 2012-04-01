@@ -491,7 +491,7 @@ void generateFinalCode()
 	int code_count = getopcodeCount();
 	
 	//Declare Global Variables
-	addLine(".data\n");
+	addLine("\n.data\n");
 	
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
@@ -511,12 +511,8 @@ void generateFinalCode()
 			addLine("\talign 4\n");
 		}
 	}
-	
-	//Jump to the main function as the entry point to the application
-	//TODO: Look if the "make" file from Andy automatically pastes this into the code. If so, delete the lines.
-	addLine("\n\n.text\n\n");
-	addLine("_start:\n");
-	addLine("\tJAL main\n\n");
+
+	addLine("\n.text\n\n");
 	
 	//Calculate all Jump Labels:
 	for(int i=0;i<code_count;i++)

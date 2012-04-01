@@ -8,3 +8,4 @@ make
 rm -rf src/bin32
 rm -rf src/parser.tab.c
 rm -rf src/parser.tab.h
+cp bin/dhbwcc test/dhbwcc 
