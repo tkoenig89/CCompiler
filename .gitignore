@@ -1,8 +1,6 @@
 #Ignore generated source files
 bin/
 bin/*
-test/
-doxygen/
 src/bin32
 src/parser.tab.c
 src/parser.tab.h
