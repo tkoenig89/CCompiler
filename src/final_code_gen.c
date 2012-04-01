@@ -175,7 +175,7 @@ void transOpCode(struct strCode  c)
 		case opASSIGN:			
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i0 = loadvar(c.int0, r);
 			
 			if(c.int0->isParam)
@@ -203,10 +203,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 + i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tADD $%d, $%d, $%d\t#Add 2 Variables and store result int temp register\n", i0, i1, i2);
 			addLine(buffer);
@@ -216,10 +216,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 - i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tSUB $%d, $%d, $%d\t#Subtract 2 Variables and store result int temp register\n", i0, i1, i2);
 			addLine(buffer);
@@ -229,10 +229,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 * i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tMUL $%d, $%d, $%d\t#Multiply 2 Variables and store result int temp register\n", i0, i1, i2);
 			addLine(buffer);
@@ -242,10 +242,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 == i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			
 			tInt = tempInt ("int");
@@ -266,10 +266,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 != i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			
 			tInt = tempInt ("int");
@@ -288,10 +288,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 < i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			
 			sprintf (buffer, "\tSLT $%d, $%d, $%d\t#if i1 < i2 i0 = 1 else i0 = 0\n", i0, i1, i2);
@@ -302,10 +302,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 > i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			
 			sprintf (buffer, "\tSLT $%d, $%d, $%d\t#if i1 > i2 i0 = 1 else i0 = 0\n", i0, i2, i1);
@@ -316,10 +316,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 && i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tAND $%d, $%d, $%d\t#Locigal And, is here equal to bit AND\n", i0, i1, i2);
 			addLine(buffer);
@@ -329,10 +329,10 @@ void transOpCode(struct strCode  c)
 			//i0 = i1 && i2; i0 is always a temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i2 = loadvar(c.int2, r);
 			if(i2<=14)
-			{r=i2;}
+			{r=i2;} else {r=6;}
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tOR $%d, $%d, $%d\t#Locigal Or, is here equal to bit OR\n", i0, i1, i2);
 			addLine(buffer);
@@ -342,7 +342,7 @@ void transOpCode(struct strCode  c)
 			//i0 = !i1; i0 is always temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tNOT $%d, $%d\t#(pseudo):x = !y\n", i0, i1);
 			addLine(buffer);
@@ -352,7 +352,7 @@ void transOpCode(struct strCode  c)
 			//i0 = -i1; i0 is always temp
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
-			{r=i1;}
+			{r=i1;} else {r=5;}
 			i0 = loadvar(c.int0, r);
 			sprintf (buffer, "\tNEGU $%d, $%d\t#(pseudo):x = -y\n", i0, i1);
 			addLine(buffer);
@@ -386,11 +386,11 @@ void transOpCode(struct strCode  c)
 		case opMEM_LD:
 			//i0 = i1[i2]; i0 is always a temp
 			i2 = loadvar(c.int2, 4);
-			sprintf (buffer, "\tLI $%d, 4\t#Load array position into a register\n", i2 + 1);
+			sprintf (buffer, "\tLI $%d, 4\t#Load Number 4 into a register\n", i2 + 1);
 			addLine(buffer);
 			//i1 = loadvar(c.int1, i2 + 1);
 			//i0 = loadvar(c.int0, i1);
-			sprintf (buffer, "\tMUL $%d, $5, $6\t#Multiplying array position by 4 (each entry has the size of 4 bytes)\n", i2 + 2, i2 + 1, i2);
+			sprintf (buffer, "\tMUL $%d, $%d, $%d\t#Multiplying array position by 4 (each entry has the size of 4 bytes)\n", i2 + 2, i2 + 1, i2);
 			addLine(buffer);
 			i1 = loadvar(c.int1, i2 + 2);
 			//sprintf (buffer, "\tLW $%d, %d($fp)\n", i2 + 2, c.int1->stackpos);
@@ -402,6 +402,31 @@ void transOpCode(struct strCode  c)
 			i0 = loadvar(c.int0, i1);
 		
 			sprintf (buffer, "\tLW $%d, 0($%d)\t#Load the Array position from the stack\n", i0, i2 + 1);
+			//sprintf (buffer, "\tMOVE $%d, $%d\t#Move Array Pointer to Temp Register\n", i0, i2 + 1);
+			addLine(buffer);
+		break;
+		
+		case opMEM_ST:			
+			i2 = loadvar(c.int2, 4);
+			sprintf(buffer, "#-----------------DEBUG:%d.\n", i2);
+			addLine(buffer);
+			if(i2<=14)
+			{r=i2;} else {r=5;}
+			i0 = loadvar(c.int0, r);
+			if(i0<=14)
+			{r=i0;} else {r=6;}
+			//c.int1->var = arrayPos
+			
+			sprintf (buffer, "\tLI $%d, %d\t#Load array position into a register\n", i0+1, c.int1->var);
+			addLine(buffer);
+			sprintf (buffer, "\tLI $%d, 4\t#Load Number 4 into a register\n", i0 + 2);
+			addLine(buffer);
+			sprintf (buffer, "\tMUL $%d, $%d, $%d\t#Multiplying array position by 4 (each entry has the size of 4 bytes)\n", i0 + 3, i0+2, i0 + 1);
+			addLine(buffer);
+			sprintf (buffer, "\tADD $%d, $%d, $%d\t#Add the starting position of the array to the position\n", i0 + 3, i0, i0 + 3);
+			addLine(buffer);
+			//sprintf (buffer, "\tSW $%d, %d($sp)\t#Assign one register to another\n", i2, r + 3);
+			sprintf (buffer, "\tSW $%d, 0($%d)\t#Assign one register to another\n", i2, i0+3);
 			addLine(buffer);
 		break;
 		

@@ -18,15 +18,31 @@ f:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	LW $8, 8($fp)	#Parameter recognised:j
 	ADD $6, $7, $8	#Add the starting position of the array to the position
 	LW $14, 0($6)	#Load the Array position from the stack
+	LI $5, 55	#Number recognised:55
+	SW $5, 0($14)	#Assign one register to another
 	LI $5, 7	#Number recognised:7
 	LI $6, 4	#Load array position into a register
 	MUL $7, $5, $6	#Multiplying array position by 4 (each entry has the size of 4 bytes)
 	LW $8, 8($fp)	#Parameter recognised:j
 	ADD $6, $7, $8	#Add the starting position of the array to the position
 	LW $15, 0($6)	#Load the Array position from the stack
-	MUL $14, $14, $15	#Multiply 2 Variables and store result int temp register
-	LW $15, 12($fp)	#Parameter recognised:i
-	SW $14, 12($fp)	#Assign one register to another
+	LI $5, 77	#Number recognised:77
+	SW $5, 0($15)	#Assign one register to another
+	LI $5, 5	#Number recognised:5
+	LI $6, 4	#Load array position into a register
+	MUL $7, $5, $6	#Multiplying array position by 4 (each entry has the size of 4 bytes)
+	LW $8, 8($fp)	#Parameter recognised:j
+	ADD $6, $7, $8	#Add the starting position of the array to the position
+	LW $15, 0($6)	#Load the Array position from the stack
+	LI $5, 7	#Number recognised:7
+	LI $6, 4	#Load array position into a register
+	MUL $7, $5, $6	#Multiplying array position by 4 (each entry has the size of 4 bytes)
+	LW $8, 8($fp)	#Parameter recognised:j
+	ADD $6, $7, $8	#Add the starting position of the array to the position
+	LW $16, 0($6)	#Load the Array position from the stack
+	MUL $15, $15, $16	#Multiply 2 Variables and store result int temp register
+	LW $6, 12($fp)	#Parameter recognised:i
+	SW $15, 12($fp)	#Assign one register to another
 	LI $5, 2	#Number recognised:2
 	LW $6, 12($fp)	#Parameter recognised:i
 	SW $5, 12($fp)	#Assign one register to another

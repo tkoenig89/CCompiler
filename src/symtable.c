@@ -49,6 +49,7 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	
 	ptr->isParam = 0;
 	ptr->stackpos = 0;	
+	ptr->tempArrPos=-1;
 	
 	if(strcmp (ptr->name,"int") == 0)
 	{ptr->isTemp = 1;} else {ptr->isTemp = 0;}
@@ -76,6 +77,7 @@ struct symInt *tempInt (char const *name)
 	ptr->isParam = 0;
 	ptr->stackpos = 0;	
 	ptr->isTemp = 1;
+	ptr->tempArrPos = -1;
 	
 	ptr->next = 137; //Temp Var Marker... 
 	

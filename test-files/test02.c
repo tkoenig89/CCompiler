@@ -1,5 +1,7 @@
 int f(int i, int j[10]) 
 {
+	j[5] = 55;
+	j[7] = 77;
 	i = j[5] * j[7];
 	i = 2;
 	return i;

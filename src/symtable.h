@@ -9,6 +9,7 @@ struct symInt
 	int isParam;
 	struct symFunc *scope;
 	int var; //is used for number of elements when the var is an array
+	int tempArrPos;
 	int stackpos; //used by final_code for reference 
 	int isTemp;
 	struct symInt *nextElement;

@@ -45,12 +45,21 @@ void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, 
 
 void addcodeass(struct symInt *int0, struct symInt *int1)
 {
-	//int0 = int1
-	addcode(opASSIGN, int0, int1, NULL, NULL, -1);
-	printf("Code offset: %d\n", code_count);
-	printf("IR: ASSIGN %s = %s\n", code[code_count-1].int0->name, code[code_count-1].int1->name);
-	
-	temp_reg_count = 0;
+	if(int0->tempArrPos>-1)
+	{
+		//int0[x] = int1
+		printf("t_isArray:%d.\n", int1->isArray);
+		addcode(opMEM_ST, int0->nextElement, putInt ("int", 0, int0->tempArrPos) , int1 /*=int2*/, NULL, -1);				
+	}
+	else
+	{	
+		//int0 = int1
+		addcode(opASSIGN, int0, int1, NULL, NULL, -1);
+		printf("Code offset: %d\n", code_count);
+		printf("IR: ASSIGN %s = %s\n", code[code_count-1].int0->name, code[code_count-1].int1->name);
+	}
+	printf("t_count:%d.\n", temp_reg_count);
+	temp_reg_count = 0;	
 }
 /*
 struct symInt *addcodemin(struct symInt *int1)
@@ -215,6 +224,9 @@ struct symInt * addcodeloadarr(struct symInt *int1, struct symInt *int2)
 {
 	struct symInt *ptr;
 	ptr = irtempInt();
+	
+	int1->tempArrPos = int2->var;
+	ptr->nextElement = int1;
 	
 	addcode(opMEM_LD, ptr, int1, int2, NULL, -1);
 	
