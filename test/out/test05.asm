@@ -59,24 +59,29 @@ fib:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	SW $fp, 0($sp)
 	MOVE $fp, $sp
 
+	ADDI $sp, $sp, -8	#Allocate Memory on stackpointer for local Variables
+	#int a: 4($sp)
+	#int b: 0($sp)
 	LW $5, 8($fp)	#Parameter recognised:n
 	LI $6, 0	#Number recognised:0
-	LI $15, 1	#Number recognised:1
-	SUB $14, $5, $6	#If i1 == i2, i0 = 0, else i0 != 0
-	MOVN $14, $15, $14	#if i0 != 0, i0 = 1
-	XOR $14, $14, $15	#i0 = !i0
-	LW $5, 8($fp)	#Parameter recognised:n
-	LI $6, 1	#Number recognised:1
 	LI $7, 1	#Number recognised:1
 	SUB $15, $5, $6	#If i1 == i2, i0 = 0, else i0 != 0
 	MOVN $15, $7, $15	#if i0 != 0, i0 = 1
 	XOR $15, $15, $7	#i0 = !i0
-	OR $14, $14, $15	#Locigal Or, is here equal to bit OR
-	BGTZ $14, l0
+	LW $5, 8($fp)	#Parameter recognised:n
+	LI $6, 1	#Number recognised:1
+	LI $7, 1	#Number recognised:1
+	SUB $16, $5, $6	#If i1 == i2, i0 = 0, else i0 != 0
+	MOVN $16, $7, $16	#if i0 != 0, i0 = 1
+	XOR $16, $16, $7	#i0 = !i0
+	OR $15, $15, $16	#Locigal Or, is here equal to bit OR
+	BGTZ $15, l0
 	J l1
 l0:
 	LW $5, 8($fp)	#Parameter recognised:n
 	MOVE $2, $5	#Return n
+	ADDI $sp, $sp, 8	# delete local variables
+	J l2
 	J l2
 l1:
 	LW $5, 8($fp)	#Parameter recognised:n
@@ -87,16 +92,24 @@ l1:
 	JAL fib	#Call function
 	ADDI $sp, $sp, 4	# clean up stack after function call is done
 	MOVE $16, $2	#Save return value by storing it into a temp register
+	LW $6, 4($sp)	#Local Variable recognised:a
+	SW $16, 4($sp)	#Assign one register to another
 	LW $5, 8($fp)	#Parameter recognised:n
 	LI $6, 2	#Number recognised:2
-	SUB $17, $5, $6	#Subtract 2 Variables and store result int temp register
+	SUB $15, $5, $6	#Subtract 2 Variables and store result int temp register
 	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
-	SW $17, 0($sp)	#Copy Value/Adress of var to stack var
+	SW $15, 0($sp)	#Copy Value/Adress of var to stack var
 	JAL fib	#Call function
 	ADDI $sp, $sp, 4	# clean up stack after function call is done
-	MOVE $18, $2	#Save return value by storing it into a temp register
-	ADD $16, $16, $18	#Add 2 Variables and store result int temp register
-	MOVE $2, $16	#Return .t2
+	MOVE $16, $2	#Save return value by storing it into a temp register
+	LW $6, 0($sp)	#Local Variable recognised:b
+	SW $16, 0($sp)	#Assign one register to another
+	LW $5, 4($sp)	#Local Variable recognised:a
+	LW $6, 0($sp)	#Local Variable recognised:b
+	ADD $15, $5, $6	#Add 2 Variables and store result int temp register
+	MOVE $2, $15	#Return .t1
+	ADDI $sp, $sp, 8	# delete local variables
+	J l2
 l2:
 	#End of function fib. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.
 	LW $fp, 0($sp)
@@ -110,7 +123,7 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	SW $fp, 0($sp)
 	MOVE $fp, $sp
 
-	LI $5, 4	#Number recognised:4
+	LI $5, 16	#Number recognised:16
 	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
 	SW $5, 0($sp)	#Copy Value/Adress of var to stack var
 	JAL fib	#Call function

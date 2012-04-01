@@ -74,7 +74,14 @@ struct symInt *addcodemin(struct symInt *int1)
 
 void addcodeop1(enum code_ops operation, struct symInt *int0)
 {	
-	addcode(operation, int0, NULL, NULL, NULL, -1);
+	if(operation==opRETURN)
+	{
+		addcode(operation, int0, NULL, NULL, NULL, -137);
+	}
+	else
+	{
+		addcode(operation, int0, NULL, NULL, NULL, -1);
+	}
 }
 
 struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
@@ -126,6 +133,24 @@ void backpatchif()
 			{
 				c->jmpTo = getopcodeCount();
 				break;
+			}
+		}	
+	}
+}
+
+void backpatchreturn()
+{	
+	struct strCode  *c;	
+	
+	for(int i=0;i<code_count;i++)
+	{
+		c = &code[i];
+		
+		if(c->op==opRETURN)
+		{
+			if(c->jmpTo==-137)
+			{
+				c->jmpTo = getopcodeCount() - 1;
 			}
 		}	
 	}

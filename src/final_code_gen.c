@@ -202,16 +202,20 @@ void transOpCode(struct strCode  c)
 		break;
 			
 		case opRETURN:
-			i0 = loadvar(c.int0, 4);
-		
-			sprintf (buffer, "\tMOVE $2, $%d\t#Return %s\n", i0, c.int0->name);
-			addLine(buffer);
+			if(c.int0!=NULL)
+			{
+				i0 = loadvar(c.int0, 4);
+			
+				sprintf (buffer, "\tMOVE $2, $%d\t#Return %s\n", i0, c.int0->name);
+				addLine(buffer);
+			}
 			if(tmpLocalVarCount>0)
 			{
 				sprintf (buffer, "\tADDI $sp, $sp, %d\t# delete local variables\n", tmpLocalVarCount);
 				addLine(buffer);
 			}		
-			//TODO: Delete Local Variables and Jump to the end of the function
+			sprintf (buffer, "\tJ l%d\n", c.jmpTo);
+			addLine(buffer);
 		break;
 		
 		case opADD:
@@ -555,6 +559,13 @@ void generateFinalCode()
 			
 			case opGOTO:
 				//GOTO jmpTo
+				jmpLableCount = jmpLableCount + 1;
+				if(!setJmpLabel(code[i].jmpTo, jmpLableCount))
+					{jmpLableCount = jmpLableCount - 1;}
+				code[i].jmpTo = jmpLableCount;
+			break;
+					
+			case opRETURN:
 				jmpLableCount = jmpLableCount + 1;
 				if(!setJmpLabel(code[i].jmpTo, jmpLableCount))
 					{jmpLableCount = jmpLableCount - 1;}

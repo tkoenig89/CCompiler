@@ -59,6 +59,7 @@ int setJmpLabel(int cpos, int jmpLabel);
 void setCodeToNOP(int pos);
 int addcodeopfunccall(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo);
 void resetTempCount();
+void backpatchreturn();
 
 void printcode();
 void debugPrintAllopcodes();
