@@ -299,8 +299,8 @@ stmt_conditional
      ;
      
 stmt_conditional_r
-     : stmt {backpatchif();}
-     | stmt ELSE {addifgoto();backpatchif();} stmt {backpatchif();}
+     : stmt {backpatchif(0);}
+     | stmt ELSE {backpatchif(1);addifgoto();} stmt {backpatchif(0);}
      ;
      
 stmt_loop

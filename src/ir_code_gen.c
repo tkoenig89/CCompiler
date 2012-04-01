@@ -119,11 +119,12 @@ void addifgoto()
 	addcode(opGOTO, NULL, NULL, NULL, NULL, -137);
 }
 
-void backpatchif()
+void backpatchif(int shift)
 {	
 	struct strCode  *c;	
 	
-	for(int i=0;i<code_count;i++)
+	//for(int i=0;i<code_count;i++)
+	for(int i=code_count-1;i>=0;i--)
 	{
 		c = &code[i];
 		
@@ -131,7 +132,7 @@ void backpatchif()
 		{
 			if(c->jmpTo==-137)
 			{
-				c->jmpTo = getopcodeCount();
+				c->jmpTo = getopcodeCount() + shift;
 				break;
 			}
 		}	

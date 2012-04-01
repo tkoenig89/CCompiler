@@ -79,10 +79,35 @@ fib:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	J l1
 l0:
 	LW $5, 8($fp)	#Parameter recognised:n
+	LI $6, 1	#Number recognised:1
+	SLT $16, $6, $5	#if i1 > i2 i0 = 1 else i0 = 0
+	LW $5, 8($fp)	#Parameter recognised:n
+	LI $6, 0	#Number recognised:0
+	SLT $17, $5, $6	#if i1 < i2 i0 = 1 else i0 = 0
+	OR $16, $16, $17	#Locigal Or, is here equal to bit OR
+	BGTZ $16, l2
+	J l3
+l2:
+	JAL scan	#Call function
+	MOVE $17, $2	#Save return value by storing it into a temp register
+	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
+	SW $17, 0($sp)	#Copy Value/Adress of var to stack var
+	JAL print	#Call function
+	ADDI $sp, $sp, 4	# clean up stack after function call is done
+	MOVE $18, $2	#Save return value by storing it into a temp register
+l3:
+	LW $5, 8($fp)	#Parameter recognised:n
 	MOVE $2, $5	#Return n
 	ADDI $sp, $sp, 8	# delete local variables
-	J l2
-	J l2
+	J l4
+	JAL scan	#Call function
+	MOVE $15, $2	#Save return value by storing it into a temp register
+	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
+	SW $15, 0($sp)	#Copy Value/Adress of var to stack var
+	JAL print	#Call function
+	ADDI $sp, $sp, 4	# clean up stack after function call is done
+	MOVE $16, $2	#Save return value by storing it into a temp register
+	J l4
 l1:
 	LW $5, 8($fp)	#Parameter recognised:n
 	LI $6, 1	#Number recognised:1
@@ -109,8 +134,15 @@ l1:
 	ADD $15, $5, $6	#Add 2 Variables and store result int temp register
 	MOVE $2, $15	#Return .t1
 	ADDI $sp, $sp, 8	# delete local variables
-	J l2
-l2:
+	J l4
+	JAL scan	#Call function
+	MOVE $15, $2	#Save return value by storing it into a temp register
+	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
+	SW $15, 0($sp)	#Copy Value/Adress of var to stack var
+	JAL print	#Call function
+	ADDI $sp, $sp, 4	# clean up stack after function call is done
+	MOVE $16, $2	#Save return value by storing it into a temp register
+l4:
 	#End of function fib. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.
 	LW $fp, 0($sp)
 	LW $31, 4($sp)

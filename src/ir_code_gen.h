@@ -48,7 +48,7 @@ void addcodeop2(enum code_ops operation, struct symInt *int0, struct symInt *int
 int opcodeFindFunctionDef(struct symFunc *func);
 void addif(struct symInt *int0);
 void addifgoto();
-void backpatchif();
+void backpatchif(int shift);
 void addwhile(struct symInt *int0);
 void addwhilebegin();
 void addwhilegotobegin();

@@ -1,3 +1,7 @@
+void print (int i);
+int scan ();
+void exit (int i);
+
 int fack(int n)
 {
 	int a,b,c,d,e,f;
@@ -10,10 +14,6 @@ int fack(int n)
 		return n*fack(n-1);
 	}
 }
-
-void print (int i);
-int scan ();
-void exit (int i);
 
 int main()
 {
