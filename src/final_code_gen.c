@@ -265,7 +265,9 @@ void transOpCode(struct strCode  c)
 			addLine(buffer);			
 			sprintf (buffer, "\tMOVN $%d, $%d, $%d\t#if i0 != 0, i0 = 1\n", i0, t0, i0);
 			addLine(buffer);
-			sprintf (buffer, "\tNOT $%d, $%d\t#i0 = !i0\n", i0, i0);
+			//sprintf (buffer, "\tNOT $%d, $%d\t#i0 = !i0\n", i0, i0);
+			//addLine(buffer);
+			sprintf (buffer, "\tXOR $%d, $%d, $%d\t#i0 = !i0\n", i0, i0, t0);
 			addLine(buffer);
 		break;
 			
