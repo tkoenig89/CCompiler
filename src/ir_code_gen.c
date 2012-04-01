@@ -73,7 +73,7 @@ struct symInt *addcodemin(struct symInt *int1)
 }*/
 
 void addcodeop1(enum code_ops operation, struct symInt *int0)
-{
+{	
 	addcode(operation, int0, NULL, NULL, NULL, -1);
 }
 
@@ -204,6 +204,7 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 {
 	//TODO: If we regocnise that int1 and int2 are already a temp vars, we use either int1 or int2 as the result instead of creating a new temp var to save register space
 	struct symInt *ptr;
+	/*
 	if((int1->next!=137) && (int2->next!=137))
 	{
 		ptr = irtempInt();
@@ -212,9 +213,20 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 	{
 		ptr = int1;
 		temp_reg_count -= 1;
-		//printf("temp_reg_count:%d.\n", temp_reg_count);
-	}	
+		printf("\n\n\n\n\n\ntemp_reg_count:%d %d.\n", temp_reg_count, int1->next);
+	}*/
 
+	if((int1->next==137) && (int2->next==137))
+	{
+		ptr = int1;
+		temp_reg_count -= 1;
+		printf("\n\n\n\n\n\ntemp_reg_count:%d %d.\n", temp_reg_count, int1->next);
+	}
+	else
+	{
+		ptr = irtempInt();	
+	}
+	
 	addcode(operation, ptr, int1, int2, NULL, -1);
 	printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
 	return ptr;
@@ -338,4 +350,9 @@ int setJmpLabel(int cpos, int jmpLabel)
 void setCodeToNOP(int pos)
 {
 	code[pos].op = opNOP;
+}
+
+void resetTempCount()
+{
+	temp_reg_count = 0;
 }

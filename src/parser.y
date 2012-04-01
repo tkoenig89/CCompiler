@@ -269,10 +269,10 @@ stmt_list
 
 stmt
      : stmt_block
-     | variable_declaration SEMICOLON	/*Nothing to be done here*/
-     | expression SEMICOLON			/*Nothing to be done here*/
-     | stmt_conditional				/*Nothing to be done here*/
-     | stmt_loop						/*Nothing to be done here*/
+     | variable_declaration SEMICOLON	{resetTempCount();}
+     | expression SEMICOLON			{resetTempCount();}
+     | stmt_conditional				{resetTempCount();}
+     | stmt_loop						{resetTempCount();}
      | RETURN expression SEMICOLON		{
 									if($2->scope!=NULL)
 									{
@@ -282,9 +282,10 @@ stmt
 										}
 									}
 									addcodeop1(opRETURN, $2);
+									{resetTempCount();}
 								}
-     | RETURN SEMICOLON				{addcodeop1(opRETURN, NULL);}
-     | SEMICOLON /* empty statement */
+     | RETURN SEMICOLON				{addcodeop1(opRETURN, NULL);{resetTempCount();}}
+     | SEMICOLON {resetTempCount();}
      ;
 
 stmt_block

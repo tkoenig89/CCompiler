@@ -204,6 +204,7 @@ void transOpCode(struct strCode  c)
 		
 			sprintf (buffer, "\tMOVE $2, $%d\t#Return %s\n", i0, c.int0->name);
 			addLine(buffer);
+			//TODO: Delete Local Variables and Jump to the end of the function
 		break;
 		
 		case opADD:
@@ -258,7 +259,7 @@ void transOpCode(struct strCode  c)
 			tInt = tempInt ("int");
 			tInt->var = 1;
 			if(i0<=14)
-			{r=i0;}
+			{r=i0;} else {r=6;}
 			t0 = loadvar(tInt, r);
 
 			sprintf (buffer, "\tSUB $%d, $%d, $%d\t#If i1 == i2, i0 = 0, else i0 != 0\n", i0, i1, i2);
@@ -284,7 +285,7 @@ void transOpCode(struct strCode  c)
 			tInt = tempInt ("int");
 			tInt->var = 1;
 			if(i0<=14)
-			{r=i0;}
+			{r=i0;} else {r=6;}
 			t0 = loadvar(tInt, r);
 
 			sprintf (buffer, "\tSUB $%d, $%d, $%d\t#If i1 != i2, i0 != 0, else i0 = 0\n", i0, i1, i2);
@@ -353,7 +354,16 @@ void transOpCode(struct strCode  c)
 			if(i1<=14)
 			{r=i1;} else {r=5;}
 			i0 = loadvar(c.int0, r);
-			sprintf (buffer, "\tNOT $%d, $%d\t#(pseudo):x = !y\n", i0, i1);
+			
+			tInt = tempInt ("int");
+			tInt->var = 1;
+			if(i0<=14)
+			{r=i0;} else {r=6;}
+			t0 = loadvar(tInt, r);
+			
+			//sprintf (buffer, "\tNOT $%d, $%d\t#(pseudo):x = !y\n", i0, i1);
+			//addLine(buffer);
+			sprintf (buffer, "\tXOR $%d, $%d, $%d\t#i0 = !i0\n", i0, i1, t0);
 			addLine(buffer);
 		break;
 			
@@ -449,9 +459,16 @@ void transOpCode(struct strCode  c)
 		case opCALL:
 			i1 = loadvar(c.int1, 4);
 			sprintf (buffer, "\tJAL %s\t#Call function\n", c.func->name);
-			addLine(buffer);
+			addLine(buffer);			
+			if(c.int0->var>0)
+			{
+				sprintf (buffer, "\tADDI $sp, $sp, %d\t# clean up stack after function call is done\n", c.int0->var*4);
+				addLine(buffer);
+				
+			}
 			sprintf (buffer, "\tMOVE $%d, $2\t#Save return value by storing it into a temp register\n", i1);
 			addLine(buffer);
+			//TODO: Save return value to stack and not to a temp register
 		break;
 		
 		case opFUNC_DEF:
