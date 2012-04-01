@@ -9,6 +9,7 @@ struct symInt *symIntTable;
 struct symFunc *symFuncTable;
 char buffer [200];
 int jmpLableCount = -1;
+int tmpLocalVarCount = -1;
 
 void initFinalCodeGen(FILE *file)
 {
@@ -51,6 +52,7 @@ void generateLocalVars(struct symFunc *sFunc)
 	{
 		sprintf (buffer, "\tADDI $sp, $sp, -%d\t#Allocate Memory on stackpointer for local Variables\n", lstackcount);
 		addLine(buffer);
+		tmpLocalVarCount = lstackcount;
 	}
 	
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
@@ -204,6 +206,11 @@ void transOpCode(struct strCode  c)
 		
 			sprintf (buffer, "\tMOVE $2, $%d\t#Return %s\n", i0, c.int0->name);
 			addLine(buffer);
+			if(tmpLocalVarCount>0)
+			{
+				sprintf (buffer, "\tADDI $sp, $sp, %d\t# delete local variables\n", tmpLocalVarCount);
+				addLine(buffer);
+			}		
 			//TODO: Delete Local Variables and Jump to the end of the function
 		break;
 		
