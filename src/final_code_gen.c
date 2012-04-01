@@ -408,8 +408,8 @@ void transOpCode(struct strCode  c)
 		
 		case opMEM_ST:			
 			i2 = loadvar(c.int2, 4);
-			sprintf(buffer, "#-----------------DEBUG:%d.\n", i2);
-			addLine(buffer);
+			//sprintf(buffer, "#-----------------DEBUG:%d.\n", i2);
+			//addLine(buffer);
 			if(i2<=14)
 			{r=i2;} else {r=5;}
 			i0 = loadvar(c.int0, r);
@@ -459,6 +459,10 @@ void transOpCode(struct strCode  c)
 			addLine("\tLW $31, 4($sp)\n");
 			addLine("\tADDI $sp, $sp, 8\n");
 			addLine("\tJR $31\n\n");
+		break;
+		
+		case opNOP:
+			/*Do Nothing*/
 		break;
 		
 		default:

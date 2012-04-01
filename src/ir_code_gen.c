@@ -230,6 +230,8 @@ struct symInt * addcodeloadarr(struct symInt *int1, struct symInt *int2)
 	
 	addcode(opMEM_LD, ptr, int1, int2, NULL, -1);
 	
+	ptr->tempCodePos = code_count -1 ;
+	
 	return ptr;
 }
 
@@ -321,4 +323,9 @@ int setJmpLabel(int cpos, int jmpLabel)
 		}
 	}
 	return 0;
+}
+
+void setCodeToNOP(int pos)
+{
+	code[pos].op = opNOP;
 }

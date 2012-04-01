@@ -13,7 +13,7 @@ enum code_ops
 	
 	opIF, opGOTO, opWHILE_BEGIN, opDO_WHILE_BEGIN,
 	
-	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END
+	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END, opNOP
 };
 
 static char* enumStrings[] = {
@@ -23,7 +23,7 @@ static char* enumStrings[] = {
 	
 							"IF", "GOTO", "WHILE_BEGIN", "DO_WHILE_BEGIN",
 
-							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF", "FUNC_DEF_END"
+							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF", "FUNC_DEF_END", "NOP"
 						
 						};
 
@@ -56,6 +56,7 @@ void backpatchwhile();
 void adddowhile();
 void adddowhileend(struct symInt *int0);
 int setJmpLabel(int cpos, int jmpLabel);
+void setCodeToNOP(int pos);
 
 void printcode();
 void debugPrintAllopcodes();
