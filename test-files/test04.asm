@@ -37,8 +37,6 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	SW $fp, 0($sp)
 	MOVE $fp, $sp
 
-	ADDI $sp, $sp, -4	#Allocate Memory on stackpointer for local Variables
-	#int .v0: 0($sp)
 	LI $5, 42	#Number recognised:42
 	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
 	SW $5, 0($sp)	#Copy Value/Adress of var to stack var
@@ -49,6 +47,7 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
 	SW $5, 0($sp)	#Copy Value/Adress of var to stack var
 	JAL f	#Call function
+	MOVE $15, $2	#Save return value by storing it into a temp register
 	#End of function main. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.
 	LW $fp, 0($sp)
 	LW $31, 4($sp)

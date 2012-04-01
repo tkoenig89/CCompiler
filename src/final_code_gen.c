@@ -198,6 +198,13 @@ void transOpCode(struct strCode  c)
 			}
 			addLine(buffer);
 		break;
+			
+		case opRETURN:
+			i0 = loadvar(c.int0, 4);
+		
+			sprintf (buffer, "\tMOVE $2, $%d\t#Return %s\n", i0, c.int0->name);
+			addLine(buffer);
+		break;
 		
 		case opADD:
 			//i0 = i1 + i2; i0 is always a temp
@@ -438,8 +445,11 @@ void transOpCode(struct strCode  c)
 		break;
 		
 		case opCALL:
+			i1 = loadvar(c.int1, 4);
 			sprintf (buffer, "\tJAL %s\t#Call function\n", c.func->name);
-			addLine(buffer);			
+			addLine(buffer);
+			sprintf (buffer, "\tMOVE $%d, $2\t#Save return value by storing it into a temp register\n", i1);
+			addLine(buffer);
 		break;
 		
 		case opFUNC_DEF:

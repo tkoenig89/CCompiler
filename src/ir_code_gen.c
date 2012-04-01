@@ -240,6 +240,16 @@ void addcodeopfunc(enum code_ops operation, struct symInt *int0, struct symFunc 
 	addcode(operation, int0, NULL, NULL, func, jmpTo);
 }
 
+int addcodeopfunccall(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo)
+{
+	struct symInt *ptr;
+	ptr = irtempInt();
+	
+	addcode(operation, int0, ptr, NULL, func, jmpTo);
+	
+	return ptr;
+}
+
 /* Generates code at a reserved location */
 /*
 void backpatch(int addr, enum code_ops operation, int arg )

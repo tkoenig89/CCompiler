@@ -59,7 +59,7 @@
 %type <sFunc> function_definition
 %type <sFunc> function_parameter_list
 %type <sFunc> function_declaration
-%type <sFunc> function_call
+%type <sInt> function_call
 %type <num> type
 %type <sInt> function_parameter
 %type <sInt> identifier_declaration
@@ -340,7 +340,7 @@ expression								// 0 = "false", nonzero = "true"
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
      | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeloadarr(getInt($1), $3);$$->tempArrPos=$3->var;} /*In c there is no check whether the array acces in the valid bounds*/
      | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
-     | function_call							{$$ = putInt (".v0", 0, 0);/*TODO: Check whether v0 or v1 is needed as a temp register. for e.g. i = f() + g() -> i = v0 + v1*/}
+     | function_call							{$$ = $1;/*$$ = irtempInt();*//*TODO: Check whether v0 or v1 is needed as a temp register. for e.g. i = f() + g() -> i = v0 + v1*/}
      | primary								{$$ = $1}
      ;
 
@@ -359,24 +359,26 @@ primary
 
 function_call
       : ID PARA_OPEN PARA_CLOSE						{
+													struct symFunc *sFunc;
 													printf("Function call regocnised.\n");
 													if(existsFunc($1))
 													{
-														$$ = getFunc($1);
+														sFunc = getFunc($1);
 													}
 													else
 													{
 														printf("ERROR! Function was not declared before the call!\n");
-														$$ = putFunc ("-1undeclared", -1);
+														sFunc = putFunc ("-1undeclared", -1);
 													}
-													addcodeopfunc(opCALL, putInt ("int", 0, 0), $$, opcodeFindFunctionDef($$));
+													$$ = addcodeopfunccall(opCALL, putInt ("int", 0, 0), sFunc, opcodeFindFunctionDef(sFunc));
 												}
       | ID PARA_OPEN function_call_parameters PARA_CLOSE	{
+													struct symFunc *sFunc;
 													printf("Parameterised Function call regocnised.\n");
 													if(existsFunc($1))
 													{
-														$$ = getFunc($1);
-														if(paramFuncCallCheckP ($$, $3))
+														sFunc = getFunc($1);
+														if(paramFuncCallCheckP (sFunc, $3))
 														{
 															printf("Functional Call Param Check OK!\n");
 														}
@@ -389,10 +391,10 @@ function_call
 													else
 													{
 														printf("ERROR! Function was not declared before the call!\n");
-														$$ = putFunc ("-1undeclared", -1);
+														sFunc = putFunc ("-1undeclared", -1);
 													}
 													
-													addcodeopfunc(opCALL, putInt ("int", 0, $3->count), $$, opcodeFindFunctionDef($$));
+													$$ = addcodeopfunccall(opCALL, putInt ("int", 0, $3->count), sFunc, opcodeFindFunctionDef(sFunc));
 												}
       ;
 
