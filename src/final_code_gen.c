@@ -124,10 +124,10 @@ int loadvar(struct symInt *sInt, int last_reg)
 	
 	if(sInt->isParam)
 	{
-		//LW $5, 8($fp) 
-		sprintf (buffer, "\tLW $%d, %d($fp)\t#Parameter recognised:%s\n", last_reg + 1, sInt->stackpos, sInt->name);
-		addLine(buffer);
-		return last_reg + 1;
+			//LW $5, 8($fp) 
+			sprintf (buffer, "\tLW $%d, %d($fp)\t#Parameter recognised:%s\n", last_reg + 1, sInt->stackpos, sInt->name);
+			addLine(buffer);
+			return last_reg + 1;		
 	}
 	
 	//Global Variable:
@@ -433,7 +433,7 @@ void transOpCode(struct strCode  c)
 		case opPARAM:
 			i0 = loadvar(c.int0, 4);
 			addLine("\tADDI $sp, $sp, -4\t#Reserve 4 Bytes on the Stack for a parameter and the func call\n");
-			sprintf (buffer, "\tSW $%d, 0($sp)\t#Copy Value/Adress of var to stack var\n");
+			sprintf (buffer, "\tSW $%d, 0($sp)\t#Copy Value/Adress of var to stack var\n", i0);
 			addLine(buffer);
 		break;
 		
