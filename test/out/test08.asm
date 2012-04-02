@@ -70,29 +70,21 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	LW $5, 24($sp)	#Local Variable recognised:a
 	LW $6, 24($sp)	#Local Variable recognised:a
 	SW $5, 24($sp)	#Assign one register to another
-l5:
-	LI $5, 1	#Number recognised:1
-	BGTZ $5, l0
-	J l1
-l0:
+l1:
 	LW $5, 20($sp)	#Local Variable recognised:b
 	LW $6, 20($sp)	#Local Variable recognised:b
 	SW $5, 20($sp)	#Assign one register to another
-l4:
-	LI $5, 1	#Number recognised:1
-	BGTZ $5, l2
-	J l3
-l2:
+l0:
 	LW $5, 16($sp)	#Local Variable recognised:c
 	LW $6, 16($sp)	#Local Variable recognised:c
 	SW $5, 16($sp)	#Assign one register to another
-	J l4
-l3:
+	LI $5, 1	#Number recognised:1
+	BGTZ $5, l0
 	LW $5, 12($sp)	#Local Variable recognised:d
 	LW $6, 12($sp)	#Local Variable recognised:d
 	SW $5, 12($sp)	#Assign one register to another
-	J l5
-l1:
+	LI $5, 1	#Number recognised:1
+	BGTZ $5, l1
 	LW $5, 8($sp)	#Local Variable recognised:e
 	LW $6, 8($sp)	#Local Variable recognised:e
 	SW $5, 8($sp)	#Assign one register to another

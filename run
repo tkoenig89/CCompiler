@@ -1,3 +1,3 @@
 cd test
-make test09.asm
+make test10.asm
 cd ..

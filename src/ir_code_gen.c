@@ -215,7 +215,8 @@ void adddowhileend(struct symInt *int0)
 {
 	struct strCode  *c;	
 	int i;
-	for(i=0;i<code_count;i++)
+	//for(i=0;i<code_count;i++)
+	for(i=code_count-1;i>=0;i--)
 	{
 		c = &code[i];
 		
@@ -228,7 +229,6 @@ void adddowhileend(struct symInt *int0)
 			}
 		}
 	}
-	
 	addcode(opIF, int0, NULL, NULL, NULL, i);
 }
 
