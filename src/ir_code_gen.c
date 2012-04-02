@@ -176,7 +176,21 @@ void backpatchwhile()
 {	
 	struct strCode  *c;	
 	
-	for(int i=0;i<code_count;i++)
+	//for(int i=0;i<code_count;i++)
+	for(int i=code_count-1;i>=0;i--)
+	{
+		c = &code[i];
+				
+		if(c->op==opGOTO)
+		{
+			if(c->jmpTo==-137)
+			{
+				c->jmpTo = getopcodeCount()+1;
+				break;
+			}
+		}	
+	}
+	for(int i=code_count-1;i>=0;i--)
 	{
 		c = &code[i];
 		
@@ -186,17 +200,9 @@ void backpatchwhile()
 			{
 				addcode(opGOTO, NULL, NULL, NULL, NULL, i);
 				c->jmpTo=-1;
-			}
-		}
-		
-		if(c->op==opGOTO)
-		{
-			if(c->jmpTo==-137)
-			{
-				c->jmpTo = getopcodeCount();
 				break;
 			}
-		}	
+		}
 	}
 }
 
