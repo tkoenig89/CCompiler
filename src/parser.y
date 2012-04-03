@@ -72,8 +72,8 @@ program
      ;
 
 program_element_list
-     : program_element_list program_element 	{printf("----------DEBUG printing all functions and variables:\n\n");printf("----------DEBUG Functions:\n");debugPrintAllsFunc();printf("----------DEBUG Variables:\n");debugPrintAllsint();printf("----------DEBUG opCodes:\n");debugPrintAllopcodes();}
-     | program_element 					{printf("----------DEBUG printing all functions and variables:\n\n");printf("----------DEBUG Functions:\n");debugPrintAllsFunc();printf("----------DEBUG Variables:\n");debugPrintAllsint();printf("----------DEBUG opCodes:\n");debugPrintAllopcodes();}
+     : program_element_list program_element 	//{printf("----------DEBUG printing all functions and variables:\n\n");printf("----------DEBUG Functions:\n");debugPrintAllsFunc();printf("----------DEBUG Variables:\n");debugPrintAllsint();printf("----------DEBUG opCodes:\n");debugPrintAllopcodes();}
+     | program_element 					//{printf("----------DEBUG printing all functions and variables:\n\n");printf("----------DEBUG Functions:\n");debugPrintAllsFunc();printf("----------DEBUG Variables:\n");debugPrintAllsint();printf("----------DEBUG opCodes:\n");debugPrintAllopcodes();}
      ;
 
 program_element

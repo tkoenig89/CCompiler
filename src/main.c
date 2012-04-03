@@ -8,6 +8,7 @@
 #include "main.h"
 #include "resource_manager.h"
 #include "diag.h"
+#include "symtable.h"
 #include "ir_code_gen.h"
 #include "final_code_gen.h"
 
@@ -289,6 +290,14 @@ int main (int argc, char *argv[]) {
 	do {
 		yyparse();
 	} while (!feof(yyin));
+	
+	printf("----------DEBUG printing all functions and variables:\n\n");
+	printf("----------DEBUG Functions:\n");
+	debugPrintAllsFunc();
+	printf("----------DEBUG Variables:\n");
+	debugPrintAllsint();
+	printf("----------DEBUG opCodes:\n");
+	debugPrintAllopcodes();
 	
 	FILE *finalfile = fopen(cc_options.output_file, "w");
 	
