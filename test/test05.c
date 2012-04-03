@@ -19,6 +19,9 @@ int fib(int n)
 		b = fib(n - 2);
 		return a + b;
 		print(scan());
+		//If we dont save the return on the stack when we have 2 or more rec. func calls
+		//in a return statement it will override the temp reg, value.
+		//TODO: Calc this via compiler
 		//return fib(n - 1) + fib(n - 2);
 	}
 }
