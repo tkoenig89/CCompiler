@@ -1,3 +1,3 @@
 cd test
-make test11.asm
+make condsum.asm
 cd ..
