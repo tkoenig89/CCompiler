@@ -50,11 +50,12 @@ exit:
   syscall
 
 .data
-.global:
-	.word n	align 4
-.a:
+global:
+	.word 0
+	.align 4
+a:
 	.word 0 : 10
-	align 4
+	.align 4
 
 .text
 
@@ -118,10 +119,9 @@ l3:
 l1:
 	LW $5, 0($sp)	#Local Variable recognised:sum
 	MOVE $2, $5	#Return sum
-	ADDI $sp, $sp, 8	# delete local variables
-	J l5
 l5:
 	#End of function func. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.
+	ADDI $sp, $sp, 8	# delete local variables
 	LW $fp, 0($sp)
 	LW $31, 4($sp)
 	ADDI $sp, $sp, 8
@@ -151,8 +151,6 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	ADDI $sp, $sp, 12	# clean up stack after function call is done
 	MOVE $16, $2	#Save return value by storing it into a temp register
 	MOVE $2, $16	#Return .t2
-	ADDI $sp, $sp, 8	# delete local variables
-	J l6
 	JAL scan	#Call function
 	MOVE $15, $2	#Save return value by storing it into a temp register
 	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
@@ -168,6 +166,7 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	MOVE $15, $2	#Save return value by storing it into a temp register
 l6:
 	#End of function main. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.
+	ADDI $sp, $sp, 8	# delete local variables
 	LW $fp, 0($sp)
 	LW $31, 4($sp)
 	ADDI $sp, $sp, 8

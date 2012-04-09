@@ -50,14 +50,24 @@ exit:
   syscall
 
 .data
-.a:
-	.word n	align 4
-.b:
-	.word n	align 4
-.c:
-	.word n	align 4
-.d:
-	.word n	align 4
+a:
+	.word 0
+	.align 4
+b:
+	.word 0
+	.align 4
+c:
+	.word 0
+	.align 4
+d:
+	.word 0
+	.align 4
+e:
+	.word 0 : 1337
+	.align 4
+f:
+	.word 0 : 1338
+	.align 4
 
 .text
 

@@ -209,13 +209,15 @@ void transOpCode(struct strCode  c)
 				sprintf (buffer, "\tMOVE $2, $%d\t#Return %s\n", i0, c.int0->name);
 				addLine(buffer);
 			}
+			/*
 			if(tmpLocalVarCount>0)
 			{
 				sprintf (buffer, "\tADDI $sp, $sp, %d\t# delete local variables\n", tmpLocalVarCount);
 				addLine(buffer);
-			}		
-			sprintf (buffer, "\tJ l%d\n", c.jmpTo);
-			addLine(buffer);
+			}*/		
+			//TODO: Ask Andy if you should jump to the end of the function after a return command.
+			//sprintf (buffer, "\tJ l%d\n", c.jmpTo);
+			//addLine(buffer);
 		break;
 		
 		case opADD:
@@ -492,9 +494,14 @@ void transOpCode(struct strCode  c)
 			generateLocalVars(c.func);
 		break;
 		
-		case opFUNC_DEF_END:
+		case opFUNC_DEF_END:			
 			sprintf (buffer, "\t#End of function %s. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.\n", c.func->name);
 			addLine(buffer);
+			if(tmpLocalVarCount>0)
+			{
+				sprintf (buffer, "\tADDI $sp, $sp, %d\t# delete local variables\n", tmpLocalVarCount);
+				addLine(buffer);
+			}
 			addLine("\tLW $fp, 0($sp)\n");
 			addLine("\tLW $31, 4($sp)\n");
 			addLine("\tADDI $sp, $sp, 8\n");
@@ -526,7 +533,7 @@ void generateFinalCode()
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
 		if (ptr->scope == NULL) {
-			sprintf (buffer, ".%s:\n", ptr->name);
+			sprintf (buffer, "%s:\n", ptr->name);
 			addLine(buffer);
 			if(ptr->isArray)
 			{
@@ -535,10 +542,10 @@ void generateFinalCode()
 			}
 			else
 			{
-				addLine("\t.word n");				
+				addLine("\t.word 0\n");				
 			}			
-			sprintf (buffer, ".%s:", ptr->name);
-			addLine("\talign 4\n");
+			sprintf (buffer, "%s:", ptr->name);
+			addLine("\t.align 4\n");
 		}
 	}
 
