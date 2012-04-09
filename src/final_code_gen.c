@@ -10,6 +10,7 @@ struct symFunc *symFuncTable;
 char buffer [200];
 int jmpLableCount = -1;
 int tmpLocalVarCount = -1;
+int getAdressFromGlobal = 0;
 
 void initFinalCodeGen(FILE *file)
 {
@@ -99,7 +100,7 @@ void generateLocalVars(struct symFunc *sFunc)
 				}
 			}
 		}
-	}
+	}	
 }
 
 int loadvar(struct symInt *sInt, int last_reg)
@@ -134,12 +135,19 @@ int loadvar(struct symInt *sInt, int last_reg)
 	
 	//Global Variable:
 	if(sInt->scope==NULL)
-	{		
-		//LA $5, global
-		sprintf (buffer, "\tLA $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
-		addLine(buffer);
-		return last_reg + 1;
-	
+	{
+		if(getAdressFromGlobal) //Nasty workaround, dont ever ever do that!
+		{
+			//LA $5, global
+			sprintf (buffer, "\tLA $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
+			addLine(buffer);
+		}
+		else
+		{
+			sprintf (buffer, "\tLW $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
+			addLine(buffer);
+		}		
+		return last_reg + 1;	
 	}
 	else //Local Variable
 	{
@@ -157,7 +165,7 @@ int loadvar(struct symInt *sInt, int last_reg)
 			addLine(buffer);
 			return last_reg + 1;
 		}
-	}
+	}	
 }
 
 void transOpCode(struct strCode  c)
@@ -174,11 +182,14 @@ void transOpCode(struct strCode  c)
 	
 	switch(c.op)
 	{
-		case opASSIGN:			
+		case opASSIGN:	
+			getAdressFromGlobal=1;
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
 			{r=i1;} else {r=5;}
+			getAdressFromGlobal=1;
 			i0 = loadvar(c.int0, r);
+			getAdressFromGlobal=0;
 			
 			if(c.int0->isParam)
 			{

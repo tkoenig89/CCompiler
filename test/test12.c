@@ -9,7 +9,7 @@ int main()
 {
 	b = 2;
 	c = 2;
-	d = b*d +1;
+	d = b*c +1;
 	print(d);
 }
 

@@ -83,14 +83,14 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	LI $5, 2	#Number recognised:2
 	LA $6, c	#Global Variable recognised:c
 	SW $5, 0($6)	#Assign one register to another
-	LA $5, b	#Global Variable recognised:b
-	LA $6, d	#Global Variable recognised:d
+	LW $5, b	#Global Variable recognised:b
+	LW $6, c	#Global Variable recognised:c
 	MUL $15, $5, $6	#Multiply 2 Variables and store result int temp register
 	LI $6, 1	#Number recognised:1
 	ADD $16, $15, $6	#Add 2 Variables and store result int temp register
 	LA $6, d	#Global Variable recognised:d
 	SW $16, 0($6)	#Assign one register to another
-	LA $5, d	#Global Variable recognised:d
+	LW $5, d	#Global Variable recognised:d
 	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
 	SW $5, 0($sp)	#Copy Value/Adress of var to stack var
 	JAL print	#Call function
