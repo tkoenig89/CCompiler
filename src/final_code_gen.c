@@ -219,13 +219,7 @@ void transOpCode(struct strCode  c)
 			
 				sprintf (buffer, "\tMOVE $2, $%d\t#Return %s\n", i0, c.int0->name);
 				addLine(buffer);
-			}
-			/*
-			if(tmpLocalVarCount>0)
-			{
-				sprintf (buffer, "\tADDI $sp, $sp, %d\t# delete local variables\n", tmpLocalVarCount);
-				addLine(buffer);
-			}*/		
+			}	
 			//TODO: Ask Andy if you should jump to the end of the function after a return command.
 			//sprintf (buffer, "\tJ l%d\n", c.jmpTo);
 			//addLine(buffer);
@@ -474,7 +468,9 @@ void transOpCode(struct strCode  c)
 		break;
 		
 		case opPARAM:
+			getAdressFromGlobal=1;
 			i0 = loadvar(c.int0, 4);
+			getAdressFromGlobal=0;
 			addLine("\tADDI $sp, $sp, -4\t#Reserve 4 Bytes on the Stack for a parameter and the func call\n");
 			sprintf (buffer, "\tSW $%d, 0($sp)\t#Copy Value/Adress of var to stack var\n", i0);
 			addLine(buffer);
@@ -512,6 +508,7 @@ void transOpCode(struct strCode  c)
 			{
 				sprintf (buffer, "\tADDI $sp, $sp, %d\t# delete local variables\n", tmpLocalVarCount);
 				addLine(buffer);
+				tmpLocalVarCount=0;
 			}
 			addLine("\tLW $fp, 0($sp)\n");
 			addLine("\tLW $31, 4($sp)\n");

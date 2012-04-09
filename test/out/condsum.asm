@@ -166,7 +166,6 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	MOVE $15, $2	#Save return value by storing it into a temp register
 l6:
 	#End of function main. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.
-	ADDI $sp, $sp, 8	# delete local variables
 	LW $fp, 0($sp)
 	LW $31, 4($sp)
 	ADDI $sp, $sp, 8
