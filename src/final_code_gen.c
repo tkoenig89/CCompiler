@@ -144,16 +144,8 @@ int loadvar(struct symInt *sInt, int last_reg)
 		}
 		else
 		{
-			if(sInt->isArray)
-			{
-				sprintf (buffer, "\tLA $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
-				addLine(buffer);
-			}
-			else
-			{
-				sprintf (buffer, "\tLW $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
-				addLine(buffer);
-			}
+			sprintf (buffer, "\tLW $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
+			addLine(buffer);
 		}		
 		return last_reg + 1;	
 	}
@@ -475,9 +467,12 @@ void transOpCode(struct strCode  c)
 		break;
 		
 		case opPARAM:
-			//getAdressFromGlobal=1;
+			if((c.int0->isArray>0) && (!c.int0->isParam))
+			{
+				getAdressFromGlobal=1;
+			}
 			i0 = loadvar(c.int0, 4);
-			//getAdressFromGlobal=0;
+			getAdressFromGlobal=0;
 			addLine("\tADDI $sp, $sp, -4\t#Reserve 4 Bytes on the Stack for a parameter and the func call\n");
 			sprintf (buffer, "\tSW $%d, 0($sp)\t#Copy Value/Adress of var to stack var\n", i0);
 			addLine(buffer);
