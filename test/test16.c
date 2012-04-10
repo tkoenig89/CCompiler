@@ -12,14 +12,14 @@ int main()
 		i = i + 1;
 	}
 
-	a[0];
+	//a[0];
 
 	//Lets do HAXXX:
 	int hax[1];
 
 	i=0;
 	while(i<10){
-		j = i+8;
+		j = i-2143285184;
 		hax[j] = 1337;
 		print(bla1[i]);
 		i = i + 1;
