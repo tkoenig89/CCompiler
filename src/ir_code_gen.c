@@ -49,7 +49,8 @@ void addcodeass(struct symInt *int0, struct symInt *int1)
 	{
 		//int0[x] = int1
 		printf("t_isArray:%d.\n", int1->isArray);
-		addcode(opMEM_ST, int0->nextElement, putInt ("int", 0, int0->tempArrPos) , int1 /*=int2*/, NULL, -1);				
+		//addcode(opMEM_ST, int0->nextElement, putInt ("int", 0, int0->tempArrPos) , int1 /*=int2*/, NULL, -1);	
+		addcode(opMEM_ST, int0->nextElement, int0->tempArrPos2 , int1 /*=int2*/, NULL, -1);
 	}
 	else
 	{	

@@ -451,10 +451,12 @@ void transOpCode(struct strCode  c)
 			i0 = loadvar(c.int0, r);
 			if(i0<=14)
 			{r=i0;} else {r=6;}
+			i1 = loadvar(c.int1, r);
 			//c.int1->var = arrayPos
 			
-			sprintf (buffer, "\tLI $%d, %d\t#Load array position into a register\n", i0+1, c.int1->var);
-			addLine(buffer);
+			//sprintf (buffer, "\tLI $%d, %d\t#Load array position into a register\n", i0+1, c.int1->var);
+			//sprintf (buffer, "\tLI $%d, %d\t#Load array position into a register\n", i0+1, i1);
+			//addLine(buffer);
 			sprintf (buffer, "\tLI $%d, 4\t#Load Number 4 into a register\n", i0 + 2);
 			addLine(buffer);
 			sprintf (buffer, "\tMUL $%d, $%d, $%d\t#Multiplying array position by 4 (each entry has the size of 4 bytes)\n", i0 + 3, i0+2, i0 + 1);
