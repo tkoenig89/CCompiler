@@ -48,3 +48,11 @@ exit:
   li $2, 17 
   lw $4, 8($fp)
   syscall
+
+.data
+global:
+	.word 0
+	.align 4
+
+.text
+

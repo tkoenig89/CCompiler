@@ -10,6 +10,7 @@ struct symFunc *symFuncTable;
 char buffer [200];
 int jmpLableCount = -1;
 int tmpLocalVarCount = -1;
+int getAdressFromGlobal = 0;
 
 void initFinalCodeGen(FILE *file)
 {
@@ -99,7 +100,7 @@ void generateLocalVars(struct symFunc *sFunc)
 				}
 			}
 		}
-	}
+	}	
 }
 
 int loadvar(struct symInt *sInt, int last_reg)
@@ -134,12 +135,27 @@ int loadvar(struct symInt *sInt, int last_reg)
 	
 	//Global Variable:
 	if(sInt->scope==NULL)
-	{		
-		//LA $5, global
-		sprintf (buffer, "\tLA $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
-		addLine(buffer);
-		return last_reg + 1;
-	
+	{
+		if(getAdressFromGlobal) //Nasty workaround, dont ever ever do that!
+		{
+			//LA $5, global
+			sprintf (buffer, "\tLA $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
+			addLine(buffer);
+		}
+		else
+		{
+			if(sInt->isArray)
+			{
+				sprintf (buffer, "\tLA $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
+				addLine(buffer);
+			}
+			else
+			{
+				sprintf (buffer, "\tLW $%d, %s\t#Global Variable recognised:%s\n", last_reg + 1, sInt->name, sInt->name);
+				addLine(buffer);
+			}
+		}		
+		return last_reg + 1;	
 	}
 	else //Local Variable
 	{
@@ -157,7 +173,7 @@ int loadvar(struct symInt *sInt, int last_reg)
 			addLine(buffer);
 			return last_reg + 1;
 		}
-	}
+	}	
 }
 
 void transOpCode(struct strCode  c)
@@ -174,11 +190,14 @@ void transOpCode(struct strCode  c)
 	
 	switch(c.op)
 	{
-		case opASSIGN:			
+		case opASSIGN:	
+			getAdressFromGlobal=1;
 			i1 = loadvar(c.int1, 4);
 			if(i1<=14)
 			{r=i1;} else {r=5;}
+			getAdressFromGlobal=1;
 			i0 = loadvar(c.int0, r);
+			getAdressFromGlobal=0;
 			
 			if(c.int0->isParam)
 			{
@@ -208,12 +227,7 @@ void transOpCode(struct strCode  c)
 			
 				sprintf (buffer, "\tMOVE $2, $%d\t#Return %s\n", i0, c.int0->name);
 				addLine(buffer);
-			}
-			if(tmpLocalVarCount>0)
-			{
-				sprintf (buffer, "\tADDI $sp, $sp, %d\t# delete local variables\n", tmpLocalVarCount);
-				addLine(buffer);
-			}		
+			}	
 			sprintf (buffer, "\tJ l%d\n", c.jmpTo);
 			addLine(buffer);
 		break;
@@ -461,7 +475,9 @@ void transOpCode(struct strCode  c)
 		break;
 		
 		case opPARAM:
+			//getAdressFromGlobal=1;
 			i0 = loadvar(c.int0, 4);
+			//getAdressFromGlobal=0;
 			addLine("\tADDI $sp, $sp, -4\t#Reserve 4 Bytes on the Stack for a parameter and the func call\n");
 			sprintf (buffer, "\tSW $%d, 0($sp)\t#Copy Value/Adress of var to stack var\n", i0);
 			addLine(buffer);
@@ -492,9 +508,15 @@ void transOpCode(struct strCode  c)
 			generateLocalVars(c.func);
 		break;
 		
-		case opFUNC_DEF_END:
+		case opFUNC_DEF_END:			
 			sprintf (buffer, "\t#End of function %s. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.\n", c.func->name);
 			addLine(buffer);
+			if(tmpLocalVarCount>0)
+			{
+				sprintf (buffer, "\tADDI $sp, $sp, %d\t# delete local variables\n", tmpLocalVarCount);
+				addLine(buffer);
+				tmpLocalVarCount=0;
+			}
 			addLine("\tLW $fp, 0($sp)\n");
 			addLine("\tLW $31, 4($sp)\n");
 			addLine("\tADDI $sp, $sp, 8\n");
@@ -526,7 +548,7 @@ void generateFinalCode()
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
 		if (ptr->scope == NULL) {
-			sprintf (buffer, ".%s:\n", ptr->name);
+			sprintf (buffer, "%s:\n", ptr->name);
 			addLine(buffer);
 			if(ptr->isArray)
 			{
@@ -535,10 +557,10 @@ void generateFinalCode()
 			}
 			else
 			{
-				addLine("\t.word n");				
+				addLine("\t.word 0\n");				
 			}			
-			sprintf (buffer, ".%s:", ptr->name);
-			addLine("\talign 4\n");
+			sprintf (buffer, "%s:", ptr->name);
+			addLine("\t.align 4\n");
 		}
 	}
 

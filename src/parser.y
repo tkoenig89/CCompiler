@@ -99,6 +99,7 @@ identifier_declaration
 			printf("ERROR! The variable %s was already declared.\n", $1);
 			$$ = getInt($1);
 		} else {*/
+			//TODO: Check if the name was already declaread as a function
 			if(checkIntDec ($1))
 			{
 				//error wurde schon einmal deklariert
@@ -121,6 +122,7 @@ function_signature
 
 function_definition
      : type ID PARA_OPEN PARA_CLOSE BRACE_OPEN 	{
+											//TODO: Check if the name was already declaread as a Variable
 											printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
 											if(existsFunc ($2))
 											{
@@ -151,6 +153,7 @@ function_definition
 										}
 	stmt_list BRACE_CLOSE {addcodeopfunc(opFUNC_DEF_END, NULL, getFunc($2), -1);setFuncScopeP (NULL);backpatchreturn();}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN 	{
+																//TODO: Check if the name was already declaread as a Variable
 																printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
 																if(existsFunc ($2))
 																{
@@ -209,6 +212,7 @@ function_definition
 
 function_declaration
      : type ID PARA_OPEN PARA_CLOSE						{
+														//TODO: Check if the name was already declaread as a Variable
 														printf("Function Declaration %s found.\n", $2);
 														if(existsFunc ($2)) {
 															printf("ERROR a function declaration with the same name already exists.\n");
@@ -225,6 +229,7 @@ function_declaration
 														setFuncScopeP (NULL);
 													}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE		{
+														//TODO: Check if the name was already declaread as a Variable
 														printf("Function Declaration %s found.\n", $2);
 														if(existsFunc ($2)) {
 															printf("ERROR a function declaration with the same name already exists.\n");
@@ -313,7 +318,7 @@ stmt_loop
  * assignment operators.expression
  */									
 expression								// 0 = "false", nonzero = "true"
-     : expression ASSIGN expression				{addcodeass($1, $3);if($1->tempCodePos>-1) {setCodeToNOP($1->tempCodePos);}}	//WARNING: Ambigious! You dont know if you have to assign to/load from an array or if it is an normal int at this point. check this when generating final code
+     : expression ASSIGN expression				{$$ = $3;addcodeass($1, $3);if($1->tempCodePos>-1) {setCodeToNOP($1->tempCodePos);}}	//WARNING: Ambigious! You dont know if you have to assign to/load from an array or if it is an normal int at this point. check this when generating final code
      | expression LOGICAL_OR expression			{$$ = addcodeopexp2(opLOGICAL_OR, $1, $3);}
      | expression LOGICAL_AND expression			{$$ = addcodeopexp2(opLOGICAL_AND, $1, $3);}
      | LOGICAL_NOT expression					{$$ = addcodeopexp1(opLOGICAL_NOT, $2);}
