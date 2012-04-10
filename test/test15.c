@@ -3,25 +3,19 @@ int scan ();
 void exit (int i);
 
 int main(){
-
 int bla1[10];
+int bla2[10];
 int i;
 i=0;
 
-//bla1[0]=1337;
-//bla1[1]=1;
-//bla1[2]=2;
-//bla1[3]=3;
-//bla1[4]=4;
-//bla1[5]=5;
+print(bla1);
+print(bla2);
 
-while(i<10)
-{
-	bla1[i]=i;
-	i=i+1;
+while(i<10){
+bla1[i]=i;
+bla2[i]=i*2;
 
-	print(bla1[i]);
-	//print(i);
+i=i+1;
 }
 
 }

@@ -59,12 +59,25 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	SW $fp, 0($sp)
 	MOVE $fp, $sp
 
-	ADDI $sp, $sp, -44	#Allocate Memory on stackpointer for local Variables
-	#int bla1[10]: 4($sp)
+	ADDI $sp, $sp, -84	#Allocate Memory on stackpointer for local Variables
+	#int bla1[10]: 44($sp)
+	#int bla2[10]: 4($sp)
 	#int i: 0($sp)
 	LI $5, 0	#Number recognised:0
 	LW $6, 0($sp)	#Local Variable recognised:i
 	SW $5, 0($sp)	#Assign one register to another
+	LA $5, 44($sp)	#Local Variable recognised:bla1
+	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
+	SW $5, 0($sp)	#Copy Value/Adress of var to stack var
+	JAL print	#Call function
+	ADDI $sp, $sp, 4	# clean up stack after function call is done
+	MOVE $15, $2	#Save return value by storing it into a temp register
+	LA $5, 4($sp)	#Local Variable recognised:bla2
+	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
+	SW $5, 0($sp)	#Copy Value/Adress of var to stack var
+	JAL print	#Call function
+	ADDI $sp, $sp, 4	# clean up stack after function call is done
+	MOVE $15, $2	#Save return value by storing it into a temp register
 l2:
 	LW $5, 0($sp)	#Local Variable recognised:i
 	LI $6, 10	#Number recognised:10
@@ -73,23 +86,21 @@ l2:
 	J l1
 l0:
 	LW $5, 0($sp)	#Local Variable recognised:i
-	LA $6, 4($sp)	#Local Variable recognised:bla1
+	LA $6, 44($sp)	#Local Variable recognised:bla1
 	LW $7, 0($sp)	#Local Variable recognised:i
 	LI $8, 4	#Load Number 4 into a register
 	MUL $9, $8, $7	#Multiplying array position by 4 (each entry has the size of 4 bytes)
 	ADD $9, $6, $9	#Add the starting position of the array to the position
 	SW $5, 0($9)	#Assign one register to another
 	LW $5, 0($sp)	#Local Variable recognised:i
-	LI $6, 4	#Load Number 4 into a register
-	MUL $7, $6, $5	#Multiplying array position by 4 (each entry has the size of 4 bytes)
-	LA $8, 4($sp)	#Local Variable recognised:bla1
-	ADD $6, $7, $8	#Add the starting position of the array to the position
-	LW $15, 0($6)	#Load the Array position from the stack
-	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
-	SW $15, 0($sp)	#Copy Value/Adress of var to stack var
-	JAL print	#Call function
-	ADDI $sp, $sp, 4	# clean up stack after function call is done
-	MOVE $16, $2	#Save return value by storing it into a temp register
+	LI $6, 2	#Number recognised:2
+	MUL $16, $5, $6	#Multiply 2 Variables and store result int temp register
+	LA $6, 4($sp)	#Local Variable recognised:bla2
+	LW $7, 0($sp)	#Local Variable recognised:i
+	LI $8, 4	#Load Number 4 into a register
+	MUL $9, $8, $7	#Multiplying array position by 4 (each entry has the size of 4 bytes)
+	ADD $9, $6, $9	#Add the starting position of the array to the position
+	SW $16, 0($9)	#Assign one register to another
 	LW $5, 0($sp)	#Local Variable recognised:i
 	LI $6, 1	#Number recognised:1
 	ADD $15, $5, $6	#Add 2 Variables and store result int temp register
@@ -98,7 +109,7 @@ l0:
 	J l2
 l1:
 	#End of function main. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.
-	ADDI $sp, $sp, 44	# delete local variables
+	ADDI $sp, $sp, 84	# delete local variables
 	LW $fp, 0($sp)
 	LW $31, 4($sp)
 	ADDI $sp, $sp, 8
