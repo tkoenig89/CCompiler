@@ -7,7 +7,7 @@
 	#include "symtable.h"
 	#include "ir_code_gen.h"
 	#include <stdio.h>
-	
+	char buffer [200];
 	void yyerror (char const *);
 %}
  
@@ -90,13 +90,18 @@ type
 
 variable_declaration
      : variable_declaration COMMA identifier_declaration	/*Nothing to be done here*/
-     | type identifier_declaration { if($1==0) { printf("ERROR You can not declare a variable as void.\n"); } }
+     | type identifier_declaration { if($1==0) { yyerror("You can not declare a variable as void.");
+     											//printf("ERROR You can not declare a variable as void.\n"); 
+     											} }
      ;
 	
 identifier_declaration
      : identifier_declaration BRACKET_OPEN NUM BRACKET_CLOSE {$1->isArray = 1;$1->var = $3;}/*{TODO ARRAY}*/
      | ID {	/*if(existsInt($1)) {
-			printf("ERROR! The variable %s was already declared.\n", $1);
+			// Error detected : variable was already declared:
+			sprintf(buffer,"The variable >%s< was already declared.", $1);
+			yyerror(buffer);
+			//printf("ERROR! The variable %s was already declared.\n", $1);
 			$$ = getInt($1);
 		} else {*/
 			//TODO: Check if the name was already declaread as a function
@@ -104,7 +109,8 @@ identifier_declaration
 			{
 				//error wurde schon einmal deklariert
 				$$ = getIntCurrScope ($1);
-				printf("ERROR: This Variable was already defined.\n");
+				yyerror("This Variable was already defined");
+				//printf("ERROR: This Variable was already defined.\n");
 			}
 			else
 			{
@@ -130,7 +136,8 @@ function_definition
 												{
 													if($1!=getFunc($2)->retType)
 													{
-														printf("ERROR: Type mismatch from Function declaration.\n");
+														yyerror("Types mismatch from function declaration.");
+														//printf("ERROR: Type mismatch from Function declaration.\n");
 													}
 													printf("Declaration found.\n");
 													setFuncIsDeclared ($2);
@@ -138,7 +145,8 @@ function_definition
 												}
 												else
 												{
-													printf("ERROR a function definition with the same name already exists.\n");
+													yyerror("A function definition with the same name already exists.");
+													//printf("ERROR a function definition with the same name already exists.\n");
 													/*TODO: ERROR a function with the same name already exists*/
 													//Error correction: Ignore stuff
 												}
@@ -159,14 +167,17 @@ function_definition
 																{
 																	if(isFuncProto ($2))
 																	{
-																		//printf("Declaration found. Checking if parameters match from the declaration.\n");
+																		printf("Declaration found. Checking if parameters match from the declaration.\n");
 																		if(!paramFuncCheckP (getFunc($2), $4))
 																		{
-																			printf("ERROR: Function-Parameter definition does not match function declaration.\n");
+																			sprintf(buffer,"No declaration entry found. Create new function %s with type %d\n", $2, $1);
+																			yyerror("Function-Parameter definition does not match function declaration.");
+																			//printf("ERROR: Function-Parameter definition does not match function declaration.\n");
 																		}
 																		if($1!=getFunc($2)->retType)
 																		{
-																			printf("ERROR: Type mismatch from Function declaration.\n");
+																			yyerror("Type mismatch from Function declaration");
+																			//printf("ERROR: Type mismatch from Function declaration.\n");
 																		}
 																		
 																		//printf("Declaration and definition match!\n");
@@ -185,7 +196,8 @@ function_definition
 																	}
 																	else
 																	{
-																		printf("ERROR a function definition with the same name already exists.\n");
+																		yyerror("A function definition with the same name already exists.");
+																		//printf("ERROR a function definition with the same name already exists.\n");
 																		/*TODO: ERROR a function with the same name already exists*/
 																		//Error correction: Ignore stuff
 																	}
@@ -215,7 +227,8 @@ function_declaration
 														//TODO: Check if the name was already declaread as a Variable
 														printf("Function Declaration %s found.\n", $2);
 														if(existsFunc ($2)) {
-															printf("ERROR a function declaration with the same name already exists.\n");
+															yyerror("A function declaration with the same name already exists.");
+															//printf("ERROR a function declaration with the same name already exists.\n");
 															setFuncProtoP (getFunc($2));
 															setScopeForParams (getFunc($2));
 														}
@@ -232,7 +245,8 @@ function_declaration
 														//TODO: Check if the name was already declaread as a Variable
 														printf("Function Declaration %s found.\n", $2);
 														if(existsFunc ($2)) {
-															printf("ERROR a function declaration with the same name already exists.\n");
+															yyerror("A function declaration with the same name already exists.");
+															//printf("ERROR a function declaration with the same name already exists.\n");
 															deleteFunc ("-1temp");
 															setFuncProtoP (getFunc($2));
 															setScopeForParams (getFunc($2));
@@ -264,7 +278,9 @@ function_parameter_list
      ;
 	
 function_parameter
-     : type identifier_declaration	 {$$ = $2; if($1==0) { printf("ERROR You can not declare a variable as void.\n"); }}
+     : type identifier_declaration	 {$$ = $2; if($1==0) { 	yyerror("You can not declare a variable as void");
+     														//printf("ERROR You can not declare a variable as void.\n");
+     														}}
      ;
 
 stmt_list
@@ -283,7 +299,8 @@ stmt
 									{
 										if($2->scope->retType==0)
 										{
-											printf("ERROR: Function was declarad as VOID. It can not return a value. Either use \"RETURN;\" or use type int for the func.\n");
+											yyerror("Function was declared as VOID. It can not return a value.ither use \"RETURN;\" or use type int for the func.");
+											//printf("ERROR: Function was declarad as VOID. It can not return a value. Either use \"RETURN;\" or use type int for the func.\n");
 										}
 									}
 									addcodeop1(opRETURN, $2);
@@ -356,7 +373,9 @@ primary
 			$$ = getInt($1);
 		} else {
 			//TODO: It seems that global variables are not recognised, check this!
-			printf("ERROR! The variable %s was not declared. Line: %d Column: %d \n", $1, @1.first_line, @1.first_column);
+			sprintf (buffer,"The variable >%s< was not declared.", $1);
+			yyerror(buffer);
+			//printf("ERROR! The variable %s was not declared.\n", $1);
 			//We assume the variable should have been declared. so we declare it for the user...
 			$$ = putInt ($1, 0, 0);
 			//yyerror("syntax error");
@@ -374,7 +393,9 @@ function_call
 													}
 													else
 													{
-														printf("ERROR! Function was not declared before the call!\n");
+														//"ERROR: This Variable was already defined
+														yyerror("Function was not declared before the call!");
+														//printf("ERROR! Function was not declared before the call!\n");
 														sFunc = putFunc ("-1undeclared", -1);
 													}
 													$$ = addcodeopfunccall(opCALL, putInt ("int", 0, 0), sFunc, opcodeFindFunctionDef(sFunc));
@@ -391,12 +412,14 @@ function_call
 														}
 														else
 														{
+															yyerror("Functional call parameter check failed");
 															printf("ERROR: Functional Call Param Check FAILED!\n");
 														}
 														
 													}
 													else
 													{
+														yyerror("Function was not declared before the call!");
 														printf("ERROR! Function was not declared before the call!\n");
 														sFunc = putFunc ("-1undeclared", -1);
 													}
@@ -414,6 +437,6 @@ function_call_parameters
 
 void yyerror (const char *msg)
 {
-	printf("ERROR: %s\n", msg);
+	printf("ERROR: %s On line %d at position %d.\n", msg,yylloc.first_line,yylloc.first_column);
 	//return 0;
 }

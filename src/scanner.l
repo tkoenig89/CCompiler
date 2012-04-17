@@ -6,6 +6,7 @@
 	#include "parser.tab.h"
 	#include <stdio.h>
 	#include <string.h>
+	#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
 	
 %}
 
@@ -26,7 +27,7 @@ number			[1-9][0-9]*|0
 comment			\/\/.*\n	 
 %%
 
-\n	/* new line */
+\n	/* new line */ 
 [\t ]+	/* ignore white spaces */
 
 do { return DO; }
