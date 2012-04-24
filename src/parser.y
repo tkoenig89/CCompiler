@@ -437,6 +437,6 @@ function_call_parameters
 
 void yyerror (const char *msg)
 {
-	printf("ERROR: %s On line %d at position %d.\n", msg,yylloc.first_line,yylloc.first_column);
+	printf("ERROR at Line %d,Position %d : %s.\n",yylloc.first_line,yylloc.first_column, msg);
 	//return 0;
 }
