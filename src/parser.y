@@ -413,14 +413,14 @@ function_call
 														else
 														{
 															yyerror("Functional call parameter check failed");
-															printf("ERROR: Functional Call Param Check FAILED!\n");
+															//printf("ERROR: Functional Call Param Check FAILED!\n");
 														}
 														
 													}
 													else
 													{
 														yyerror("Function was not declared before the call!");
-														printf("ERROR! Function was not declared before the call!\n");
+														//printf("ERROR! Function was not declared before the call!\n");
 														sFunc = putFunc ("-1undeclared", -1);
 													}
 													
