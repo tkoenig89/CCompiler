@@ -48,7 +48,7 @@ void addcodeass(struct symInt *int0, struct symInt *int1)
 	if(int0->tempArrPos>-1)
 	{
 		//int0[x] = int1
-		printf("t_isArray:%d.\n", int1->isArray);
+		//printf("t_isArray:%d.\n", int1->isArray);
 		//addcode(opMEM_ST, int0->nextElement, putInt ("int", 0, int0->tempArrPos) , int1 /*=int2*/, NULL, -1);	
 		addcode(opMEM_ST, int0->nextElement, int0->tempArrPos2 , int1 /*=int2*/, NULL, -1);
 	}
@@ -56,10 +56,10 @@ void addcodeass(struct symInt *int0, struct symInt *int1)
 	{	
 		//int0 = int1
 		addcode(opASSIGN, int0, int1, NULL, NULL, -1);
-		printf("Code offset: %d\n", code_count);
-		printf("IR: ASSIGN %s = %s\n", code[code_count-1].int0->name, code[code_count-1].int1->name);
+		//printf("Code offset: %d\n", code_count);
+		//printf("IR: ASSIGN %s = %s\n", code[code_count-1].int0->name, code[code_count-1].int1->name);
 	}
-	printf("t_count:%d.\n", temp_reg_count);
+	//printf("t_count:%d.\n", temp_reg_count);
 	temp_reg_count = 0;	
 }
 /*
@@ -253,7 +253,7 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 	{
 		ptr = int1;
 		temp_reg_count -= 1;
-		printf("\n\n\n\n\n\ntemp_reg_count:%d %d.\n", temp_reg_count, int1->next);
+		//printf("\n\n\n\n\n\ntemp_reg_count:%d %d.\n", temp_reg_count, int1->next);
 	}
 	else
 	{
@@ -261,7 +261,7 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 	}
 	
 	addcode(operation, ptr, int1, int2, NULL, -1);
-	printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
+	//printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
 	return ptr;
 }
 
@@ -327,16 +327,16 @@ void debugPrintAllopcodes()
 		
 		if(c->op==opFUNC_DEF_END) tab = '\0';
 		
-		printf("%cOP #%d: %s", tab, count, enumStrings[c->op]);
-		if(c->int0!=NULL) {int_=c->int0;printf(", INT0: %s", int_->name);}
-		if(c->int1!=NULL) {int_=c->int1;printf(", INT1 %s", int_->name);}
-		if(c->int2!=NULL) {int_=c->int2;printf(", INT2: %s", int_->name);}
+		//printf("%cOP #%d: %s", tab, count, enumStrings[c->op]);
+		if(c->int0!=NULL) {int_=c->int0;/*printf(", INT0: %s", int_->name);*/}
+		if(c->int1!=NULL) {int_=c->int1;/*printf(", INT1 %s", int_->name);*/}
+		if(c->int2!=NULL) {int_=c->int2;/*printf(", INT2: %s", int_->name);*/}
 		
-		if(c->func!=NULL) {func_=c->func;printf(", FUNC: %s", func_->name);}
+		if(c->func!=NULL) {func_=c->func;/*printf(", FUNC: %s", func_->name);*/}
 
-		if(c->jmpTo!=-1) {printf(", JMP_TO: %d", c->jmpTo);}
+		if(c->jmpTo!=-1) {/*printf(", JMP_TO: %d", c->jmpTo);*/}
 		
-		printf("\n");
+		//printf("\n");
 		count++;
 		
 		if(c->op==opFUNC_DEF) tab = '\t';		

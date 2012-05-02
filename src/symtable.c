@@ -61,7 +61,7 @@ struct symInt *putInt (char const *name, int isArray, int val)
 
 	putIntIntoTable(ptr);
 	
-	printf("Integer ->%s<- was put in the table, value:%d\n", ptr->name, ptr->var);
+	//printf("Integer ->%s<- was put in the table, value:%d\n", ptr->name, ptr->var);
 	return ptr;
 }
 
@@ -221,7 +221,7 @@ struct symFunc *putFunc (char const *name, int retType)
 	
 	putFuncIntoTable(ptr);
 	
-	printf("Function ->%s<- was put in the table pc:%d.\n", ptr->name, ptr->paramCount);
+	//printf("Function ->%s<- was put in the table pc:%d.\n", ptr->name, ptr->paramCount);
 	
 	currFunc = ptr;
 	
@@ -255,7 +255,7 @@ void setParamP (struct symFunc *sFunc, struct symInt *sInt)
 	sFunc->paramCount = sFunc->paramCount + 1;	
 	sFunc->params = sInt;
 	sInt->isParam = 1;
-	printf("added var %s for func %s, parcount:%d.\n", sInt->name, sFunc->name, sFunc->paramCount);
+	//printf("added var %s for func %s, parcount:%d.\n", sInt->name, sFunc->name, sFunc->paramCount);
 }
 
 void incParamCountP (struct symFunc *sFunc)
@@ -268,13 +268,13 @@ void renameFunc (char const *funcname, char const *funcname_new)
 {
 	if(existsFunc(funcname))
 	{
-		printf("renaming func %s to %s.\n", funcname, funcname_new);
+		//printf("renaming func %s to %s.\n", funcname, funcname_new);
 		struct symFunc *ptr = getFunc(funcname);
 		free(ptr->name);
 		
 		ptr->name = (char *) malloc (strlen (funcname_new) + 1);
 		strcpy (ptr->name,funcname_new);		
-		printf("function name is now:%s.\n", ptr->name);
+		//printf("function name is now:%s.\n", ptr->name);
 	}
 }
 
@@ -344,7 +344,7 @@ void deleteParams (struct symFunc *sFunc0)
 
 	for(int i=0;i<sFunc0->paramCount;i++)
 	{	
-		printf("param:%s.\n", param0->name);
+		//printf("param:%s.\n", param0->name);
 		temp = param0->next;
 		if(temp!=NULL) 
 		{
@@ -354,7 +354,7 @@ void deleteParams (struct symFunc *sFunc0)
 		}
 		else
 		{
-			printf("temp==NULL\n");
+			//printf("temp==NULL\n");
 			if(param0!=NULL) deleteParamInt (param0);
 			break;
 		}
@@ -368,13 +368,13 @@ void printAllParams (struct symFunc *sFunc0)
 	
 	if(param0==NULL)
 	{
-		printf("\tNo Parameters.\n");
+		//printf("\tNo Parameters.\n");
 		return;
 	}
 
 	for(int i=0;i<sFunc0->paramCount;i++)
 	{
-		printf("\tParam #%d :%s.\n", (i+1), param0->name);
+		//printf("\tParam #%d :%s.\n", (i+1), param0->name);
 		
 		if(param0->next!=NULL) 
 		{
@@ -399,7 +399,7 @@ void deleteFunc (char const * name)
 			} else {
 				ptr_back->next = ptr->next;
 			}
-			printf("%s was deleted as a function\n", ptr->name);
+			//printf("%s was deleted as a function\n", ptr->name);
 			deleteParams (ptr);
 			free(ptr->name);
 			free(ptr);
@@ -480,7 +480,7 @@ void debugPrintAllsFunc()
 {
 	if(symFuncTable==NULL)
 	{
-		printf("no functions in table.\n");
+		//printf("no functions in table.\n");
 		return;
 	}
 	struct symFunc *ptr;
@@ -489,7 +489,7 @@ void debugPrintAllsFunc()
 		count++;
 		if(ptr!=NULL) 
 		{
-			printf("Function #%d name:%s,type:%d.\n", count, ptr->name, ptr->retType);
+			//printf("Function #%d name:%s,type:%d.\n", count, ptr->name, ptr->retType);
 			printAllParams (ptr);
 		}
 	}
@@ -500,7 +500,7 @@ void debugPrintAllsint()
 	int count = 0;
 	if(symIntTable==NULL)
 	{
-		printf("no variables in table.\n");
+		//printf("no variables in table.\n");
 		return;
 	}
 	struct symInt *ptr;
@@ -508,7 +508,7 @@ void debugPrintAllsint()
 		if(count>100) break; else count++;
 		//if(strcmp (ptr->name,"int") != 0)
 		//{
-			printf("Int: %s:=%d isArray:=%d", ptr->name, ptr->var, ptr->isArray);
+			//printf("Int: %s:=%d isArray:=%d", ptr->name, ptr->var, ptr->isArray);
 			if(ptr->scope==NULL)
 			{
 				printf(" scope: global.\n");
@@ -516,7 +516,7 @@ void debugPrintAllsint()
 			else
 			{
 				struct symFunc *ptr_ = ptr->scope;
-				printf(" scope: %s.\n", ptr_->name);
+				//printf(" scope: %s.\n", ptr_->name);
 			}
 		//}
 	}
