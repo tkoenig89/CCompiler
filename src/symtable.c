@@ -2,10 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Represents a Pointer to the start of the Int Table
 struct symInt 		*symIntTable;
+//Represents a Pointer to the start of the Function Table
 struct symFunc 	*symFuncTable;
+//Represents the current Function scope
 struct symFunc 	*currFunc;
 
+/**	
+  *	Initiliases the Symbol table(sets everything to NULL)
+**/	
 void init_table ()
 {
 	symIntTable=NULL;
@@ -14,6 +20,10 @@ void init_table ()
 	//printf("Symbol Table was initialised.\n");
 }
 
+/**	
+  *	Takes a Pointer to an Int-Symbol and enques it into the Symbol table
+  *	@param struct symInt *sInt - A pointer to the Int Symbol
+**/
 void putIntIntoTable (struct symInt *sInt)
 {
 	if(symIntTable==NULL)
@@ -33,6 +43,14 @@ void putIntIntoTable (struct symInt *sInt)
 	}
 }
 
+/**	
+  *	Creates an Int-Symbol and returns a pointer to the just created Int
+  *	The Int-Symbol will also be automatically be put into the Symbol Table
+  *	@param char const *name - The Name of the Int Symbol
+  *	@param int isArray - A Flag which determines whether the Int Symbol is an array or not
+  *	@param int val - Represents the size of an array (e.g. a[10]; val=10)
+  *	@return struct symInt * - The pointer to the just created Int Symbol
+**/
 struct symInt *putInt (char const *name, int isArray, int val)
 {
 	struct symInt *ptr;
@@ -65,6 +83,11 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	return ptr;
 }
 
+/**	
+  *	Creates an Int-Symbol and returns a pointer to the just created Int
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return struct symInt * - The pointer to the just created Int Symbol
+**/
 struct symInt *tempInt (char const *name)
 {
 	struct symInt *ptr;
@@ -88,6 +111,11 @@ struct symInt *tempInt (char const *name)
 	return ptr;
 }
 
+/**	
+  *	Checks whether an Int Symbol, represented by its name, exists in the Symbol table in a global scope
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return int - 1 If the Int-Symbol exists at a global scope; 0 If it was not found or the scope did not match
+**/
 int existsIntG (char const * name)
 {
 	struct symInt *ptr;
@@ -99,6 +127,11 @@ int existsIntG (char const * name)
 	return 0;
 }
 
+/**	
+  *	Checks whether an Int Symbol, represented by its name, exists in the Symbol table in a local scope
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return int - 1 If the Int-Symbol exists at a local scope; 0 If it was not found or the scope did not match
+**/
 int existsIntL (char const * name)
 {
 	struct symInt *ptr;
@@ -110,7 +143,11 @@ int existsIntL (char const * name)
 	return 0;
 }
 
-//Prioritasie Local over Global
+/**	
+  *	Checks whether an Int Symbol exists, represented by its name
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return int - 1 If the Int-Symbol exists; 0 If it was not found
+**/
 int existsInt (char const * name)
 {
 	if(!existsIntL(name)) {
@@ -120,6 +157,12 @@ int existsInt (char const * name)
 	}
 }
 
+/**	
+  *	Checks whether an Int Symbol, represented by its name, exists in the Symbol table in a global scope
+  *	and returns the pointer to the Int Symbol, if it was found.
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return struct symInt * - A Pointer to the found Int Symbol, or NULL if the symbol was not found
+**/
 struct symInt *getIntG (char const * name)
 {
 	struct symInt *ptr;
@@ -131,6 +174,12 @@ struct symInt *getIntG (char const * name)
 	return NULL;
 }
 
+/**	
+  *	Checks whether an Int Symbol, represented by its name, exists in the Symbol table in a local scope
+  *	and returns the pointer to the Int Symbol, if it was found.
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return struct symInt * - A Pointer to the found Int Symbol, or NULL if the symbol was not found
+**/
 struct symInt *getIntL (char const * name)
 {
 	struct symInt *ptr;
@@ -142,6 +191,13 @@ struct symInt *getIntL (char const * name)
 	return NULL;
 }
 
+/**	
+  *	Checks whether an Int Symbol, represented by its name, exists in the Symbol table in a global or local scope
+  *	and returns the pointer to the Int Symbol, if it was found.
+  *	The local scope has a higher priority and if both Int Symbols where found, just the local one will be returned.
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return struct symInt * - A Pointer to the found Int Symbol, or NULL if the symbol was not found
+**/
 struct symInt *getInt (char const * name)
 {
 	if(!existsIntL(name)) {
@@ -155,7 +211,12 @@ struct symInt *getInt (char const * name)
 	}
 }
 
-
+/**	
+  *	Checks whether an Int Symbol, represented by its name, already exists in the current Function scope
+  *	(If it does there would have to be an error, because the Int was already declared)
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return int - 1 If the Int Symbol already exists in the current Function scope; 0 if it does not
+**/
 int checkIntDec (char const * name)
 {
 	struct symInt *ptr;
@@ -167,6 +228,13 @@ int checkIntDec (char const * name)
 	return 0;
 }
 
+/**	
+  *	Checks whether an Int Symbol, represented by its name, already exists in the current Function scope
+  *	(If it does there would have to be an error, because the Int was already declared)
+  *	If the Symbol was found, a pointer to it will be returned.
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return struct symInt * - A Pointer to the found Int Symbol, or NULL if the symbol was not found
+**/
 struct symInt *getIntCurrScope (char const * name)
 {
 	struct symInt *ptr;
@@ -178,11 +246,19 @@ struct symInt *getIntCurrScope (char const * name)
 	return NULL;
 }
 
+/**	
+  *	Sets the scope of the given Int Symbol to the current Function scope
+  *	@param struct symInt *sInt - A pointer to the Int Symbol
+**/
 void setIntScopeP (struct symInt *sInt)
 {
 	sInt->scope = currFunc;
 }
 
+/**	
+  *	Inserts a given Func Symbol into the Function Table
+  *	@param struct symFunc *sFunc - A pointer to the Func Symbol
+**/
 void putFuncIntoTable (struct symFunc *sFunc)
 {
 	if(symFuncTable==NULL)
@@ -202,6 +278,13 @@ void putFuncIntoTable (struct symFunc *sFunc)
 	}
 }
 
+/**	
+  *	Creates a Function-Symbol and returns a pointer to the just created Function
+  *	The Function-Symbol will also be automatically be put into the Symbol Table
+  *	@param char const *name - The Name of the Int Symbol
+  *	@param int retType - The return Type of the Function
+  *	@return struct symFunc * - The pointer to the just created Function Symbol
+**/
 struct symFunc *putFunc (char const *name, int retType)
 {
 	struct symFunc *ptr;
@@ -228,6 +311,12 @@ struct symFunc *putFunc (char const *name, int retType)
 	return ptr;
 }
 
+/**	
+  *	Creates a Function-Symbol and returns a pointer to the just created Function
+  *	The Function-Symbol will also be automatically be put into the Symbol Table
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return struct symFunc * - The pointer to the found Function; NULL if no function was found
+**/
 struct symFunc *getFunc (char const *name)
 {
 	struct symFunc *ptr;
@@ -239,6 +328,11 @@ struct symFunc *getFunc (char const *name)
 	return NULL;
 }
 
+/**	
+  *	Checks whether a Function is inside the Symbol table, represented by its name
+  *	@param char const *name - The Name of the Int Symbol
+  *	@return int - 
+**/
 int existsFunc (char const *name) 
 {
 	struct symFunc *ptr;
