@@ -90,9 +90,7 @@ type
 
 variable_declaration
      : variable_declaration COMMA identifier_declaration	/*Nothing to be done here*/
-     | type identifier_declaration { if($1==0) { yyerror("You can not declare a variable as void.");
-     											//printf("ERROR You can not declare a variable as void.\n"); 
-     											} }
+     | type identifier_declaration { if($1==0) { yyerror("You can not declare a variable as void.");}}
      ;
 	
 identifier_declaration
@@ -101,7 +99,6 @@ identifier_declaration
 			// Error detected : variable was already declared:
 			sprintf(buffer,"The variable >%s< was already declared.", $1);
 			yyerror(buffer);
-			//printf("ERROR! The variable %s was already declared.\n", $1);
 			$$ = getInt($1);
 		} else {*/
 			//TODO: Check if the name was already declaread as a function
@@ -110,7 +107,6 @@ identifier_declaration
 				//error wurde schon einmal deklariert
 				$$ = getIntCurrScope ($1);
 				yyerror("This Variable was already defined");
-				//printf("ERROR: This Variable was already defined.\n");
 			}
 			else
 			{
@@ -129,7 +125,7 @@ function_signature
 function_definition
      : type ID PARA_OPEN PARA_CLOSE BRACE_OPEN 	{
 											//TODO: Check if the name was already declaread as a Variable
-											printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
+											//printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
 											if(existsFunc ($2))
 											{
 												if(isFuncProto ($2))
@@ -137,23 +133,21 @@ function_definition
 													if($1!=getFunc($2)->retType)
 													{
 														yyerror("Types mismatch from function declaration.");
-														//printf("ERROR: Type mismatch from Function declaration.\n");
 													}
-													printf("Declaration found.\n");
+													//printf("Declaration found.\n");
 													setFuncIsDeclared ($2);
 													setFuncScopeP (getFunc($2));
 												}
 												else
 												{
 													yyerror("A function definition with the same name already exists.");
-													//printf("ERROR a function definition with the same name already exists.\n");
-													/*TODO: ERROR a function with the same name already exists*/
+													/*: ERROR a function with the same name already exists*/
 													//Error correction: Ignore stuff
 												}
 											}
 											else
 											{
-												printf("No declaration entry found. Create new function %s with type %d\n", $2, $1);
+												//printf("No declaration entry found. Create new function %s with type %d\n", $2, $1);
 												$<sFunc>$ = putFunc ($2, $1);
 												setFuncScopeP (getFunc($2));
 											}
@@ -162,22 +156,20 @@ function_definition
 	stmt_list BRACE_CLOSE {addcodeopfunc(opFUNC_DEF_END, NULL, getFunc($2), -1);setFuncScopeP (NULL);backpatchreturn();}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN 	{
 																//TODO: Check if the name was already declaread as a Variable
-																printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
+																//printf("Function Definition %s found. Checking if there already is a declaration entry..\n", $2);
 																if(existsFunc ($2))
 																{
 																	if(isFuncProto ($2))
 																	{
-																		printf("Declaration found. Checking if parameters match from the declaration.\n");
+																		//printf("Declaration found. Checking if parameters match from the declaration.\n");
 																		if(!paramFuncCheckP (getFunc($2), $4))
 																		{
 																			sprintf(buffer,"No declaration entry found. Create new function %s with type %d\n", $2, $1);
 																			yyerror("Function-Parameter definition does not match function declaration.");
-																			//printf("ERROR: Function-Parameter definition does not match function declaration.\n");
 																		}
 																		if($1!=getFunc($2)->retType)
 																		{
 																			yyerror("Type mismatch from Function declaration");
-																			//printf("ERROR: Type mismatch from Function declaration.\n");
 																		}
 																		
 																		//printf("Declaration and definition match!\n");
@@ -197,17 +189,16 @@ function_definition
 																	else
 																	{
 																		yyerror("A function definition with the same name already exists.");
-																		//printf("ERROR a function definition with the same name already exists.\n");
 																		/*TODO: ERROR a function with the same name already exists*/
 																		//Error correction: Ignore stuff
 																	}
 																}
 																else
 																{
-																	printf("No declaration entry. Checking for temp definition from param list.\n", $2);
+																	//printf("No declaration entry. Checking for temp definition from param list.\n", $2);
 																	if(strcmp ($4->name,"-1temp") == 0)
 																	{
-																		printf("Temp Func found. will be renamed to %s to make it the definition.\n", $2);
+																		//printf("Temp Func found. will be renamed to %s to make it the definition.\n", $2);
 																		renameFunc ("-1temp", $2);
 																		setTypeP ($4, $1);
 																		setFuncScopeP ($4);
@@ -225,16 +216,15 @@ function_definition
 function_declaration
      : type ID PARA_OPEN PARA_CLOSE						{
 														//TODO: Check if the name was already declaread as a Variable
-														printf("Function Declaration %s found.\n", $2);
+														//printf("Function Declaration %s found.\n", $2);
 														if(existsFunc ($2)) {
 															yyerror("A function declaration with the same name already exists.");
-															//printf("ERROR a function declaration with the same name already exists.\n");
 															setFuncProtoP (getFunc($2));
 															setScopeForParams (getFunc($2));
 														}
 														else
 														{
-															printf("Putting func into table and mark it as a prototype.\n");
+															//printf("Putting func into table and mark it as a prototype.\n");
 															$$ = putFunc ($2, $1);
 															setFuncProtoP ($$);
 															setScopeForParams ($$);
@@ -243,17 +233,16 @@ function_declaration
 													}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE		{
 														//TODO: Check if the name was already declaread as a Variable
-														printf("Function Declaration %s found.\n", $2);
+														//printf("Function Declaration %s found.\n", $2);
 														if(existsFunc ($2)) {
 															yyerror("A function declaration with the same name already exists.");
-															//printf("ERROR a function declaration with the same name already exists.\n");
 															deleteFunc ("-1temp");
 															setFuncProtoP (getFunc($2));
 															setScopeForParams (getFunc($2));
 														}
 														else
 														{
-															printf("Putting func into table and mark it as a prototype.\n");
+															//printf("Putting func into table and mark it as a prototype.\n");
 															renameFunc ("-1temp", $2);
 															setTypeP ($4, $1);
 															setFuncProtoP (getFunc($2));
@@ -278,9 +267,7 @@ function_parameter_list
      ;
 	
 function_parameter
-     : type identifier_declaration	 {$$ = $2; if($1==0) { 	yyerror("You can not declare a variable as void");
-     														//printf("ERROR You can not declare a variable as void.\n");
-     														}}
+     : type identifier_declaration	 {$$ = $2; if($1==0) { 	yyerror("You can not declare a variable as void");}}
      ;
 
 stmt_list
@@ -300,7 +287,6 @@ stmt
 										if($2->scope->retType==0)
 										{
 											yyerror("Function was declared as VOID. It can not return a value.ither use \"RETURN;\" or use type int for the func.");
-											//printf("ERROR: Function was declarad as VOID. It can not return a value. Either use \"RETURN;\" or use type int for the func.\n");
 										}
 									}
 									addcodeop1(opRETURN, $2);
@@ -375,7 +361,6 @@ primary
 			//TODO: It seems that global variables are not recognised, check this!
 			sprintf (buffer,"The variable >%s< was not declared.", $1);
 			yyerror(buffer);
-			//printf("ERROR! The variable %s was not declared.\n", $1);
 			//We assume the variable should have been declared. so we declare it for the user...
 			$$ = putInt ($1, 0, 0);
 			//yyerror("syntax error");
@@ -386,7 +371,7 @@ primary
 function_call
       : ID PARA_OPEN PARA_CLOSE						{
 													struct symFunc *sFunc;
-													printf("Function call regocnised.\n");
+													//printf("Function call regocnised.\n");
 													if(existsFunc($1))
 													{
 														sFunc = getFunc($1);
@@ -395,7 +380,6 @@ function_call
 													{
 														//"ERROR: This Variable was already defined
 														yyerror("Function was not declared before the call!");
-														//printf("ERROR! Function was not declared before the call!\n");
 														sFunc = putFunc ("-1undeclared", -1);
 													}
 													$$ = addcodeopfunccall(opCALL, putInt ("int", 0, 0), sFunc, opcodeFindFunctionDef(sFunc));
@@ -408,19 +392,17 @@ function_call
 														sFunc = getFunc($1);
 														if(paramFuncCallCheckP (sFunc, $3))
 														{
-															printf("Functional Call Param Check OK!\n");
+															//printf("Functional Call Param Check OK!\n");
 														}
 														else
 														{
 															yyerror("Functional call parameter check failed");
-															//printf("ERROR: Functional Call Param Check FAILED!\n");
 														}
 														
 													}
 													else
 													{
 														yyerror("Function was not declared before the call!");
-														//printf("ERROR! Function was not declared before the call!\n");
 														sFunc = putFunc ("-1undeclared", -1);
 													}
 													
