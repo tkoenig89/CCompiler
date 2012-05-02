@@ -97,7 +97,7 @@ identifier_declaration
      : identifier_declaration BRACKET_OPEN NUM BRACKET_CLOSE {$1->isArray = 1;$1->var = $3;}/*{TODO ARRAY}*/
      | ID {	/*if(existsInt($1)) {
 			// Error detected : variable was already declared:
-			sprintf(buffer,"The variable >%s< was already declared.", $1);
+			sprintf(buffer,"The variable %s was already declared.", $1);
 			yyerror(buffer);
 			$$ = getInt($1);
 		} else {*/
@@ -106,7 +106,8 @@ identifier_declaration
 			{
 				//error wurde schon einmal deklariert
 				$$ = getIntCurrScope ($1);
-				yyerror("This Variable was already defined");
+				sprintf(buffer,"The variable %s was already defined.", $1);
+				yyerror(buffer);
 			}
 			else
 			{
@@ -132,7 +133,8 @@ function_definition
 												{
 													if($1!=getFunc($2)->retType)
 													{
-														yyerror("Types mismatch from function declaration.");
+														sprintf(buffer,"Types mismatch from function %s's declaration.",$2);
+														yyerror(buffer);
 													}
 													//printf("Declaration found.\n");
 													setFuncIsDeclared ($2);
@@ -140,7 +142,8 @@ function_definition
 												}
 												else
 												{
-													yyerror("A function definition with the same name already exists.");
+													sprintf(buffer,"A function definition with the same name (%s) already exists",$2);
+													yyerror(buffer);
 													/*: ERROR a function with the same name already exists*/
 													//Error correction: Ignore stuff
 												}
@@ -164,12 +167,13 @@ function_definition
 																		//printf("Declaration found. Checking if parameters match from the declaration.\n");
 																		if(!paramFuncCheckP (getFunc($2), $4))
 																		{
-																			sprintf(buffer,"No declaration entry found. Create new function %s with type %d\n", $2, $1);
-																			yyerror("Function-Parameter definition does not match function declaration.");
+																			sprintf(buffer,"Function-Parameter definition does not match the declaration of function %s.",$2);
+																			yyerror(buffer);
 																		}
 																		if($1!=getFunc($2)->retType)
 																		{
-																			yyerror("Type mismatch from Function declaration");
+																			sprintf(buffer,"Type mismatch from function %s's declaration.",$2);
+																			yyerror(buffer);
 																		}
 																		
 																		//printf("Declaration and definition match!\n");
@@ -188,7 +192,8 @@ function_definition
 																	}
 																	else
 																	{
-																		yyerror("A function definition with the same name already exists.");
+																		sprintf(buffer,"A function definition with the same name (%s) already exists.",$2);
+																		yyerror(buffer);
 																		/*TODO: ERROR a function with the same name already exists*/
 																		//Error correction: Ignore stuff
 																	}
@@ -218,7 +223,8 @@ function_declaration
 														//TODO: Check if the name was already declaread as a Variable
 														//printf("Function Declaration %s found.\n", $2);
 														if(existsFunc ($2)) {
-															yyerror("A function declaration with the same name already exists.");
+															sprintf(buffer,"A function definition with the same name (%s) already exists.",$2);
+															yyerror(buffer);
 															setFuncProtoP (getFunc($2));
 															setScopeForParams (getFunc($2));
 														}
@@ -235,7 +241,8 @@ function_declaration
 														//TODO: Check if the name was already declaread as a Variable
 														//printf("Function Declaration %s found.\n", $2);
 														if(existsFunc ($2)) {
-															yyerror("A function declaration with the same name already exists.");
+															sprintf(buffer,"A function definition with the same name (%s) already exists.",$2);
+															yyerror(buffer);
 															deleteFunc ("-1temp");
 															setFuncProtoP (getFunc($2));
 															setScopeForParams (getFunc($2));
@@ -359,7 +366,7 @@ primary
 			$$ = getInt($1);
 		} else {
 			//TODO: It seems that global variables are not recognised, check this!
-			sprintf (buffer,"The variable >%s< was not declared.", $1);
+			sprintf (buffer,"The variable %s was not declared.", $1);
 			yyerror(buffer);
 			//We assume the variable should have been declared. so we declare it for the user...
 			$$ = putInt ($1, 0, 0);
@@ -379,7 +386,8 @@ function_call
 													else
 													{
 														//"ERROR: This Variable was already defined
-														yyerror("Function was not declared before the call!");
+														sprintf(buffer,"Function %s was not declared before the call!",$1);
+														yyerror(buffer);
 														sFunc = putFunc ("-1undeclared", -1);
 													}
 													$$ = addcodeopfunccall(opCALL, putInt ("int", 0, 0), sFunc, opcodeFindFunctionDef(sFunc));
@@ -396,13 +404,15 @@ function_call
 														}
 														else
 														{
-															yyerror("Functional call parameter check failed");
+															sprintf(buffer,"Functional call parameter check failed for function %s.",$1);
+															yyerror(buffer);
 														}
 														
 													}
 													else
 													{
-														yyerror("Function was not declared before the call!");
+														sprintf(buffer,"Functional %s was not declared before the call.",$1);
+														yyerror(buffer);
 														sFunc = putFunc ("-1undeclared", -1);
 													}
 													
@@ -419,6 +429,6 @@ function_call_parameters
 
 void yyerror (const char *msg)
 {
-	printf("ERROR at Line %d,Position %d : %s.\n",yylloc.first_line,yylloc.first_column, msg);
+	printf("ERROR at Line %d : %s\n",yylloc.first_line, msg);
 	//return 0;
 }

@@ -1,6 +1,6 @@
 int fu(int x,int y);
 
-int fu(int x){
+void fu(int x){
 return 2;
 }
 
@@ -11,10 +11,11 @@ int main(){
 	int x;
 	x=2;
 	y=3;
-void z;
-int x;
+void z;int x;
 int u;
 u = func();
-int i = fu(2);	
+//int i = fu(2);
+u = test();	
+zts = func();
 }
 
