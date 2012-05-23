@@ -41,6 +41,7 @@ struct symFuncCallParamList
 struct symInt *putInt (char const *name, int isArray, int val);
 struct symInt *getInt (char const * name);
 int existsInt (char const * name);
+int existsIntG (char const * name);
 //void deleteInt (char const * name);
 struct symInt *tempInt (char const *name);
 //struct symInt *putIntParam (char const *name, int isArray, int val);
@@ -67,6 +68,7 @@ void setFuncScopeP (struct symFunc *sFunc);
 void setScopeForParams (struct symFunc *sFunc0);
 struct symFuncCallParamList *createParamList(struct symInt *sInt);
 int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *params);
+struct symFunc *getCurrentScope();
 
 struct symInt *getsymIntTable();
 struct symFunc *getsymFuncTable();

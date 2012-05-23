@@ -726,3 +726,8 @@ struct symFunc *getsymFuncTable()
 {
 	return symFuncTable;
 }
+
+struct symFunc *getCurrentScope()
+{
+	return currFunc;
+}
