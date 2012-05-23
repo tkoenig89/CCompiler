@@ -7,6 +7,7 @@
 	#include "symtable.h"
 	#include "ir_code_gen.h"
 	#include <stdio.h>
+	#include "main.h"
 	char buffer [200];
 	void yyerror (char const *);
 %}
@@ -430,5 +431,6 @@ function_call_parameters
 void yyerror (const char *msg)
 {
 	printf("ERROR at Line %d : %s\n",yylloc.first_line, msg);
+	adderror();
 	//return 0;
 }

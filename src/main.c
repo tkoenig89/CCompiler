@@ -19,12 +19,23 @@ static const char *C_EXT = ".c";
 static const char *IR_EXT = ".ir";
 static const char *OUTPUT_EXT = ".s";
 
+int errorcount=0;
+
 cc_options_t cc_options = {
   .print_ir = 0,
   .ir_file = NULL,
   .input_file = NULL,
   .output_file = NULL
 };
+
+/**
+ * Increments the error count, which resembles the errors in the given c source file
+ * HINT: if the errorcount is > 0, then the file will not be compiled
+ */
+void adderror()
+{
+	errorcount++;
+}
 
 /** 
  * \brief Print the help.
@@ -299,13 +310,20 @@ int main (int argc, char *argv[]) {
 	printf("----------DEBUG opCodes:\n");
 	debugPrintAllopcodes();*/
 	
-	FILE *finalfile = fopen(cc_options.output_file, "w");
-	
-	initFinalCodeGen(finalfile);
-	generateFinalCode();
+	if(errorcount==0)
+	{
+		FILE *finalfile = fopen(cc_options.output_file, "w");
+
+		initFinalCodeGen(finalfile);
+		generateFinalCode();
+		fclose (finalfile);
+	} else {
+		printf("File could not be compiled. Please resolve %d error", errorcount);
+		if(errorcount>1) printf("s");
+		printf(".\n");
+	}
 	
 	fclose (myfile);
-	fclose (finalfile);
 
 	rm_cleanup_resources(&resource_mgr);
 	return 0;

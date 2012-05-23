@@ -21,4 +21,6 @@ typedef struct cc_options
 
 extern cc_options_t cc_options; 
 
+void adderror();
+
 #endif
