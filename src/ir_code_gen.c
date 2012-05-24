@@ -102,6 +102,8 @@ struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 	addcode(operation, ptr, int1, NULL, NULL, -1);
 	printf("IR: %d %s = op %s\n", operation, ptr->name, int1->name);
 	
+	ptr->isVaildForCalc=int1->isVaildForCalc;	
+	
 	return ptr;
 }
 
@@ -262,6 +264,13 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 	
 	addcode(operation, ptr, int1, int2, NULL, -1);
 	//printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
+	
+	
+	if((int1->isVaildForCalc==-1) || (int2->isVaildForCalc==-1))
+	{
+		ptr->isVaildForCalc=-1;
+	}
+	
 	return ptr;
 }
 
