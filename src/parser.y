@@ -96,12 +96,12 @@ variable_declaration
 	
 identifier_declaration
      : identifier_declaration BRACKET_OPEN NUM BRACKET_CLOSE {$1->isArray = 1;$1->var = $3;}/*{TODO ARRAY}*/
-     | ID {	/*if(existsInt($1)) {
-			// Error detected : variable was already declared:
-			sprintf(buffer,"The variable %s was already declared.", $1);
-			yyerror(buffer);
-			$$ = getInt($1);
-		} else {*/
+     | ID 	{
+			if(existsFunc ($1))
+			{
+				sprintf(buffer,"The name %s was already used by a function.", $1);
+				yyerror(buffer);
+			}
 			//TODO: Check if the name was already declaread as a function
 			if(checkIntDec ($1))
 			{
@@ -114,9 +114,7 @@ identifier_declaration
 			{
 				$$ = putInt ($1, 0, 0);
 			}
-			
-		//}
-	     }
+		}
      ;
 
 function_definition
