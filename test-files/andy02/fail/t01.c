@@ -1,2 +1,2 @@
 int global;
-int global;
+int global;z

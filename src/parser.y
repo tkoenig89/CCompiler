@@ -121,7 +121,7 @@ function_definition
      : type ID PARA_OPEN PARA_CLOSE BRACE_OPEN 	{
 											if(existsIntG ($2))
 											{
-												sprintf(buffer,"The name %s was already used as the name of a variable.",$2);
+												sprintf(buffer,"The name %s was already used as the name of a global variable.",$2);
 												yyerror(buffer);
 											}
 											else
@@ -158,7 +158,7 @@ function_definition
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN 	{
 																if(existsIntG ($2))
 																{
-																	sprintf(buffer,"The name %s was already used as the name of a variable.",$2);
+																	sprintf(buffer,"The name %s was already used as the name of a global variable.",$2);
 																	yyerror(buffer);
 																}
 																else
@@ -225,7 +225,7 @@ function_declaration
      : type ID PARA_OPEN PARA_CLOSE						{
 														if(existsIntG ($2))
 														{
-															sprintf(buffer,"The name %s was already used as the name of a variable.",$2);
+															sprintf(buffer,"The name %s was already used as the name of a global variable.",$2);
 															yyerror(buffer);
 														}
 														else
@@ -250,7 +250,7 @@ function_declaration
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE		{
 														if(existsIntG ($2))
 														{
-															sprintf(buffer,"The name %s was already used as the name of a variable.",$2);
+															sprintf(buffer,"The name %s was already used as the name of a global variable.",$2);
 															yyerror(buffer);
 														}
 														else
