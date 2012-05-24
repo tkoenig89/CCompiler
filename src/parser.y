@@ -234,7 +234,7 @@ function_declaration
 														{
 																
 															if(existsFunc ($2)) {
-																sprintf(buffer,"A function definition with the same name (%s) already exists.",$2);
+																sprintf(buffer,"A function declaration with the same name (%s) already exists.",$2);
 																yyerror(buffer);
 																setFuncProtoP (getFunc($2));
 																setScopeForParams (getFunc($2));
@@ -258,7 +258,7 @@ function_declaration
 														else
 														{
 															if(existsFunc ($2)) {
-																sprintf(buffer,"A function definition with the same name (%s) already exists.",$2);
+																sprintf(buffer,"A function declaration with the same name (%s) already exists.",$2);
 																yyerror(buffer);
 																deleteFunc ("-1temp");
 																setFuncProtoP (getFunc($2));
