@@ -357,7 +357,13 @@ stmt_loop
  * assignment operators.expression
  */									
 expression								// 0 = "false", nonzero = "true"
-     : expression ASSIGN expression				{$$ = $3;addcodeass($1, $3);if($1->tempCodePos>-1) {setCodeToNOP($1->tempCodePos);}}	//WARNING: Ambigious! You dont know if you have to assign to/load from an array or if it is an normal int at this point. check this when generating final code
+     : expression ASSIGN expression				{
+											if($1->isVaildForAssign==-1)
+											{
+												yyerror("The expression left from '=' is not vaild for an assignment.");
+											}
+											$$ = $3;addcodeass($1, $3);if($1->tempCodePos>-1) {setCodeToNOP($1->tempCodePos);}
+										}	//WARNING: Ambigious! You dont know if you have to assign to/load from an array or if it is an normal int at this point. check this when generating final code
      | expression LOGICAL_OR expression			{$$ = addcodeopexp2(opLOGICAL_OR, $1, $3);}
      | expression LOGICAL_AND expression			{$$ = addcodeopexp2(opLOGICAL_AND, $1, $3);}
      | LOGICAL_NOT expression					{$$ = addcodeopexp1(opLOGICAL_NOT, $2);}
@@ -383,7 +389,7 @@ expression								// 0 = "false", nonzero = "true"
      | expression MINUS expression				{$$ = addcodeopexp2(opSUB, $1, $3);}
      | expression MUL expression				{$$ = addcodeopexp2(opMUL, $1, $3);}
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
-     | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeloadarr(getInt($1), $3);$$->tempArrPos=$3->var;$$->tempArrPos2=$3;} /*In c there is no check whether the array acces in the valid bounds*/
+     | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeloadarr(getInt($1), $3);$$->tempArrPos=$3->var;$$->tempArrPos2=$3;$$->isVaildForAssign=1;} /*In c there is no check whether the array acces in the valid bounds*/
      | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
      | function_call							{$$ = $1;/*$$ = irtempInt();*//*TODO: Check whether v0 or v1 is needed as a temp register. for e.g. i = f() + g() -> i = v0 + v1*/}
      | primary								{$$ = $1}
@@ -400,6 +406,10 @@ primary
 			//We assume the variable should have been declared. so we declare it for the user...
 			$$ = putInt ($1, 0, 0);
 			//yyerror("syntax error");
+		}
+		if($$->isArray!=1)
+		{
+			$$->isVaildForAssign=1;
 		}
 	  }
      ;

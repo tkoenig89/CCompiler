@@ -1,7 +1,6 @@
 #ifndef _DHBWCC_SYMTABLE_H
 #define _DHBWCC_SYMTABLE_H
 
-//Very simple symbol table, GET IT ? :D simple symbol ... HARHAR
 struct symInt
 {
 	char *name;
@@ -14,6 +13,7 @@ struct symInt
 	int tempCodePos;
 	int stackpos; //used by final_code for reference 
 	int isTemp;
+	int isVaildForAssign;
 	struct symInt *nextElement;
 	
 struct symInt *next;
