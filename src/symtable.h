@@ -14,6 +14,7 @@ struct symInt
 	int stackpos; //used by final_code for reference 
 	int isTemp;
 	int isVaildForAssign;
+	int isVaildForCalc;
 	struct symInt *nextElement;
 	
 struct symInt *next;

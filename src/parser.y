@@ -362,6 +362,10 @@ expression								// 0 = "false", nonzero = "true"
 											{
 												yyerror("The expression left from '=' is not vaild for an assignment.");
 											}
+											if($1->isVaildForCalc==-1)
+											{
+												yyerror("An expression on the right side of the '=' is not valid for calculation.");
+											}
 											$$ = $3;addcodeass($1, $3);if($1->tempCodePos>-1) {setCodeToNOP($1->tempCodePos);}
 										}	//WARNING: Ambigious! You dont know if you have to assign to/load from an array or if it is an normal int at this point. check this when generating final code
      | expression LOGICAL_OR expression			{$$ = addcodeopexp2(opLOGICAL_OR, $1, $3);}
@@ -391,7 +395,13 @@ expression								// 0 = "false", nonzero = "true"
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
      | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeloadarr(getInt($1), $3);$$->tempArrPos=$3->var;$$->tempArrPos2=$3;$$->isVaildForAssign=1;} /*In c there is no check whether the array acces in the valid bounds*/
      | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
-     | function_call							{$$ = $1;/*$$ = irtempInt();*//*TODO: Check whether v0 or v1 is needed as a temp register. for e.g. i = f() + g() -> i = v0 + v1*/}
+     | function_call							{
+											if($1->isVaildForCalc==-1)
+											{
+												yyerror("A function used in the expression chain is of type VOID and therefore can't return a value.");
+											}
+											$$ = $1;
+										}
      | primary								{$$ = $1}
      ;
 
@@ -434,6 +444,15 @@ function_call
 														sFunc = putFunc ("-1undeclared", -1);
 													}
 													$$ = addcodeopfunccall(opCALL, putInt ("int", 0, 0), sFunc, opcodeFindFunctionDef(sFunc));
+													if(existsFunc($1))
+													{
+														if(sFunc->retType==0)
+														{
+															$$->isVaildForCalc=-1;
+														}
+													} else {
+														$$->isVaildForCalc=-1;													
+													}
 												}
       | ID PARA_OPEN function_call_parameters PARA_CLOSE	{
 													struct symFunc *sFunc;
@@ -457,9 +476,17 @@ function_call
 														sprintf(buffer,"Functional %s was not declared before the call.",$1);
 														yyerror(buffer);
 														sFunc = putFunc ("-1undeclared", -1);
-													}
-													
+													}													
 													$$ = addcodeopfunccall(opCALL, putInt ("int", 0, $3->count), sFunc, opcodeFindFunctionDef(sFunc));
+													if(existsFunc($1))
+													{
+														if(sFunc->retType==0)
+														{
+															$$->isVaildForCalc=-1;
+														}
+													} else {
+														$$->isVaildForCalc=-1;													
+													}
 												}
       ;
 
