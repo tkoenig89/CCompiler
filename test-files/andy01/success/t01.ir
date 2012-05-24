@@ -1,0 +1,32 @@
+***** Symbol Table (global, size = 44) *****
+[0] id = variable - name = global
+    type = int - scope = global - offset = 0
+[1] id = variable - name = a
+    type = [10] of int - scope = global - offset = 4
+[2] id = function - name = print
+    return_type = void - prototype = true - num_params = 1
+    params = (i {int})
+[3] id = function - name = scan
+    return_type = int - prototype = true - num_params = 0
+    params = ()
+[4] id = function - name = exit
+    return_type = void - prototype = true - num_params = 1
+    params = (i {int})
+[5] id = function - name = func
+    return_type = int - prototype = false - num_params = 3
+    params = (arr {[10] of int} :: len {int} :: threshold {int})
+    ***** Symbol Table (local, size = 8) *****
+    [0] id = variable - name = arr
+        type = [10] of int - scope = param - param_pos = 0
+    [1] id = variable - name = len
+        type = int - scope = param - param_pos = 1
+    [2] id = variable - name = threshold
+        type = int - scope = param - param_pos = 2
+    [3] id = variable - name = i
+        type = int - scope = local - offset = 0
+    [4] id = variable - name = sum
+        type = int - scope = local - offset = 4
+[6] id = function - name = main
+    return_type = int - prototype = false - num_params = 0
+    params = ()
+    ***** Symbol Table (local, size = 0) *****

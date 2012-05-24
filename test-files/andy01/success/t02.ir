@@ -1,0 +1,5 @@
+***** Symbol Table (global, size = 0) *****
+[0] id = function - name = print
+    return_type = int - prototype = false - num_params = 0
+    params = ()
+    ***** Symbol Table (local, size = 0) *****

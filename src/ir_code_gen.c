@@ -4,11 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//A dynamic array containing the ir code
 struct strCode  *code;
-
+//The length of the dynamic array
 int code_count = 0;
+//Used to determine which temporary register should be used
 int temp_reg_count = -1;
 
+/**
+ * Packs the temp_reg_count variable into a symInt struct
+ * @return the packed temp_reg_count
+ */
 struct symInt *irtempInt() 
 {
 	temp_reg_count += 1;
@@ -24,11 +30,18 @@ struct symInt *irtempInt()
 	return ptr;
 }
 
-/* Generates code at current location */
+/**
+ * Increments the dynamic array containing the ir code, and adds all the given values into the new created array slot
+ * @param operation the opCode to be used
+ * @param int0 the first variable
+ * @param int1 the second variable
+ * @param int2 the third variable
+ * @param func a function
+ * @param jmpTo used to store jump values for e.g. function calls or if/then/else or while-loops
+ */
 void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, struct symInt *int2, struct symFunc *func, int jmpTo)
 {
 	code_count += 1;
-	//TODO: Check whether realloc does really work. if it doesnt make it a linked list
 	struct strCode *codebuffer = (struct strCode*) realloc (code, code_count * sizeof(struct strCode));
 	
 	code = codebuffer;
@@ -43,36 +56,30 @@ void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, 
 	code[code_count-1].jmpLabel = -1;
 }
 
+/**
+ * Creates an ir code entry for a variable assignment
+ * @param int0 the var which should get the value
+ * @param int1 the var containing the value to be assigned
+ */
 void addcodeass(struct symInt *int0, struct symInt *int1)
 {
+	//Check whether the assignment variable is an array, and if so use MEM_STORE as the opCode
 	if(int0->tempArrPos>-1)
 	{
-		//int0[x] = int1
-		//printf("t_isArray:%d.\n", int1->isArray);
-		//addcode(opMEM_ST, int0->nextElement, putInt ("int", 0, int0->tempArrPos) , int1 /*=int2*/, NULL, -1);	
 		addcode(opMEM_ST, int0->nextElement, int0->tempArrPos2 , int1 /*=int2*/, NULL, -1);
 	}
 	else
 	{	
-		//int0 = int1
 		addcode(opASSIGN, int0, int1, NULL, NULL, -1);
-		//printf("Code offset: %d\n", code_count);
-		//printf("IR: ASSIGN %s = %s\n", code[code_count-1].int0->name, code[code_count-1].int1->name);
 	}
-	//printf("t_count:%d.\n", temp_reg_count);
 	temp_reg_count = 0;	
 }
-/*
-struct symInt *addcodemin(struct symInt *int1)
-{
-	struct symInt *ptr = irtempInt();
-	
-	addcode(opMINUS, ptr, int1, NULL, NULL, NULL);
-	printf("IR: MINUS %s = - %s\n", ptr->name, int1->name);
-	
-	return ptr;
-}*/
 
+/**
+ * Simplified version of addcode, for opCodes which require only 1 variable paramter. ONLY USED FOR NON-EXPRESSION single opCodes
+ * @param operation the opCode
+ * @param int0 the variable parameter
+ */
 void addcodeop1(enum code_ops operation, struct symInt *int0)
 {	
 	if(operation==opRETURN)
@@ -85,9 +92,14 @@ void addcodeop1(enum code_ops operation, struct symInt *int0)
 	}
 }
 
+/**
+ * Simplified version of addcode, for opCodes which require only 1 variable paramter.
+ * @param operation the opCode
+ * @param int1 the variable parameter
+ * @return the temp register variable
+ */
 struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 {
-	//TODO: If we regocnise that int1 is already a temp var, use int1 as the result instead of creating a new temp var to save register space
 	struct symInt *ptr;
 	if(int1->next!=137)
 	{
@@ -100,33 +112,48 @@ struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 	
 
 	addcode(operation, ptr, int1, NULL, NULL, -1);
-	//printf("IR: %d %s = op %s\n", operation, ptr->name, int1->name);
 	
 	ptr->isVaildForCalc=int1->isVaildForCalc;	
 	
 	return ptr;
 }
 
+/**
+ * Simplified version of addcode, for opCodes which require only 2 variable paramter.
+ * @param operation the opCode
+ * @param int0 the first variable parameter
+ * @param int1 the second variable paramter
+ */
 void addcodeop2(enum code_ops operation, struct symInt *int0, struct symInt *int1)
 {
 	addcode(operation, int0, int1, NULL, NULL, -1);
 }
 
+/**
+ * Creates an IF statement in the ir code. the given variable is the end of the boolean expression
+ * @param int0 the variable parameter
+ */
 void addif(struct symInt *int0)
 {
 	addcode(opIF, int0, NULL, NULL, NULL, getopcodeCount()+2);
 }
 
+/**
+ * Creates a goto ir code for an if expression, which will later be backpatched to the right adress
+ */
 void addifgoto()
 {
 	addcode(opGOTO, NULL, NULL, NULL, NULL, -137);
 }
 
+/**
+ * Use this at the end of the if expression to patch the created goto statement.
+ * @param shift use this to slightly shift the adress
+ */
 void backpatchif(int shift)
 {	
 	struct strCode  *c;	
-	
-	//for(int i=0;i<code_count;i++)
+
 	for(int i=code_count-1;i>=0;i--)
 	{
 		c = &code[i];
@@ -142,6 +169,9 @@ void backpatchif(int shift)
 	}
 }
 
+/**
+ * Backpatches the return statment to let it later jump to the end of the function after it was called
+ */
 void backpatchreturn()
 {	
 	struct strCode  *c;	
@@ -160,26 +190,38 @@ void backpatchreturn()
 	}
 }
 
+/**
+ * Creates an IF ir code which represents the loop condition
+ * @param int0
+ */
 void addwhile(struct symInt *int0)
 {
 	addcode(opIF, int0, NULL, NULL, NULL, getopcodeCount()+2);
 }
 
+/**
+ * Creates an ir code to better handle goto jump statements. But will be ignored in the final code generation
+ */
 void addwhilebegin()
 {
 	addcode(opWHILE_BEGIN, NULL, NULL, NULL, NULL, -137);
 }
 
+/**
+ * Creates a GOTO ir code to create loop
+ */
 void addwhilegotobegin()
 {
 	addcode(opGOTO, NULL, NULL, NULL, NULL, -137);
 }
 
+/**
+ * Backpatches all jump statements of a while loop to the current position in the ir code array
+ */
 void backpatchwhile()
 {	
 	struct strCode  *c;	
-	
-	//for(int i=0;i<code_count;i++)
+
 	for(int i=code_count-1;i>=0;i--)
 	{
 		c = &code[i];
@@ -209,16 +251,22 @@ void backpatchwhile()
 	}
 }
 
+/**
+ * Creates an ir code to better handle goto jump statements. But will be ignored in the final code generation
+ */
 void adddowhile()
 {
 	addcode(opDO_WHILE_BEGIN, NULL, NULL, NULL, NULL, -137);
 }
 
+/**
+ * Creates the if expression at the end of a do-while loop, which represents the loop condition
+ * @param int0
+ */
 void adddowhileend(struct symInt *int0)
 {
 	struct strCode  *c;	
 	int i;
-	//for(i=0;i<code_count;i++)
 	for(i=code_count-1;i>=0;i--)
 	{
 		c = &code[i];
@@ -235,27 +283,21 @@ void adddowhileend(struct symInt *int0)
 	addcode(opIF, int0, NULL, NULL, NULL, i);
 }
 
+/**
+ * Simplified version of addcode, for opCodes which require 2 variable paramters.
+ * @param operation the opCode
+ * @param int1 the first variable parameter
+ * @param int2 the second variable parameter
+ * @return
+ */
 struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2)
 {
-	//TODO: If we regocnise that int1 and int2 are already a temp vars, we use either int1 or int2 as the result instead of creating a new temp var to save register space
 	struct symInt *ptr;
-	/*
-	if((int1->next!=137) && (int2->next!=137))
-	{
-		ptr = irtempInt();
-	}
-	else
-	{
-		ptr = int1;
-		temp_reg_count -= 1;
-		printf("\n\n\n\n\n\ntemp_reg_count:%d %d.\n", temp_reg_count, int1->next);
-	}*/
 
 	if((int1->next==137) && (int2->next==137))
 	{
 		ptr = int1;
 		temp_reg_count -= 1;
-		//printf("\n\n\n\n\n\ntemp_reg_count:%d %d.\n", temp_reg_count, int1->next);
 	}
 	else
 	{
@@ -263,8 +305,6 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 	}
 	
 	addcode(operation, ptr, int1, int2, NULL, -1);
-	//printf("IR: %d %s = %s op %s\n", operation, ptr->name, int1->name, int2->name);
-	
 	
 	if((int1->isVaildForCalc==-1) || (int2->isVaildForCalc==-1))
 	{
@@ -274,6 +314,12 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 	return ptr;
 }
 
+/**
+ * Creates a MEM_LOAD statement which will later dereference an array in the final code
+ * @param int1 the array
+ * @param int2 a symInt containing the position of the array which should be loaded in the var attribute
+ * @return the temporary register variable
+ */
 struct symInt * addcodeloadarr(struct symInt *int1, struct symInt *int2)
 {
 	struct symInt *ptr;
@@ -289,11 +335,26 @@ struct symInt * addcodeloadarr(struct symInt *int1, struct symInt *int2)
 	return ptr;
 }
 
+/**
+ * Will generate the end or the beginning of a function definition
+ * @param operation opFUNC_DEF or opFUNC_DEF_END
+ * @param int0 depricated - it is not in use
+ * @param func the function for which the header or footer should be created
+ * @param jmpTo
+ */
 void addcodeopfunc(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo)
 {
 	addcode(operation, int0, NULL, NULL, func, jmpTo);
 }
 
+/**
+ * Creates the ir code for a function call
+ * @param operation the opCALL opCode
+ * @param int0 the number of parameters packed into a symInt
+ * @param func the function which should be called
+ * @param jmpTo the position of the function definition inside the ir code
+ * @return
+ */
 int addcodeopfunccall(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo)
 {
 	struct symInt *ptr;
@@ -304,14 +365,10 @@ int addcodeopfunccall(enum code_ops operation, struct symInt *int0, struct symFu
 	return ptr;
 }
 
-/* Generates code at a reserved location */
-/*
-void backpatch(int addr, enum code_ops operation, int arg )
-{
-	code[addr].op = operation;
-	code[addr].arg = arg;
-}
-*/
+/**
+ * Deprecated Function. DO NOT USE
+ * TODO: deleteme
+ */
 void printcode()
 {
 	int i = 0;
@@ -322,6 +379,9 @@ void printcode()
 	}
 }
 
+/**
+ * Prints the ir code array into human readable debug code
+ */
 void debugPrintAllopcodes()
 {
 	struct strCode  *c;	
@@ -352,16 +412,29 @@ void debugPrintAllopcodes()
 	}
 }
 
+/**
+ * Returns the dynamic ir code array
+ * @return the ir code array
+ */
 struct strCode  *getopcodeArray()
 {
 	return code;
 }
 
+/**
+ * Returns the length of the ir code array
+ * @return length of the ir code array
+ */
 int getopcodeCount()
 {
 	return code_count;
 }
 
+/**
+ * Returns the position of the function definition inside the ir code array
+ * @param func pointer to the function
+ * @return the code position of the function definition
+ */
 int opcodeFindFunctionDef(struct symFunc *func)
 {
 	struct strCode  *c;	
@@ -376,6 +449,12 @@ int opcodeFindFunctionDef(struct symFunc *func)
 	return NULL;
 }
 
+/**
+ * Sets the jumpTo position
+ * @param cpos the position inside the ir code array
+ * @param jmpLabel the jumpTo position, to where the code should jump to later in the final code
+ * @return whether the jumpTo position was successfully set or not
+ */
 int setJmpLabel(int cpos, int jmpLabel)
 {
 	if(code[cpos].jmpLabel<0)
@@ -389,11 +468,18 @@ int setJmpLabel(int cpos, int jmpLabel)
 	return 0;
 }
 
+/**
+ * Sets the opCode of the given position inside the ir code array to "opNOP", which means no operation
+ * @param pos the position in the ir code array
+ */
 void setCodeToNOP(int pos)
 {
 	code[pos].op = opNOP;
 }
 
+/**
+ * Resets the temp_reg_count back to 0
+ */
 void resetTempCount()
 {
 	temp_reg_count = 0;

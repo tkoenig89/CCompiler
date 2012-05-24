@@ -350,20 +350,34 @@ int existsFunc (char const *name)
 	return 0;
 }
 
+/**
+ * Sets the first entry to the parameterlist into the required function
+ * The parameterlist itself is a linked list, and the next parameters are aviavable via "next"
+ * Hint: the parameters itself will not be stored differently from other variables. the number of parameters is determenined by the paramCount value of the function
+ * @param sFunc The function where the parameter should be linked to
+ * @param sInt The first parameter of the function
+ */
 void setParamP (struct symFunc *sFunc, struct symInt *sInt)
 {	
 	sFunc->paramCount = sFunc->paramCount + 1;	
 	sFunc->params = sInt;
 	sInt->isParam = 1;
-	//printf("added var %s for func %s, parcount:%d.\n", sInt->name, sFunc->name, sFunc->paramCount);
 }
 
+/**
+ * Increments the paramtercount of the given function
+ * @param sFunc the function which paramCount value should be incremented
+ */
 void incParamCountP (struct symFunc *sFunc)
 {
 	sFunc->paramCount = sFunc->paramCount + 1;	
 }
 
-
+/**
+ * Changes the name of a given function to another name
+ * @param funcname the old name of a function (function names are unique, so there can not be a mismatch)
+ * @param funcname_new the new name of the function
+ */
 void renameFunc (char const *funcname, char const *funcname_new)
 {
 	if(existsFunc(funcname))
@@ -378,6 +392,11 @@ void renameFunc (char const *funcname, char const *funcname_new)
 	}
 }
 
+/**
+ * Checks whether the given function is already in the function table, as a function declaration
+ * @param funcname the name of the function
+ * @return int (0==false, 1==true)
+ */
 int isFuncProto (char const *funcname)
 {
 	if(existsFunc(funcname))
@@ -388,12 +407,20 @@ int isFuncProto (char const *funcname)
 	return NULL;
 }
 
+/**
+ * Sets the given function to be a prototype/declaration (these names are used synonmisly in the context of this project)
+ * @param sFunc the pointer to the function
+ */
 void setFuncProtoP (struct symFunc *sFunc)
 {
 	struct symFunc *ptr = sFunc;
 	ptr->isPrototype = 1;
 }
 
+/**
+ * Sets the given function to be a prototype/declaration (these names are used synonmisly in the context of this project)
+ * @param funcname the name of the function
+ */
 void setFuncIsDeclared (char const *funcname)
 {
 	if(existsFunc(funcname))
@@ -403,16 +430,29 @@ void setFuncIsDeclared (char const *funcname)
 	}
 }
 
+/**
+ * Sets the return type of the given function
+ * @param sFunc the pointer to the function
+ * @param type the return type (0==VOID, 1==INT)
+ */
 void setTypeP (struct symFunc *sFunc, int type)
 {
 	sFunc->retType = type;
 }
 
+/**
+ * Resets the current function scope to NULL. Should be called after the end of a function definition
+ */
 void funcEnd()
 {
 	currFunc = NULL;
 }
 
+
+/**
+ * Deletes a Variable from the Symbol Table
+ * @param sInt pointer to the variable which should be deleted
+ */
 void deleteParamInt (struct symInt *sInt)
 {
 	struct symInt *ptr;
@@ -432,6 +472,10 @@ void deleteParamInt (struct symInt *sInt)
 	};
 }
 
+/**
+ * Deletes all Variables from the symbol table which are declared to be paramters of the given function
+ * @param sFunc0 pointer to the function
+ */
 void deleteParams (struct symFunc *sFunc0)
 {
 	struct symInt *param0 = sFunc0->params;
@@ -462,6 +506,10 @@ void deleteParams (struct symFunc *sFunc0)
 	}
 }
 
+/**
+ * Prints all paramters of a given function in human readable text
+ * @param sFunc0 pointer to the function
+ */
 void printAllParams (struct symFunc *sFunc0)
 {
 	struct symInt *param0 = sFunc0->params;
@@ -488,6 +536,10 @@ void printAllParams (struct symFunc *sFunc0)
 	}
 }
 
+/**
+ * Deletes a function from the symbol table
+ * @param name the name of the function
+ */
 void deleteFunc (char const * name)
 {
 	struct symFunc *ptr;
@@ -509,6 +561,12 @@ void deleteFunc (char const * name)
 	};
 }
 
+/**
+ * Checks whether 2 parameter lists from 2 given match by type
+ * @param sFunc0 the pointer to the first function
+ * @param sFunc1 the pointer to the second function
+ * @return int (0==false, 1==true)
+ */
 int paramFuncCheckP (struct symFunc *sFunc0, struct symFunc *sFunc1)
 {
 	if(sFunc0 == sFunc1) 
@@ -566,6 +624,12 @@ int paramFuncCheckP (struct symFunc *sFunc0, struct symFunc *sFunc1)
 	return 1;
 }
 
+/**
+ * Checks whether 2 functions are equal
+ * @param sFunc0 pointer to the first function
+ * @param sFunc1 pointer to the second function
+ * @return int (0==false, 1==true)
+ */
 int isFuncEqual (struct symFunc *sFunc0, struct symFunc *sFunc1)
 {
 	if(strcmp (sFunc0->name,sFunc0->name) != 0)
@@ -576,6 +640,9 @@ int isFuncEqual (struct symFunc *sFunc0, struct symFunc *sFunc1)
 	return paramFuncCheckP (sFunc0, sFunc1);
 }
 
+/**
+ * Prints all functions in human readable debug format
+ */
 void debugPrintAllsFunc()
 {
 	if(symFuncTable==NULL)
@@ -595,8 +662,11 @@ void debugPrintAllsFunc()
 	}
 }
 
+/**
+ * Prints all variables in human readable debug format
+ */
 void debugPrintAllsint()
- {
+{
 	int count = 0;
 	if(symIntTable==NULL)
 	{
@@ -620,14 +690,22 @@ void debugPrintAllsint()
 			}
 		//}
 	}
- }
+}
  
+/**
+ * Sets the current function scope to the given function. Should be called at the beginning of every function definition
+ * @param sFunc pointer to the function
+ */
 void setFuncScopeP (struct symFunc *sFunc)
 {
 	//printf("setting current scope to:%s.\n", sFunc->name);
 	currFunc = sFunc;
 }
 
+/**
+ * Resets the scope of all parameters of the given function to the given function
+ * @param sFunc0 pointer to the function
+ */
 void setScopeForParams (struct symFunc *sFunc0)
 {
 
@@ -653,6 +731,11 @@ void setScopeForParams (struct symFunc *sFunc0)
 	}
 }
 
+/**
+ * Creates a temporary parameter list which is later used to check for a valid function call
+ * @param sInt the first parameter of a function call
+ * @return the created param list
+ */
 struct symFuncCallParamList *createParamList(struct symInt *sInt)
 {
 	struct symFuncCallParamList *ptr;
@@ -664,6 +747,11 @@ struct symFuncCallParamList *createParamList(struct symInt *sInt)
 	return ptr;
 }
 
+/**
+ * Links the 2 given Variables together via the "nextFuncCallParam" pointer, which is later used to check for a valid function call
+ * @param start the start of the linked list
+ * @param sInt the entry which should be added
+ */
 void addParamFC(struct symInt *start, struct symInt *sInt)
 {
 	if(start->nextFuncCallParam==NULL)
@@ -683,6 +771,12 @@ void addParamFC(struct symInt *start, struct symInt *sInt)
 	}
 }
 
+/**
+ * Checks the parameters of a function call against its parameters from the declaration/definition
+ * @param sFunc0 the function which should be checked
+ * @param params the parameter list from the function call
+ * @return int (0==false, 1==true)
+ */
 int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *params)
 {
 	if(sFunc0->paramCount != params->count)
@@ -731,16 +825,28 @@ int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *pa
 	return 1;
 }
 
+/**
+ * Returns the Variables symbol table, represented via a linked list.
+ * @return variable symbol table
+ */
 struct symInt *getsymIntTable()
 {
 	return symIntTable;
 }
 
+/**
+ * Returns the Function symbol table, represented via a linked list.
+ * @return function symbol table
+ */
 struct symFunc *getsymFuncTable()
 {
 	return symFuncTable;
 }
 
+/**
+ * Returns the current function scope
+ * @return current function scope.
+ */
 struct symFunc *getCurrentScope()
 {
 	return currFunc;

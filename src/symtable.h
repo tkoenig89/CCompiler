@@ -16,9 +16,9 @@ struct symInt
 	int stackpos; 						//used by final_code for reference 
 	int isTemp;
 	int isVaildForAssign; 				//used in the parser to check if the expression to the left of "=" is valid
-	int isVaildForCalc; 					//used in the parser to check if the expression to the left of "=" is valid
+	int isVaildForCalc; 				//used in the parser to check if the expression to the left of "=" is valid
 	struct symInt *nextElement;
-	struct symInt *nextFuncCallParam;		//only used for temporaraly stored function call paremeters, to validate the function call
+	struct symInt *nextFuncCallParam;	//only used for temporaraly stored function call paremeters, to validate the function call
 	
 struct symInt *next;
 };
@@ -40,22 +40,17 @@ struct symFuncCallParamList
 	int count;
 };
 
-//Function declarations:
+//Public function declarations:
 	//For a detailed description, please have a look into the symtable.c file
 
 struct symInt *putInt (char const *name, int isArray, int val);
 struct symInt *getInt (char const * name);
 int existsInt (char const * name);
 int existsIntG (char const * name);
-//void deleteInt (char const * name);
 struct symInt *tempInt (char const *name);
-//struct symInt *putIntParam (char const *name, int isArray, int val);
-//int setScopeParam (char const * name);
-//int setScope (char const * name);
 void setIntScopeP (struct symInt *sInt);
 int checkIntDec (char const * name);
 struct symInt *getIntCurrScope (char const * name);
-
 struct symFunc *putFunc (char const *name, int isVoid);
 struct symFunc *getFunc (char const *name);
 int existsFunc (char const *name);

@@ -232,8 +232,11 @@ function_declaration
 														{
 																
 															if(existsFunc ($2)) {
-																sprintf(buffer,"A function declaration with the same name (%s) already exists.",$2);
-																yyerror(buffer);
+																if($1!=getFunc($2)->retType)
+																{
+																	sprintf(buffer,"The function declaration for function %s differs from a previous function declaration (Return Type does not match).",$2);
+																	yyerror(buffer);
+																}
 																setFuncProtoP (getFunc($2));
 																setScopeForParams (getFunc($2));
 															}
@@ -256,8 +259,17 @@ function_declaration
 														else
 														{
 															if(existsFunc ($2)) {
-																sprintf(buffer,"A function declaration with the same name (%s) already exists.",$2);
-																yyerror(buffer);
+																if($1!=getFunc($2)->retType)
+																{
+																	sprintf(buffer,"The function declaration for function %s differs from a previous function declaration (Return Type does not match).",$2);
+																	yyerror(buffer);
+																}
+																if(!paramFuncCheckP (getFunc($2), $4))
+																{
+																	sprintf(buffer,"The function declaration for function %s differs from a previous function declaration (Parameters do not match).",$2);
+																	yyerror(buffer);
+																}
+																//TODO: Check if parameters of the old declaration matches
 																deleteFunc ("-1temp");
 																setFuncProtoP (getFunc($2));
 																setScopeForParams (getFunc($2));

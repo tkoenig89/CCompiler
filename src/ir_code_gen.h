@@ -38,6 +38,9 @@ struct strCode
 	int jmpTo;
 };
 
+//Public function declarations:
+	//For a detailed description, please have a look into the ir_code_gen.c file
+
 void addcodeass(struct symInt *int0, struct symInt *int1);
 struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1);
 struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struct symInt *int2);
