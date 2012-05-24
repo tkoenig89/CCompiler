@@ -72,6 +72,7 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	ptr->tempCodePos=-1;
 	ptr->isVaildForAssign=-1;
 	ptr->isVaildForCalc=1;
+	ptr->nextFuncCallParam=NULL;
 	
 	if(strcmp (ptr->name,"int") == 0)
 	{ptr->isTemp = 1;} else {ptr->isTemp = 0;}
@@ -109,6 +110,7 @@ struct symInt *tempInt (char const *name)
 	ptr->tempCodePos=-1;
 	ptr->isVaildForAssign=-1;
 	ptr->isVaildForCalc=1;
+	ptr->nextFuncCallParam=NULL;
 	
 	ptr->next = 137; //Temp Var Marker... 
 	
@@ -662,14 +664,27 @@ struct symFuncCallParamList *createParamList(struct symInt *sInt)
 	return ptr;
 }
 
+void addParamFC(struct symInt *start, struct symInt *sInt)
+{
+	if(start->nextFuncCallParam==NULL)
+	{
+		start->nextFuncCallParam = sInt;
+	}
+	else
+	{
+		struct symInt *ptr;
+		for (ptr = start->nextFuncCallParam; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->nextFuncCallParam) {
+			if(ptr->nextFuncCallParam==NULL)
+			{
+				ptr->nextFuncCallParam = sInt;
+				break;
+			}
+		}
+	}
+}
+
 int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *params)
 {
-	/*
-	if(sFunc0 == sFunc1) 
-	{
-		return 1;
-	}*/
-
 	if(sFunc0->paramCount != params->count)
 	{
 		return 0;
@@ -679,13 +694,7 @@ int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *pa
 	struct symInt *param1 = params->sInt;
 
 	for(int i=0;i<sFunc0->paramCount;i++)
-	{
-		/*
-		if(strcmp (param0->name, param1->name) != 0)
-		{
-			return 0;
-		}*/
-		
+	{		
 		if(param0->isArray != param1->isArray)
 		{
 			return 0;
@@ -708,9 +717,10 @@ int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *pa
 			break;
 		}
 		
-		if(param1->next!=NULL) 
+		//if(param1->next!=NULL) 
+		if(param1->nextFuncCallParam!=NULL)
 		{
-			param1 = param1->next;
+			param1 = param1->nextFuncCallParam;
 		}
 		else
 		{

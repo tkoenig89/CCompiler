@@ -19,7 +19,7 @@ struct symInt *irtempInt()
 	
 	struct symInt *ptr;
 	ptr = tempInt (buffer);
-	ptr->isArray = temp_reg_count;
+	//ptr->isArray = temp_reg_count;
 	
 	return ptr;
 }
@@ -100,7 +100,7 @@ struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 	
 
 	addcode(operation, ptr, int1, NULL, NULL, -1);
-	printf("IR: %d %s = op %s\n", operation, ptr->name, int1->name);
+	//printf("IR: %d %s = op %s\n", operation, ptr->name, int1->name);
 	
 	ptr->isVaildForCalc=int1->isVaildForCalc;	
 	

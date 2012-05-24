@@ -1,26 +1,28 @@
 #ifndef _DHBWCC_SYMTABLE_H
 #define _DHBWCC_SYMTABLE_H
 
+//HINT: Some Attributes are used in ways that are not represented by their name. Please watch out.
+
 struct symInt
 {
 	char *name;
-	int isArray;
+	int isArray;					
 	int isParam;
-	struct symFunc *scope;
-	int var; //is used for number of elements when the var is an array
+	struct symFunc *scope;				//If the var is global than scope=NULL , otherwise this points to the function where the var was declared
+	int var; 							//is used for number of elements when the var is an array
 	int tempArrPos;
 	struct symInt *tempArrPos2;
 	int tempCodePos;
-	int stackpos; //used by final_code for reference 
+	int stackpos; 						//used by final_code for reference 
 	int isTemp;
-	int isVaildForAssign;
-	int isVaildForCalc;
+	int isVaildForAssign; 				//used in the parser to check if the expression to the left of "=" is valid
+	int isVaildForCalc; 					//used in the parser to check if the expression to the left of "=" is valid
 	struct symInt *nextElement;
+	struct symInt *nextFuncCallParam;		//only used for temporaraly stored function call paremeters, to validate the function call
 	
 struct symInt *next;
 };
-//TODO: make a third 'list' struct which contains a list of parameters for a function-CALL
-//will also be used as the list for the ir code...
+
 struct symFunc
 {
 	char *name;
@@ -28,7 +30,6 @@ struct symFunc
 	int isPrototype;
 	int paramCount;
 	struct symInt* params; //Will point to the first parameter in the symIntTable. 
-	/*Maybe we need the same count and first pointer for the variables cotained in the function?*/
 
 struct symFunc *next;
 };
@@ -38,6 +39,9 @@ struct symFuncCallParamList
 	struct symInt *sInt;
 	int count;
 };
+
+//Function declarations:
+	//For a detailed description, please have a look into the symtable.c file
 
 struct symInt *putInt (char const *name, int isArray, int val);
 struct symInt *getInt (char const * name);
@@ -70,6 +74,7 @@ void setScopeForParams (struct symFunc *sFunc0);
 struct symFuncCallParamList *createParamList(struct symInt *sInt);
 int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *params);
 struct symFunc *getCurrentScope();
+void addParamFC(struct symInt *start, struct symInt *sInt);
 
 struct symInt *getsymIntTable();
 struct symFunc *getsymFuncTable();

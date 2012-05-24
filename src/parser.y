@@ -391,7 +391,7 @@ expression								// 0 = "false", nonzero = "true"
      | expression MINUS expression				{$$ = addcodeopexp2(opSUB, $1, $3);}
      | expression MUL expression				{$$ = addcodeopexp2(opMUL, $1, $3);}
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
-     | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeloadarr(getInt($1), $3);$$->tempArrPos=$3->var;$$->tempArrPos2=$3;$$->isVaildForAssign=1;} /*In c there is no check whether the array acces in the valid bounds*/
+     | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeloadarr(getInt($1), $3);$$->tempArrPos=$3->var;$$->tempArrPos2=$3;$$->isVaildForAssign=1;$$->isArray=1;} /*In c there is no check whether the array acces in the valid bounds*/
      | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
      | function_call							{
 											/*if($1->isVaildForCalc==-1)
@@ -431,7 +431,7 @@ function_call
 														sFunc = getFunc($1);
 														if(sFunc->params!=NULL)
 														{
-															sprintf(buffer,"Functional call parameter check failed for function %s.",$1);
+															sprintf(buffer,"Function call parameter check failed for function %s.",$1);
 															yyerror(buffer);
 														}
 													}
@@ -489,7 +489,7 @@ function_call
       ;
 
 function_call_parameters
-     : function_call_parameters COMMA expression			{$$->count += 1;addcodeop1(opPARAM, $3);}
+     : function_call_parameters COMMA expression			{$1->count += 1;$$=$1;addcodeop1(opPARAM, $3);addParamFC($1->sInt,$3);}
      | expression										{$$ = createParamList($1);addcodeop1(opPARAM, $1);}
      ;
 
