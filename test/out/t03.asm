@@ -50,12 +50,6 @@ exit:
   syscall
 
 .data
-a:
-	.word 0
-	.align 4
-b:
-	.word 0 : 10
-	.align 4
 
 .text
 
@@ -65,16 +59,34 @@ main:	# Beginning of a function. We will save the return adress $31 and the $fp.
 	SW $fp, 0($sp)
 	MOVE $fp, $sp
 
-	LI $5, 2	#Number recognised:2
-	LA $6, a	#Global Variable recognised:a
-	SW $5, 0($6)	#Assign one register to another
-	LW $5, a	#Global Variable recognised:a
-	ADDI $sp, $sp, -4	#Reserve 4 Bytes on the Stack for a parameter and the func call
-	SW $5, 0($sp)	#Copy Value/Adress of var to stack var
-	JAL print	#Call function
-	ADDI $sp, $sp, 4	# clean up stack after function call is done
-	MOVE $15, $2	#Save return value by storing it into a temp register
+	ADDI $sp, $sp, -4	#Allocate Memory on stackpointer for local Variables
+	#int i: 0($sp)
+	LI $5, 0	#Number recognised:0
+	LW $6, 0($sp)	#Local Variable recognised:i
+	SW $5, 0($sp)	#Assign one register to another
+l2:
+	LW $5, 0($sp)	#Local Variable recognised:i
+	LI $6, 10	#Number recognised:10
+	SLT $14, $5, $6	#if i1 < i2 i0 = 1 else i0 = 0
+	BGTZ $14, l0
+	J l1
+l0:
+	LW $5, 0($sp)	#Local Variable recognised:i
+	LI $6, 1	#Number recognised:1
+	ADD $14, $5, $6	#Add 2 Variables and store result int temp register
+	LW $15, 0($sp)	#Local Variable recognised:i
+	SW $14, 0($sp)	#Assign one register to another
+	J l2
+l1:
+	LI $5, 0	#Number recognised:0
+	LW $6, 0($sp)	#Local Variable recognised:i
+	SW $5, 0($sp)	#Assign one register to another
+	LW $5, 0($sp)	#Local Variable recognised:i
+	MOVE $2, $5	#Return i
+	J l3
+l3:
 	#End of function main. We will restore the return adress $31 and the $fp. Then we will jump back to where the func was called.
+	ADDI $sp, $sp, 4	# delete local variables
 	LW $fp, 0($sp)
 	LW $31, 4($sp)
 	ADDI $sp, $sp, 8
