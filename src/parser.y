@@ -454,7 +454,7 @@ function_call
 												}
       | ID PARA_OPEN function_call_parameters PARA_CLOSE	{
 													struct symFunc *sFunc;
-													printf("Parameterised Function call regocnised.\n");
+													//Parameterised Function call regocnised
 													if(existsFunc($1))
 													{
 														sFunc = getFunc($1);
