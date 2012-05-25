@@ -14,9 +14,9 @@ enum code_ops
 	
 	opIF, opGOTO, opWHILE_BEGIN, opDO_WHILE_BEGIN,
 	
-	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END, opNOP
+	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END, opNOP, opCodeDount
 };
-
+/*
 static char* enumStrings[] = {
 							"ASSIGN", "ADD", "SUB", "MUL", "MINUS", "SHIFT_LEFT", "SHIFT_RIGHT",	
 	
@@ -26,6 +26,15 @@ static char* enumStrings[] = {
 
 							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF", "FUNC_DEF_END", "NOP"
 						
+						};*/
+char* enumStrings[opCodeDount] = {
+							[opASSIGN] = "ASSIGN", [opADD] = "ADD", [opSUB] = "SUB", [opMUL] = "MUL", [opMINUS] = "MINUS", [opSHIFT_LEFT] = "SHIFT_LEFT", [opSHIFT_RIGHT] = "SHIFT_RIGHT",
+
+							[opLOGICAL_AND] = "LOGICAL_AND", [opLOGICAL_OR] = "LOGICAL_OR", [opLOGICAL_NOT] = "LOGICAL_NOT", [opNE] = "NE", [opEQ] = "EQ", [opGT] = "GT", [opGTEQ] = "GTEQ", [opLS] = "LS", [opLSEQ] = "LSEQ",
+
+							[opIF] = "IF", [opGOTO] = "GOTO", [opWHILE_BEGIN] = "WHILE_BEGIN", [opDO_WHILE_BEGIN] = "DO_WHILE_BEGIN",
+
+							[opRETURN] = "RETURN", [opPARAM] = "PARAM", [opCALL] = "CALL", [opMEM_LD] = "MEM_LD", [opMEM_ST] = "MEM_ST", [opADDR] = "ADDR", [opFUNC_DEF] = "FUNC_DEF", [opFUNC_DEF_END] = "FUNC_DEF_END", [opNOP] = "NOP"
 						};
 
 struct strCode
