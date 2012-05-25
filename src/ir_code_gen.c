@@ -430,6 +430,13 @@ void generateIRCodeFile(FILE *f)
 	char tab = '\0';
 	char buffer [200];
 
+	sprintf (buffer, "#Please note that this is a very simple representation of the IR Code\n");
+	fputs (buffer,f);
+	sprintf (buffer, "#Variable declarations are missing, because these are stored in the symbol table\n");
+	fputs (buffer,f);
+	sprintf (buffer, "#Also the opCode operator is always just at the beginning, followed by its parameters\n\n");
+	fputs (buffer,f);
+
 	for(int i=0;i<code_count;i++)
 	{
 		c = &code[i];

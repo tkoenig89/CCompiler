@@ -109,7 +109,8 @@ struct symInt *tempInt (char const *name)
 		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr -> malloc (tempInt)");
 		return NULL;
 	}
-	ptr->name = (char *) malloc (strlen (name) + 1);	if (ptr->name == NULL) {
+	ptr->name = (char *) malloc (strlen (name) + 1);
+	if (ptr->name == NULL) {
 		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr->name -> malloc (tempInt)");
 		return NULL;
 	}
