@@ -376,6 +376,10 @@ stmt
 											yyerror("Function was declared as VOID. It can not return a value. Either use \"RETURN;\" or use type int for the func.");
 										}
 									}
+									if(($2->isVaildForCalc==-1) || ($2->isArray==1 && $2->isVaildForAssign==-1))
+									{
+										yyerror("The provided expression can not be used in a return statement.");
+									}
 									addcodeop1(opRETURN, $2);
 									{resetTempCount();}
 								}
@@ -386,7 +390,7 @@ stmt
 									{
 										if(scope->retType==1)
 										{
-											yyerror("Function was declared as INT. It has to return a value. Either use \"RETURN 0;\" or use type void for the func.");
+											yyerror("Function was declared as INT. If you use return, you have to return a value. Either use \"RETURN 0;\" or use type void for the func.");
 										}
 									}
 									addcodeop1(opRETURN, NULL);
@@ -431,6 +435,8 @@ expression								// 0 = "false", nonzero = "true"
 												yyerror("An expression on the right side of the '=' is not valid for calculation.");
 											}
 											$$ = $3;addcodeass($1, $3);if($1->tempCodePos>-1) {setCodeToNOP($1->tempCodePos);}
+											$$->isVaildForAssign=1;
+											$$->isVaildForCalc=1;
 										}	//WARNING: Ambigious! You dont know if you have to assign to/load from an array or if it is an normal int at this point. check this when generating final code
      | expression LOGICAL_OR expression			{$$ = addcodeopexp2(opLOGICAL_OR, $1, $3);}
      | expression LOGICAL_AND expression			{$$ = addcodeopexp2(opLOGICAL_AND, $1, $3);}
