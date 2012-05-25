@@ -5,6 +5,8 @@ int scan ();
 void exit (int i);
 int func (int arr[10], int len, int threshold);
 
+int test() {}
+
 int func (int arr[10], int len, int threshold) {
   int i, sum;
   i = 0;
@@ -19,9 +21,11 @@ int func (int arr[10], int len, int threshold) {
 
 int main () {
   global = 1;
-  return func(a,5+5,5);
+  func(a,5+5,5);
 
   print(scan());
+
+  print(test());
 
   exit(0);
 }

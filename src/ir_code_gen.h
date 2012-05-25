@@ -27,7 +27,7 @@ static char* enumStrings[] = {
 							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF", "FUNC_DEF_END", "NOP"
 						
 						};*/
-char* enumStrings[opCodeDount] = {
+static char* enumStrings[opCodeDount] = {
 							[opASSIGN] = "ASSIGN", [opADD] = "ADD", [opSUB] = "SUB", [opMUL] = "MUL", [opMINUS] = "MINUS", [opSHIFT_LEFT] = "SHIFT_LEFT", [opSHIFT_RIGHT] = "SHIFT_RIGHT",
 
 							[opLOGICAL_AND] = "LOGICAL_AND", [opLOGICAL_OR] = "LOGICAL_OR", [opLOGICAL_NOT] = "LOGICAL_NOT", [opNE] = "NE", [opEQ] = "EQ", [opGT] = "GT", [opGTEQ] = "GTEQ", [opLS] = "LS", [opLSEQ] = "LSEQ",

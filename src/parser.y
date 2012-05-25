@@ -12,6 +12,7 @@
 	#include "main.h"
 	char buffer [200];				//used for temporarily storing strings and is then passed to yyerror, to generate complex strings (with %s, %d ..)
 	void yyerror (char const *);		//Generates an error message with the correct line number and increments the error count
+	void generateReturn();			//used to generate a return code for an statement-empty function definition
 %}
  
 %union{
@@ -56,8 +57,8 @@
 %right LOGICAL_NOT UNARY_MINUS UNARY_PLUS
 %left  BRACKET_OPEN BRACKET_CLOSE PARA_OPEN PARA_CLOSE
 
-//%type <sFunc> stmt_list
-//%type <sFunc> stmt
+%type <num> stmt_list
+%type <num> stmt
 %type <sPList> function_call_parameters
 %type <sFunc> function_definition
 %type <sFunc> function_parameter_list
@@ -167,7 +168,14 @@ function_definition
 												addcodeopfunc(opFUNC_DEF, NULL, getFunc($2), -1);
 											}
 										}
-	stmt_list BRACE_CLOSE {addcodeopfunc(opFUNC_DEF_END, NULL, getFunc($2), -1);setFuncScopeP (NULL);backpatchreturn();}
+	stmt_list BRACE_CLOSE 	{
+							//If the statement is empty, we generate a RETURN; or RETURN 0; statement; depending on the function return type
+							if($7==0)
+							{
+								generateReturn();
+							}
+							addcodeopfunc(opFUNC_DEF_END, NULL, getFunc($2), -1);setFuncScopeP (NULL);backpatchreturn();
+						}
      | type ID PARA_OPEN function_parameter_list PARA_CLOSE BRACE_OPEN 	{
 																//check if the given function name was already used by a global variable
 																if(existsIntG ($2))
@@ -235,7 +243,14 @@ function_definition
 																	}
 																}
 															}
-	stmt_list BRACE_CLOSE {addcodeopfunc(opFUNC_DEF_END, NULL, getFunc($2), -1);setFuncScopeP (NULL);backpatchreturn();}
+	stmt_list BRACE_CLOSE 	{
+							//If the statement is empty, we generate a RETURN; or RETURN 0; statement; depending on the function return type
+							if($8==0)
+							{
+								generateReturn();
+							}
+							addcodeopfunc(opFUNC_DEF_END, NULL, getFunc($2), -1);setFuncScopeP (NULL);backpatchreturn();
+						}
      ;
 
 function_declaration
@@ -342,8 +357,8 @@ function_parameter
      ;
 
 stmt_list
-     : /* empty: epsilon */
-     | stmt_list stmt					/*Nothing to be done here*/
+     : /* empty: epsilon */				{$$=0}
+     | stmt_list stmt					{$$=$1+1}
      ;
 
 stmt
@@ -550,6 +565,24 @@ function_call_parameters
 
 %%
 
+void generateReturn()
+{
+	//If the statement is empty, we generate a RETURN; or RETURN 0; statement; depending on the function return type
+	struct symFunc *scope = getCurrentScope();
+	if(scope!=NULL)
+	{
+		if(scope->retType==1) 	//1==INT
+		{
+			struct symInt *int0 = putInt ("int", 0, 0);
+			addcodeop1(opRETURN, int0);											
+		} 
+			else 				//0==VOID
+		{				
+			addcodeop1(opRETURN, NULL);
+		}
+	}
+}
+     
 void yyerror (const char *msg)
 {
 	//generate the error statement with the line number
