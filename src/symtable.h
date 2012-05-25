@@ -18,7 +18,7 @@ struct symInt
 	int isVaildForAssign; 				//used in the parser to check if the expression to the left of "=" is valid
 	int isVaildForCalc; 				//used in the parser to check if the expression to the left of "=" is valid
 	struct symInt *nextElement;
-	struct symInt *nextFuncCallParam;	//only used for temporaraly stored function call paremeters, to validate the function call
+	struct symInt *nextFuncCallParam;	//only used for temporarily stored function call parameters, to validate the function call
 	
 struct symInt *next;
 };

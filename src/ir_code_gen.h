@@ -1,8 +1,9 @@
 #ifndef _DHBWCC_IR_CODE_GEN_H
 #define _DHBWCC_IR_CODE_GEN_H
-/**	ir_code_gen is partly based on http://foja.dcs.fmph.uniba.sk/kompilatory/docs/compiler.pdf
-***	
-**/	
+
+//ir_code_gen is partly based on http://foja.dcs.fmph.uniba.sk/kompilatory/docs/compiler.pdf
+
+#include <stdio.h>
 
 //enum for 3-adress code representation:
 enum code_ops 
@@ -63,6 +64,7 @@ void setCodeToNOP(int pos);
 struct symInt *addcodeopfunccall(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo);
 void resetTempCount();
 void backpatchreturn();
+void generateIRCodeFile(FILE *f);
 
 void printcode();
 void debugPrintAllopcodes();

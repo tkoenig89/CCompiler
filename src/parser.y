@@ -1,5 +1,7 @@
 /* 
  * parser.y - Parser utility for the DHBW compiler
+ *
+ * Gets all symbols from the scanner, will check the grammar and generate ir code
  */
 
 %{

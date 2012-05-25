@@ -270,12 +270,11 @@ int process_options (int argc, char *argv[]) {
  * \param argv The input parameters.
  */
 int main (int argc, char *argv[]) {
+	//Initializing the symbol table
 	init_table();
+
 	/* the resource manager must be initialized before any 
 	 * further actions are implemented */
-	//yyparse();
-	//return 0;
-
 	rm_init(&resource_mgr);
 
 	if (process_options(argc, argv) == 1) {
@@ -294,7 +293,7 @@ int main (int argc, char *argv[]) {
 		printf("ERROR! Could not open input file.\n");
 		return -1;
 	}
-	// set flex to read from it instead of defaulting to STDIN:
+	// set flex to read from the provided source file instead of defaulting to STDIN:
 	yyin = myfile;
 	
 	// parse through the input until there is no more:
@@ -302,10 +301,21 @@ int main (int argc, char *argv[]) {
 		yyparse();
 	} while (!feof(yyin));
 	
+	//if there are no errors in the source file, then put out the ir code into a file (if it was specified) and generate the final code
 	if(errorcount==0)
 	{
+		if(cc_options.ir_file!=NULL)
+		{
+			FILE *irfile = fopen(cc_options.ir_file, "w");
+			if(irfile)
+			{
+				generateIRCodeFile(irfile);
+				fclose (irfile);
+			} else {
+				printf("ERROR: Could not generate IR File.\n");
+			}
+		}
 		FILE *finalfile = fopen(cc_options.output_file, "w");
-
 		initFinalCodeGen(finalfile);
 		generateFinalCode();
 		fclose (finalfile);

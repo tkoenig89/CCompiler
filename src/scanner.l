@@ -1,5 +1,7 @@
 /* 
- * scanner.l - Scanner utility for the BA compiler
+ * scanner.l - Scanner utility for the DHBW compiler
+ *
+ * The Scanner will recognise all needed symbols and pass them to the parser which in turn will check the grammar and generate the ir code
  */
 
 %{

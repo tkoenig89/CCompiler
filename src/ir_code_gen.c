@@ -413,6 +413,43 @@ void debugPrintAllopcodes()
 }
 
 /**
+ * Prints the ir code array into a file (very simple)
+ * @param f
+ */
+void generateIRCodeFile(FILE *f)
+{
+	struct strCode  *c;
+	struct symInt *int_;
+	struct symFunc *func_;
+	int count=0;
+	char tab = '\0';
+	char buffer [200];
+
+	for(int i=0;i<code_count;i++)
+	{
+		c = &code[i];
+
+		if(c->op==opFUNC_DEF_END) tab = '\0';
+
+		sprintf (buffer, "%cOP #%d: %s", tab, count, enumStrings[c->op]);
+		fputs (buffer,f);
+		if(c->int0!=NULL) {int_=c->int0; 	sprintf (buffer, ", INT0: %s", int_->name);		fputs (buffer,f);}
+		if(c->int1!=NULL) {int_=c->int1; 	sprintf (buffer, ", INT1 %s", int_->name);		fputs (buffer,f);}
+		if(c->int2!=NULL) {int_=c->int2; 	sprintf (buffer, ", INT2: %s", int_->name);		fputs (buffer,f);}
+
+		if(c->func!=NULL) {func_=c->func; 	sprintf (buffer, ", FUNC: %s", func_->name);	fputs (buffer,f);}
+
+		if(c->jmpTo!=-1) {					sprintf (buffer, ", JMP_TO: %d", c->jmpTo);		fputs (buffer,f);}
+
+		sprintf (buffer, "\n");
+		fputs (buffer,f);
+		count++;
+
+		if(c->op==opFUNC_DEF) tab = '\t';
+	}
+}
+
+/**
  * Returns the dynamic ir code array
  * @return the ir code array
  */

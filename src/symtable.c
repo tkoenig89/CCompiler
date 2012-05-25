@@ -11,18 +11,18 @@ struct symFunc 	*symFuncTable;
 struct symFunc 	*currFunc;
 
 /**	
-  *	Initiliases the Symbol table(sets everything to NULL)
+  *	Initializes the Symbol table(sets everything to NULL)
 **/	
 void init_table ()
 {
 	symIntTable=NULL;
 	symFuncTable=NULL;
 	currFunc=NULL;
-	//printf("Symbol Table was initialised.\n");
+	//Symbol Table was initialized
 }
 
 /**	
-  *	Takes a Pointer to an Int-Symbol and enques it into the Symbol table
+  *	Takes a Pointer to an Int-Symbol and enqueues it into the Symbol table
   *	@param struct symInt *sInt - A pointer to the Int Symbol
 **/
 void putIntIntoTable (struct symInt *sInt)
@@ -82,8 +82,7 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	ptr->nextElement = NULL;
 
 	putIntIntoTable(ptr);
-	
-	//printf("Integer ->%s<- was put in the table, value:%d\n", ptr->name, ptr->var);
+
 	return ptr;
 }
 
@@ -113,7 +112,7 @@ struct symInt *tempInt (char const *name)
 	ptr->isVaildForCalc=1;
 	ptr->nextFuncCallParam=NULL;
 	
-	ptr->next = 137; //Temp Var Marker... 
+	ptr->next = 137; //Temp Var Marker. It is very very bad to do that, but for the scope of the project it works. We won't do it ever again :)
 	
 	return ptr;
 }
@@ -311,8 +310,6 @@ struct symFunc *putFunc (char const *name, int retType)
 	
 	putFuncIntoTable(ptr);
 	
-	//printf("Function ->%s<- was put in the table pc:%d.\n", ptr->name, ptr->paramCount);
-	
 	currFunc = ptr;
 	
 	return ptr;
@@ -494,7 +491,6 @@ void deleteParams (struct symFunc *sFunc0)
 
 	for(int i=0;i<sFunc0->paramCount;i++)
 	{	
-		//printf("param:%s.\n", param0->name);
 		temp = param0->next;
 		if(temp!=NULL) 
 		{
@@ -504,7 +500,6 @@ void deleteParams (struct symFunc *sFunc0)
 		}
 		else
 		{
-			//printf("temp==NULL\n");
 			if(param0!=NULL) deleteParamInt (param0);
 			break;
 		}
@@ -522,14 +517,12 @@ void printAllParams (struct symFunc *sFunc0)
 	
 	if(param0==NULL)
 	{
-		//printf("\tNo Parameters.\n");
+		//tNo Parameters
 		return;
 	}
 
 	for(int i=0;i<sFunc0->paramCount;i++)
 	{
-		//printf("\tParam #%d :%s.\n", (i+1), param0->name);
-		
 		if(param0->next!=NULL) 
 		{
 			param0 = param0->next;
@@ -557,7 +550,6 @@ void deleteFunc (char const * name)
 			} else {
 				ptr_back->next = ptr->next;
 			}
-			//printf("%s was deleted as a function\n", ptr->name);
 			deleteParams (ptr);
 			free(ptr->name);
 			free(ptr);
@@ -704,7 +696,7 @@ void debugPrintAllsint()
  */
 void setFuncScopeP (struct symFunc *sFunc)
 {
-	//printf("setting current scope to:%s.\n", sFunc->name);
+	//setting current scope
 	currFunc = sFunc;
 }
 
@@ -817,7 +809,6 @@ int paramFuncCallCheckP (struct symFunc *sFunc0, struct symFuncCallParamList *pa
 			break;
 		}
 		
-		//if(param1->next!=NULL) 
 		if(param1->nextFuncCallParam!=NULL)
 		{
 			param1 = param1->nextFuncCallParam;
