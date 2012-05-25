@@ -1,6 +1,7 @@
 #include "ir_code_gen.h"
 #include "symtable.h"
 #include "parser.tab.h"
+#include "diag.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,6 +44,10 @@ void addcode(enum code_ops operation, struct symInt *int0, struct symInt *int1, 
 {
 	code_count += 1;
 	struct strCode *codebuffer = (struct strCode*) realloc (code, code_count * sizeof(struct strCode));
+	if (codebuffer == NULL) {
+		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "codebuffer -> malloc (addcode)");
+		return;
+	}
 	
 	code = codebuffer;
 	

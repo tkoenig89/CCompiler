@@ -1,4 +1,5 @@
 #include "symtable.h"
+#include "diag.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,7 +58,15 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	struct symInt *ptr;
 	//set name
 	ptr = (struct symInt *) malloc (sizeof (struct symInt));
+	if (ptr == NULL) {
+		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr -> malloc (putInt)");
+		return NULL;
+	}
 	ptr->name = (char *) malloc (strlen (name) + 1);
+	if (ptr->name == NULL) {
+		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr->name -> malloc (putInt)");
+		return NULL;
+	}
 	strcpy (ptr->name,name);
 	//set value
 	ptr->var = val; 
@@ -96,7 +105,14 @@ struct symInt *tempInt (char const *name)
 	struct symInt *ptr;
 	//set name
 	ptr = (struct symInt *) malloc (sizeof (struct symInt));
-	ptr->name = (char *) malloc (strlen (name) + 1);
+	if (ptr == NULL) {
+		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr -> malloc (tempInt)");
+		return NULL;
+	}
+	ptr->name = (char *) malloc (strlen (name) + 1);	if (ptr->name == NULL) {
+		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr->name -> malloc (tempInt)");
+		return NULL;
+	}
 	strcpy (ptr->name,name);
 	
 	ptr->isArray = 0; 
@@ -296,7 +312,15 @@ struct symFunc *putFunc (char const *name, int retType)
 	struct symFunc *ptr;
 	//set name
 	ptr = (struct symFunc *) malloc (sizeof (struct symFunc));
+	if (ptr == NULL) {
+		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr -> malloc (putFunc)");
+		return NULL;
+	}
 	ptr->name = (char *) malloc (strlen (name) + 1);
+	if (ptr->name == NULL) {
+		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr->name -> malloc (putFunc)");
+		return NULL;
+	}
 	strcpy (ptr->name,name);
 	//set retType
 	ptr->retType = retType; 
@@ -385,6 +409,10 @@ void renameFunc (char const *funcname, char const *funcname_new)
 		free(ptr->name);
 		
 		ptr->name = (char *) malloc (strlen (funcname_new) + 1);
+		if (ptr->name == NULL) {
+			FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr->name -> malloc (renameFunc)");
+			return;
+		}
 		strcpy (ptr->name,funcname_new);		
 		//printf("function name is now:%s.\n", ptr->name);
 	}
@@ -738,6 +766,10 @@ struct symFuncCallParamList *createParamList(struct symInt *sInt)
 {
 	struct symFuncCallParamList *ptr;
 	ptr = (struct symFuncCallParamList *) malloc (sizeof (struct symFuncCallParamList));
+	if (ptr == NULL) {
+		FATAL_OS_ERROR(OUT_OF_MEMORY, 0, "ptr -> malloc (createParamList)");
+		return NULL;
+	}
 	
 	ptr->count = 1;
 	ptr->sInt = sInt;
