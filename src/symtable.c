@@ -83,6 +83,7 @@ struct symInt *putInt (char const *name, int isArray, int val)
 	ptr->isVaildForAssign=-1;
 	ptr->isVaildForCalc=1;
 	ptr->nextFuncCallParam=NULL;
+	ptr->tempmarker=0;
 	
 	if(strcmp (ptr->name,"int") == 0)
 	{ptr->isTemp = 1;} else {ptr->isTemp = 0;}
@@ -128,8 +129,10 @@ struct symInt *tempInt (char const *name)
 	ptr->isVaildForAssign=-1;
 	ptr->isVaildForCalc=1;
 	ptr->nextFuncCallParam=NULL;
+	ptr->tempmarker=1;
 	
-	ptr->next = 137; //Temp Var Marker. It is very very bad to do that, but for the scope of the project it works. We won't do it ever again :)
+	//ptr->next = 137; //Temp Var Marker. It is very very bad to do that, but for the scope of the project it works. We won't do it ever again :)
+	ptr->next = NULL;
 	
 	return ptr;
 }

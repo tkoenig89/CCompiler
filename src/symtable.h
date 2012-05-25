@@ -17,6 +17,7 @@ struct symInt
 	int isTemp;
 	int isVaildForAssign; 				//used in the parser to check if the expression to the left of "=" is valid
 	int isVaildForCalc; 				//used in the parser to check if the expression to the left of "=" is valid
+	int tempmarker;
 	struct symInt *nextElement;
 	struct symInt *nextFuncCallParam;	//only used for temporarily stored function call parameters, to validate the function call
 	

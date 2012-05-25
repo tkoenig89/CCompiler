@@ -106,7 +106,8 @@ void addcodeop1(enum code_ops operation, struct symInt *int0)
 struct symInt *addcodeopexp1(enum code_ops operation, struct symInt *int1)
 {
 	struct symInt *ptr;
-	if(int1->next!=137)
+	//if(int1->next!=137)
+	if(int1->tempmarker==1)
 	{
 		ptr = irtempInt();
 	}
@@ -299,7 +300,8 @@ struct symInt *addcodeopexp2(enum code_ops operation, struct symInt *int1, struc
 {
 	struct symInt *ptr;
 
-	if((int1->next==137) && (int2->next==137))
+	//if((int1->next==137) && (int2->next==137))
+	if((int1->tempmarker==1) && (int2->tempmarker==1))
 	{
 		ptr = int1;
 		temp_reg_count -= 1;
