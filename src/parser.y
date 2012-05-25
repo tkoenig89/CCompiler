@@ -458,8 +458,8 @@ expression								// 0 = "false", nonzero = "true"
      | expression PLUS expression				{$$ = addcodeopexp2(opADD, $1, $3);}
      | expression MINUS expression				{$$ = addcodeopexp2(opSUB, $1, $3);}
      | expression MUL expression				{$$ = addcodeopexp2(opMUL, $1, $3);}
-     | expression SHIFT_LEFT expression			{/*dummy implementatio. only to regognise the grammar*/}
-     | expression SHIFT_RIGHT expression			{/*dummy implementatio. only to regognise the grammar*/}
+     | expression SHIFT_LEFT expression			{$$=$1;/*dummy implementatio. only to regognise the grammar*/}
+     | expression SHIFT_RIGHT expression			{$$=$1;/*dummy implementatio. only to regognise the grammar*/}
      | MINUS expression %prec UNARY_MINUS		{$$ = addcodeopexp1(opMINUS, $2);}
      | ID BRACKET_OPEN primary BRACKET_CLOSE	{$$ = addcodeloadarr(getInt($1), $3);$$->tempArrPos=$3->var;$$->tempArrPos2=$3;$$->isVaildForAssign=1;$$->isArray=1;} /*In c there is no check whether the array acces in the valid bounds*/
      | PARA_OPEN expression PARA_CLOSE			{$$ = $2}
