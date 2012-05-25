@@ -12,16 +12,28 @@ int jmpLableCount = -1;
 int tmpLocalVarCount = -1;
 int getAdressFromGlobal = 0;
 
+/**
+ * Will set the global file pointer for the assembled file
+ * @param file the file pointer
+ */
 void initFinalCodeGen(FILE *file)
 {
 	gfile = file;
 }
 
+/**
+ * Adds a line into the file
+ * @param str the message
+ */
 void addLine(const char *str)
 {
 	fputs (str,gfile);
 }
 
+/**
+ * Generates assembly code to reserve space for all the local variables of a function
+ * @param sFunc pointer to the function
+ */
 void generateLocalVars(struct symFunc *sFunc)
 {
 	struct symInt *ptr;
@@ -62,17 +74,7 @@ void generateLocalVars(struct symFunc *sFunc)
 			//Parameters are already allocated from the function call. we only have to calculate the fp position
 			if(ptr->isParam)
 			{
-				//ptr->stackpos = pstackcount;
 				pstackcount = pstackcount - 4;
-				/*
-				if(ptr->isArray)
-				{
-					pstackcount = pstackcount + ptr->var * 4;
-				}
-				else
-				{
-					pstackcount = pstackcount + 4;
-				}*/
 				ptr->stackpos = pstackcount;
 			}
 			else
@@ -83,8 +85,6 @@ void generateLocalVars(struct symFunc *sFunc)
 					lstackcount = lstackcount - ptr->var * 4;
 					ptr->stackpos = lstackcount;
 
-					//addLine("\tLI $5, 0\n");
-					//sprintf (buffer, "\tSW $5, %d($sp)\t#int %s[%d]\n", ptr->stackpos, ptr->name, ptr->var);
 					sprintf (buffer, "\t#int %s[%d]: %d($sp)\n", ptr->name, ptr->var, ptr->stackpos);
 					addLine(buffer);
 				}
@@ -93,8 +93,6 @@ void generateLocalVars(struct symFunc *sFunc)
 					lstackcount = lstackcount - 4;
 					ptr->stackpos = lstackcount;
 
-					//addLine("\tLI $5, 0\n");
-					//sprintf (buffer, "\tSW $5, %d($sp)\t#int %s\n", ptr->stackpos, ptr->name);
 					sprintf (buffer, "\t#int %s: %d($sp)\n", ptr->name, ptr->stackpos);
 					addLine(buffer);
 				}
@@ -103,6 +101,13 @@ void generateLocalVars(struct symFunc *sFunc)
 	}	
 }
 
+/**
+ * Generates the right assembly code for loading any type of variable
+ * e.g. we could have a global int, global array, local int, local array, paramter int, parameter array or a temp register
+ * @param sInt the Variable which should be loaded
+ * @param last_reg the previously used register
+ * @return the register which now contains the value of the loaded variable
+ */
 int loadvar(struct symInt *sInt, int last_reg)
 {
 	//TODO: Look for Return Value "v0" = $2 or "v1" = $3
@@ -168,7 +173,11 @@ int loadvar(struct symInt *sInt, int last_reg)
 	}	
 }
 
-void transOpCode(struct strCode  c)
+/**
+ * Generates assembly code for any code (uses switch-case to check for every opCode)
+ * @param c the code containing the opcode, and any parameters
+ */
+void transOpCode(struct strCode c)
 {
 	int i0,i1,i2, r, t0;
 	struct symInt *tInt;
@@ -525,13 +534,17 @@ void transOpCode(struct strCode  c)
 		break;
 		
 		default:
-			sprintf (buffer, "#Error: Unrecognised command %d.\n", c.op);
+			sprintf (buffer, "#Error: Unrecognized command %d.\n", c.op);
 			addLine(buffer);	
 		break;
 	}
 	
 }
 
+/**
+ * Will get called from the main after initialization. It will generate the hole assembly code for the source file
+ * based on the ir code which was previously created
+ */
 void generateFinalCode()
 {
 	symIntTable = getsymIntTable();

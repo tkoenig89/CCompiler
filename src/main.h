@@ -21,6 +21,8 @@ typedef struct cc_options
 
 extern cc_options_t cc_options; 
 
+//Public function declarations:
+	//For a detailed description, please have a look into the main.c file
 void adderror();
 
 #endif
