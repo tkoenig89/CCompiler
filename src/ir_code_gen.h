@@ -8,13 +8,13 @@
 //enum for 3-adress code representation:
 enum code_ops 
 {
-	opASSIGN, opADD, opSUB, opMUL, opMINUS, opSHIFT_LEFT, opSHIFT_RIGHT,	
+	opASSIGN=0, opADD, opSUB, opMUL, opMINUS, opSHIFT_LEFT, opSHIFT_RIGHT,	
 	
 	opLOGICAL_AND, opLOGICAL_OR, opLOGICAL_NOT, opNE, opEQ, opGT, opGTEQ, opLS, opLSEQ,
 	
 	opIF, opGOTO, opWHILE_BEGIN, opDO_WHILE_BEGIN,
 	
-	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END, opNOP, opCodeDount
+	opRETURN, opPARAM, opCALL, opMEM_LD, opMEM_ST, opADDR, opFUNC_DEF, opFUNC_DEF_END, opNOP, opCodeCount
 };
 /*
 static char* enumStrings[] = {
@@ -27,7 +27,7 @@ static char* enumStrings[] = {
 							"RETURN", "PARAM", "CALL", "MEM_LD", "MEM_ST", "ADDR", "FUNC_DEF", "FUNC_DEF_END", "NOP"
 						
 						};*/
-static char* enumStrings[opCodeDount] = {
+static char* enumStrings[opCodeCount] = {
 							[opASSIGN] = "ASSIGN", [opADD] = "ADD", [opSUB] = "SUB", [opMUL] = "MUL", [opMINUS] = "MINUS", [opSHIFT_LEFT] = "SHIFT_LEFT", [opSHIFT_RIGHT] = "SHIFT_RIGHT",
 
 							[opLOGICAL_AND] = "LOGICAL_AND", [opLOGICAL_OR] = "LOGICAL_OR", [opLOGICAL_NOT] = "LOGICAL_NOT", [opNE] = "NE", [opEQ] = "EQ", [opGT] = "GT", [opGTEQ] = "GTEQ", [opLS] = "LS", [opLSEQ] = "LSEQ",
