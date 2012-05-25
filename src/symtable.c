@@ -1,6 +1,7 @@
 #include "symtable.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //Represents a Pointer to the start of the Int Table
 struct symInt 		*symIntTable;
@@ -402,9 +403,14 @@ int isFuncProto (char const *funcname)
 	if(existsFunc(funcname))
 	{
 		struct symFunc *ptr = getFunc(funcname);
-		return ptr->isPrototype;
+		if(ptr->isPrototype)
+		{
+			return 1;
+		} else {
+			return 0;
+		}
 	}
-	return NULL;
+	return 0;
 }
 
 /**
@@ -647,7 +653,7 @@ void debugPrintAllsFunc()
 {
 	if(symFuncTable==NULL)
 	{
-		//printf("no functions in table.\n");
+		printf("no functions in table.\n");
 		return;
 	}
 	struct symFunc *ptr;
@@ -656,7 +662,7 @@ void debugPrintAllsFunc()
 		count++;
 		if(ptr!=NULL) 
 		{
-			//printf("Function #%d name:%s,type:%d.\n", count, ptr->name, ptr->retType);
+			printf("Function #%d name:%s,type:%d.\n", count, ptr->name, ptr->retType);
 			printAllParams (ptr);
 		}
 	}
@@ -670,15 +676,15 @@ void debugPrintAllsint()
 	int count = 0;
 	if(symIntTable==NULL)
 	{
-		//printf("no variables in table.\n");
+		printf("no variables in table.\n");
 		return;
 	}
 	struct symInt *ptr;
 	for (ptr = symIntTable; ptr != (struct symInt *) 0;ptr = (struct symInt *)ptr->next) {
 		if(count>100) break; else count++;
-		//if(strcmp (ptr->name,"int") != 0)
-		//{
-			//printf("Int: %s:=%d isArray:=%d", ptr->name, ptr->var, ptr->isArray);
+		if(strcmp (ptr->name,"int") != 0)
+		{
+			printf("Int: %s:=%d isArray:=%d", ptr->name, ptr->var, ptr->isArray);
 			if(ptr->scope==NULL)
 			{
 				printf(" scope: global.\n");
@@ -686,9 +692,9 @@ void debugPrintAllsint()
 			else
 			{
 				struct symFunc *ptr_ = ptr->scope;
-				//printf(" scope: %s.\n", ptr_->name);
+				printf(" scope: %s.\n", ptr_->name);
 			}
-		//}
+		}
 	}
 }
  

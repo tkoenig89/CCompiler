@@ -355,7 +355,7 @@ void addcodeopfunc(enum code_ops operation, struct symInt *int0, struct symFunc 
  * @param jmpTo the position of the function definition inside the ir code
  * @return
  */
-int addcodeopfunccall(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo)
+struct symInt *addcodeopfunccall(enum code_ops operation, struct symInt *int0, struct symFunc *func, int jmpTo)
 {
 	struct symInt *ptr;
 	ptr = irtempInt();
@@ -386,7 +386,7 @@ void debugPrintAllopcodes()
 {
 	struct strCode  *c;	
 	struct symInt *int_;
-	struct symInt *func_;
+	struct symFunc *func_;
 	int count=0;
 	char tab = '\0';
 	
@@ -446,7 +446,7 @@ int opcodeFindFunctionDef(struct symFunc *func)
 			return i;
 		}
 	}
-	return NULL;
+	return 0;
 }
 
 /**
