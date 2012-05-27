@@ -1,0 +1,8 @@
+#Please note that this is a very simple representation of the IR Code
+#Variable declarations are missing, because these are stored in the symbol table
+#Also the opCode operator is always just at the beginning, followed by its parameters
+
+, FUNC: print
+	OP #1: MUL, INT0: .t0, INT1 int, INT2: i
+	OP #2: RETURN, INT0: .t0, JMP_TO: 3
+, FUNC: print

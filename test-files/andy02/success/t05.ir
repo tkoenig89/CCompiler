@@ -1,0 +1,8 @@
+#Please note that this is a very simple representation of the IR Code
+#Variable declarations are missing, because these are stored in the symbol table
+#Also the opCode operator is always just at the beginning, followed by its parameters
+
+, FUNC: main
+, FUNC: main
+, FUNC: func
+, FUNC: func

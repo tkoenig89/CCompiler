@@ -1,0 +1,30 @@
+#Please note that this is a very simple representation of the IR Code
+#Variable declarations are missing, because these are stored in the symbol table
+#Also the opCode operator is always just at the beginning, followed by its parameters
+
+, FUNC: main
+	OP #1: ASSIGN, INT0: i, INT1 int
+	OP #2: ASSIGN, INT0: j, INT1 int
+	OP #3: WHILE_BEGIN
+	OP #4: LS, INT0: .t1, INT1 i, INT2: int
+	OP #5: IF, INT0: .t1, JMP_TO: 7
+	OP #6: GOTO, JMP_TO: 24
+	OP #7: ASSIGN, INT0: j, INT1 int
+	OP #8: WHILE_BEGIN
+	OP #9: LS, INT0: .t1, INT1 j, INT2: int
+	OP #10: IF, INT0: .t1, JMP_TO: 12
+	OP #11: GOTO, JMP_TO: 21
+	OP #12: ADD, INT0: .t2, INT1 j, INT2: int
+	OP #13: ASSIGN, INT0: j, INT1 .t2
+	OP #14: EQ, INT0: .t1, INT1 j, INT2: int
+	OP #15: IF, INT0: .t1, JMP_TO: 17
+	OP #16: GOTO, JMP_TO: 19
+	OP #17: ASSIGN, INT0: i, INT1 int
+	OP #18: GOTO, JMP_TO: 20
+	OP #19: ASSIGN, INT0: i, INT1 int
+	OP #20: GOTO, JMP_TO: 8
+	OP #21: ADD, INT0: .t1, INT1 i, INT2: int
+	OP #22: ASSIGN, INT0: i, INT1 .t1
+	OP #23: GOTO, JMP_TO: 3
+	OP #24: RETURN, INT0: i, JMP_TO: 25
+, FUNC: main

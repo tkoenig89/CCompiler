@@ -1,0 +1,16 @@
+#Please note that this is a very simple representation of the IR Code
+#Variable declarations are missing, because these are stored in the symbol table
+#Also the opCode operator is always just at the beginning, followed by its parameters
+
+, FUNC: main
+	OP #1: ASSIGN, INT0: i, INT1 int
+	OP #2: WHILE_BEGIN
+	OP #3: LS, INT0: .t1, INT1 i, INT2: int
+	OP #4: IF, INT0: .t1, JMP_TO: 6
+	OP #5: GOTO, JMP_TO: 9
+	OP #6: ADD, INT0: .t2, INT1 i, INT2: int
+	OP #7: ASSIGN, INT0: i, INT1 .t2
+	OP #8: GOTO, JMP_TO: 2
+	OP #9: ASSIGN, INT0: i, INT1 int
+	OP #10: RETURN, INT0: i, JMP_TO: 11
+, FUNC: main
